@@ -5,8 +5,8 @@ import { storeJson } from '../../fileModels/store.json'
 import { nocow } from '../versionGraph'
 const { whitebind, bind } = bitcoinConfDefaults
 
-export const v29_1_0_2 = VersionInfo.of({
-  version: '29.1:2-beta.0',
+export const v30_0_0_1_beta0 = VersionInfo.of({
+  version: '30.0.0:1-beta.0',
   releaseNotes: 'Revamped for StartOS 0.4.0',
   migrations: {
     up: async ({ effects }) => {

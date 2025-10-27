@@ -79,7 +79,7 @@ export const bitcoinConfDefaults = {
   mempoolfullrbf: true,
   permitbaremultisig: true,
   datacarrier: true,
-  datacarriersize: 83,
+  datacarriersize: 10_000,
 
   // Peers
   listen: true,
