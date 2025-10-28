@@ -59,6 +59,7 @@ const {
   coinstatsindex,
   txindex,
   dbcache,
+  dbbatchsize,
   peerbloomfilters,
   blockfilterindex,
   peerblockfilters,
@@ -106,6 +107,8 @@ export const shape = object({
 
   // Performance Tuning
   dbcache: natural.onMismatch(dbcache),
+  dbbatchsize: natural.onMismatch(dbbatchsize),
+  assumevalid: string.optional().onMismatch('00000000000000000000611fd22f2df7c8fbd0688745c3a6c3bb5109cc2a12cb'),
 
   // Wallet
   disablewallet: boolean.onMismatch(disablewallet),

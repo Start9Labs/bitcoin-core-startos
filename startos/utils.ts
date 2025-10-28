@@ -105,7 +105,8 @@ export const bitcoinConfDefaults = {
 
   coinstatsindex: false,
   txindex: false,
-  dbcache: 450,
+  dbcache: 5_000,
+  dbbatchsize: 33_554_432,
 
   peerbloomfilters: false,
   blockfilterindex: 'basic',

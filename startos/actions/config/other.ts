@@ -12,6 +12,7 @@ const {
   discardfee,
   prune,
   dbcache,
+  dbbatchsize,
   blockfilterindex,
   peerblockfilters,
   peerbloomfilters,
@@ -98,15 +99,24 @@ const configSpec = sdk.InputSpec.of({
   dbcache: Value.number({
     name: 'Database Cache',
     description:
-      "How much RAM to allocate for caching the TXO set. Higher values improve syncing performance, but increase your chance of using up all your system's memory or corrupting your database in the event of an ungraceful shutdown. Set this high but comfortably below your system's total RAM during IBD, then turn down to 450 (or leave blank) once the sync completes.",
-    warning:
-      'WARNING: Increasing this value results in a higher chance of ungraceful shutdowns, which can leave your node unusable if it happens during the initial block download. Use this setting with caution. Be sure to set this back to the default (450 or leave blank) once your node is synced. DO NOT press the STOP button if your dbcache is large. Instead, set this number back to the default, hit save, and wait for bitcoind to restart on its own.',
+      "How much RAM to allocate for caching the TXO set. Higher values improve syncing performance, but may result in some re-work in the event of an ungraceful shutdown. 4-7GB is high enough to get most of the peformance benefit during IBD. Consider reducing this setting for lower resource devices (or a device with less available RAM)",
     required: false,
-    default: null,
+    default: dbcache,
     min: 0,
     integer: true,
     units: 'MiB',
-    placeholder: '450',
+    placeholder: dbcache.toString(),
+  }),
+  dbbatchsize: Value.number({
+    name: 'Database Batch',
+    description:
+      "Maximum database write batch size in bytes. Higher values will speed up the critical sections when the utxo set is written to disk from memory in big batches.",
+    required: false,
+    default: dbbatchsize,
+    min: 0,
+    integer: true,
+    units: 'Bytes',
+    placeholder: dbbatchsize.toString(),
   }),
   blockfilters: Value.object(
     {
