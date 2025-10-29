@@ -27,7 +27,7 @@ export const deleteCoinstatsIndex = sdk.Action.withoutInput(
       mainMounts,
       'delete-coinstats',
       async (subc) => {
-        await fs.rmdir(`${subc.rootfs}/${rootDir}/indexes/coinstatsindex/`, {
+        await fs.rmdir(`${subc.rootfs}/${rootDir}/indexes/coinstats`, {
           recursive: true,
         })
       },
