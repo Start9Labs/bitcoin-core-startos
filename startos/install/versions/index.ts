@@ -1,3 +1,5 @@
-export { v30_0_0_1_beta0 as coreCurrent} from './v30_0_0_1-beta.0'
+import { v29_2_0_2 } from './v29_2_0_2-beta.0'
 
-export const other = []
+export { v30_0_0_1_beta1 as coreCurrent} from './v30_0_0_1-beta.1'
+
+export const other = [v29_2_0_2]
