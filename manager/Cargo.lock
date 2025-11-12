@@ -151,7 +151,7 @@ checksum = "b048fb63fd8b5923fc5aa7b340d8e156aec7ec02f0c78fa8a6ddc2613f6f71de"
 [[package]]
 name = "btc-rpc-proxy"
 version = "0.4.0"
-source = "git+https://github.com/Start9Labs/btc-rpc-proxy.git?branch=skinny#703b72488783dd8145da2bdee5725d139cc3fbb0"
+source = "git+https://github.com/Start9Labs/btc-rpc-proxy.git?branch=skinny#4005be7041ddf39d8f1e893350171bbfa017e8ba"
 dependencies = [
  "async-channel",
  "base32",
