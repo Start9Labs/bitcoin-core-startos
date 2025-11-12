@@ -429,6 +429,33 @@ export const migration: T.ExpectedExports.migration =
           type: "down",
         }),
       },
+      "29.2.0.1": {
+        up: compat.migrations.updateConfig(
+          (config) => {
+            if (
+              matches
+                .shape({
+                  advanced: matches.shape({
+                    blocknotify: matches.any,
+                  }),
+                })
+                .test(config)
+            ) {
+              throw new Error("Due to a bug in StartOS, and to protect against people accidentally switching from Core to Knots, or from Knots to Core, it is not possible to UPDATE from one to the other. To switch between them, the current version and the target version must be the same.");
+            }
+            return config;
+          },
+          true,
+          {
+            version: "29.2.0.1",
+            type: "up",
+          }
+        ),
+        down: compat.migrations.updateConfig((config: any) => config, true, {
+          version: "29.2.0.1",
+          type: "down",
+        }),
+      },
     },
-    "29.2.0"
+    "29.2.0.1"
   );
