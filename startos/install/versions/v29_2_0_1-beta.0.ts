@@ -2,7 +2,8 @@ import { VersionInfo, IMPOSSIBLE } from '@start9labs/start-sdk'
 import { bitcoinConfFile } from '../../fileModels/bitcoin.conf'
 import { bitcoinConfDefaults } from '../../utils'
 import { storeJson } from '../../fileModels/store.json'
-import { nocow } from '../versionGraph'
+import { sdk } from '../../sdk'
+import { mainMounts } from '../../main'
 const { whitebind, bind } = bitcoinConfDefaults
 
 export const v29_2_0_1 = VersionInfo.of({
@@ -10,7 +11,15 @@ export const v29_2_0_1 = VersionInfo.of({
   releaseNotes: 'Revamped for StartOS 0.4.0',
   migrations: {
     up: async ({ effects }) => {
-      await nocow('/media/startos/volumes/main/')
+      await sdk.SubContainer.withTemp(
+        effects,
+        { imageId: 'bitcoind' },
+        mainMounts,
+        'nocow',
+        async (subc) => {
+          await subc.execFail(['chattr', '-R', '+C', '/.bitcoin'])
+        },
+      )
       const store = await storeJson.read().once()
 
       if (!store) {

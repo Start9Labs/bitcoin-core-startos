@@ -3,26 +3,22 @@ import { coreCurrent, other } from './versions'
 import { storeJson } from '../fileModels/store.json'
 import { bitcoinConfFile } from '../fileModels/bitcoin.conf'
 import { bitcoinConfDefaults } from '../utils'
-import { execFile } from 'node:child_process'
-
-export function nocow(path: string) {
-  return new Promise<void>((resolve, reject) =>
-    execFile('chattr', ['-R', '+C', path], (err, stdout, stderr) => {
-      if (err && !stderr.includes('Operation not supported')) {
-        err.message += `: ${stderr}`
-        reject(err)
-      } else {
-        resolve()
-      }
-    }),
-  )
-}
+import { sdk } from '../sdk'
+import { mainMounts } from '../main'
 
 export const versionGraph = VersionGraph.of({
   current: coreCurrent,
   other,
   preInstall: async (effects) => {
-    await nocow('/media/startos/volumes/main/')
+    await sdk.SubContainer.withTemp(
+      effects,
+      { imageId: 'bitcoind' },
+      mainMounts,
+      'nocow',
+      async (subc) => {
+        await subc.execFail(['chattr', '-R', '+C', '/.bitcoin'])
+      },
+    )
     const store = await storeJson.read().once()
 
     if (!store) {
