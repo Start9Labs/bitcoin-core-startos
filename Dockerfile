@@ -18,7 +18,9 @@ RUN apk --no-cache add \
         sqlite-dev \
         zeromq-dev \
         bash \
-        curl
+        curl \
+        capnproto-dev \
+        capnproto
 
 ADD ./bitcoin /bitcoin
 
@@ -31,7 +33,7 @@ RUN make -C depends NO_BOOST=1 NO_LIBEVENT=1 NO_QT=1 NO_SQLITE=1 NO_UPNP=1 NO_ZM
 RUN cmake -B build -DCMAKE_LD_FLAGS=-L`ls -d /opt/db*`/lib/ -DCMAKE_CPP_FLAGS=-I`ls -d /opt/db*`/include/ \
   # If building on Mac make sure to increase Docker VM memory, or uncomment this line. See https://github.com/bitcoin/bitcoin/issues/6658 for more info.
   # CXXFLAGS="--param ggc-min-expand=1 --param ggc-min-heapsize=32768" \
-  -DENABLE_IPC=OFF \
+  -DENABLE_IPC=ON \
   -DCMAKE_CXX_FLAGS="-O2" \
   -DCMAKE_CXX=clang++ CC=clang \
   -DCMAKE_INSTALL_PREFIX=${BITCOIN_PREFIX} \
