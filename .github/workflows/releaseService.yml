@@ -15,7 +15,7 @@ jobs:
         uses: start9labs/sdk@v2
 
       - name: Checkout services repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           submodules: recursive
 
@@ -24,7 +24,7 @@ jobs:
         env:
           S9DEVKEY: ${{ secrets.S9DEVKEY }}
         run: |
-          start-cli init
+          start-cli init-key
           if [[ -n "$S9DEVKEY" ]]; then
             echo "Using developer key from secrets to sign the package."
             printf '%s' "$S9DEVKEY" > ~/.startos/developer.key.pem
