@@ -87,7 +87,7 @@ const configSpec = sdk.InputSpec.of({
       name: 'Pruning',
       description:
         'Set the maximum size of the blockchain you wish to store on disk. If your disk is larger than .9TB this value can be set to zero (0) to maintain a full archival node.',
-      warning: 'Increasing this value will require re-syncing your node.',
+      warning: 'If your node is already pruned increasing this value will require re-syncing your node. Switching from a full archival node to pruned will disable txindex (if enabled)',
       placeholder: 'Enter max blockchain size',
       required: disk.total < archivalMin,
       default: disk.total < archivalMin ? 550 : null,
@@ -218,7 +218,7 @@ async function write(effects: T.Effects, input: ConfigSpec) {
     discardfee: input.wallet.discardfee || discardfee,
 
     // Other
-    txindex: input.txindex,
+    txindex: input.prune !== 0 ? false : input.txindex,
     coinstatsindex: input.coinstatsindex,
     peerbloomfilters: input.peerbloomfilters,
     peerblockfilters: input.blockfilters.peerblockfilters,
