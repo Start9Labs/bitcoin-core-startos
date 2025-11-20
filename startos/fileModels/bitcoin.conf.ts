@@ -37,7 +37,6 @@ const {
   persistmempool,
   maxmempool,
   mempoolexpiry,
-  mempoolfullrbf,
   permitbaremultisig,
   datacarrier,
   datacarriersize,
@@ -78,7 +77,6 @@ export const shape = object({
   rpcpassword: matches.literal(undefined).optional().onMismatch(undefined),
 
   // Mempool
-  mempoolfullrbf: boolean.onMismatch(mempoolfullrbf),
   persistmempool: boolean.optional().onMismatch(persistmempool),
   maxmempool: natural.optional().onMismatch(maxmempool),
   mempoolexpiry: natural.onMismatch(mempoolexpiry),

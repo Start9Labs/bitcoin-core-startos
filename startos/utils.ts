@@ -76,7 +76,6 @@ export const bitcoinConfDefaults = {
   persistmempool: true,
   maxmempool: 300,
   mempoolexpiry: 336,
-  mempoolfullrbf: true,
   permitbaremultisig: true,
   datacarrier: true,
   datacarriersize: 10_000,
