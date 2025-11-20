@@ -17,14 +17,14 @@ jobs:
         uses: start9labs/sdk@v2
 
       - name: Checkout services repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           submodules: recursive
 
       - name: Build the service package
         id: build
         run: |
-          start-cli init
+          start-cli init-key
           RUST_LOG=debug RUST_BACKTRACE=1 make
           PACKAGE_ID=$(start-cli s9pk inspect *.s9pk manifest | jq -r '.id')
           echo "package_id=${PACKAGE_ID}" >> $GITHUB_ENV
@@ -32,7 +32,7 @@ jobs:
         shell: bash
 
       - name: Upload .s9pk
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ${{ env.package_id }}.s9pk
           path: ./${{ env.package_id }}.s9pk
