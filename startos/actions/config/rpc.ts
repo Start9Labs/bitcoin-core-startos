@@ -105,10 +105,20 @@ async function write(effects: T.Effects, input: RpcSpec) {
 
   await bitcoinConfFile.merge(effects, rpcSettings)
 
+  // Check if IPC setting changed (requires restart since it changes the binary)
+  const currentStore = await storeJson.read().const(effects)
+  const currentEnableIpc = currentStore?.enableIpc !== undefined ? currentStore.enableIpc : enableIpc
+  const newEnableIpc = inputEnableIpc !== undefined ? inputEnableIpc : enableIpc
+
   // Store enableIpc separately in store.json
   await storeJson.merge(effects, {
-    enableIpc: inputEnableIpc !== undefined ? inputEnableIpc : enableIpc,
+    enableIpc: newEnableIpc,
   })
+
+  // Restart if IPC setting changed (switches between bitcoind and bitcoin-node)
+  if (currentEnableIpc !== newEnableIpc) {
+    await sdk.restart(effects)
+  }
 }
 
 type RpcSpec = typeof rpcSpec._TYPE
