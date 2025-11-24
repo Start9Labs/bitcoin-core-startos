@@ -2,9 +2,10 @@ import { T } from '@start9labs/start-sdk'
 import { bitcoinConfFile, shape } from '../../fileModels/bitcoin.conf'
 import { sdk } from '../../sdk'
 import { bitcoinConfDefaults } from '../../utils'
+import { storeJson } from '../../fileModels/store.json'
 
 const { Value } = sdk
-const { rpcservertimeout, rpcthreads, rpcworkqueue } = bitcoinConfDefaults
+const { rpcservertimeout, rpcthreads, rpcworkqueue, enableIpc } = bitcoinConfDefaults
 
 const rpcSpec = sdk.InputSpec.of({
   servertimeout: Value.number({
@@ -47,6 +48,12 @@ const rpcSpec = sdk.InputSpec.of({
     units: 'requests',
     placeholder: rpcworkqueue.toString(),
   }),
+  enableIpc: Value.toggle({
+    name: 'Enable IPC',
+    description:
+      'Enable inter-process communication (IPC) via Unix socket. This allows other services to communicate with Bitcoin Core using a high-performance local socket connection. The socket path will be displayed in Runtime Information.',
+    default: true,
+  }),
 })
 
 export const rpcConfig = sdk.Action.withInput(
@@ -77,15 +84,18 @@ async function read(effects: any): Promise<PartialRpcSpec> {
   const bitcoinConf = await bitcoinConfFile.read().const(effects)
   if (!bitcoinConf) return {}
 
+  const store = await storeJson.read().const(effects)
+
   return {
     servertimeout: bitcoinConf.rpcservertimeout,
     threads: bitcoinConf.rpcthreads,
     workqueue: bitcoinConf.rpcworkqueue,
+    enableIpc: store?.enableIpc !== undefined ? store.enableIpc : enableIpc,
   }
 }
 
 async function write(effects: T.Effects, input: RpcSpec) {
-  const { servertimeout, threads, workqueue } = input
+  const { servertimeout, threads, workqueue, enableIpc: inputEnableIpc } = input
 
   const rpcSettings = {
     rpcservertimeout: servertimeout || rpcservertimeout,
@@ -94,6 +104,11 @@ async function write(effects: T.Effects, input: RpcSpec) {
   }
 
   await bitcoinConfFile.merge(effects, rpcSettings)
+
+  // Store enableIpc separately in store.json
+  await storeJson.merge(effects, {
+    enableIpc: inputEnableIpc !== undefined ? inputEnableIpc : enableIpc,
+  })
 }
 
 type RpcSpec = typeof rpcSpec._TYPE

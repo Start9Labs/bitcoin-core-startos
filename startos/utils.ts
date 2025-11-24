@@ -60,6 +60,8 @@ export type GetBlockchainInfo = {
   warnings: string
 }
 
+export const ipcSocketPath = 'unix:/ipc/bitcoin-core.sock'
+
 export const bitcoinConfDefaults = {
   // RPC
   rpcbind: unprunedRpcbind,
@@ -69,6 +71,7 @@ export const bitcoinConfDefaults = {
   rpcthreads: 4,
   rpcworkqueue: 16,
   rpccookiefile: '.cookie',
+  enableIpc: true,
   whitebind: '0.0.0.0:8333',
   bind: `0.0.0.0:${peerPort}`,
 
