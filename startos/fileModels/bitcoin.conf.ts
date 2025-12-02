@@ -89,7 +89,7 @@ export const shape = object({
   bind: string.optional().onMismatch(bind),
   connect: stringArray.orParser(string).optional().onMismatch(connect),
   addnode: stringArray.orParser(string).optional().onMismatch(addnode),
-  onlynet: arrayOf(onlyNetOptions.optional().onMismatch(undefined)).optional(),
+  onlynet: onlyNetOptions.orParser(arrayOf(onlyNetOptions.optional().onMismatch(undefined))).optional(),
   v2transport: boolean.onMismatch(v2transport),
   externalip: string.optional().onMismatch(externalip),
 
