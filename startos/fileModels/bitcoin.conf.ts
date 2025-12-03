@@ -76,6 +76,7 @@ export const shape = object({
   rpccookiefile: literal(rpccookiefile).onMismatch(rpccookiefile),
   rpcuser: matches.literal(undefined).optional().onMismatch(undefined),
   rpcpassword: matches.literal(undefined).optional().onMismatch(undefined),
+  deprecatedrpc: matches.literal('create_bdb').onMismatch('create_bdb'), // necessary for creating bdb wallets i.e. jam
 
   // Mempool
   mempoolfullrbf: boolean.onMismatch(mempoolfullrbf),
