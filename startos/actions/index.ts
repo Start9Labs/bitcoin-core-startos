@@ -3,6 +3,7 @@ import { config } from './config/other'
 import { mempoolConfig } from './config/mempool'
 import { peerConfig } from './config/peers'
 import { rpcConfig } from './config/rpc'
+import { ipcConfig } from './config/ipc'
 import { deleteCoinstatsIndex } from './deleteCoinstatsIndex'
 import { deletePeers } from './deletePeers'
 import { deleteRpcAuth } from './deleteRpcAuth'
@@ -29,3 +30,4 @@ export const actions = sdk.Actions.of()
   .addAction(peerConfig)
   .addAction(generateRpcUserDependent)
   .addAction(assumeutxo)
+  .addAction(ipcConfig)
