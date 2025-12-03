@@ -71,7 +71,7 @@ export const bitcoinConfDefaults = {
   rpcthreads: 4,
   rpcworkqueue: 16,
   rpccookiefile: '.cookie',
-  enableIpc: true,
+  enableIpc: false,
   whitebind: '0.0.0.0:8333',
   bind: `0.0.0.0:${peerPort}`,
 

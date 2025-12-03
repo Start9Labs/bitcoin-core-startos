@@ -74,7 +74,7 @@ export const runtimeInfo = sdk.Action.withoutInput(
     ]
 
     const store = await storeJson.read().const(effects)
-    if (store?.enableIpc !== false) { // Default to true if not set
+    if (store?.enableIpc === true) { // Default to false if not set
       value.push(getIpcSocketPath())
     }
 

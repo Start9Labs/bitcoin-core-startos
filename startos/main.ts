@@ -50,7 +50,7 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
 
   // Add IPC binding if enabled
   const store = await storeJson.read().once()
-  const enableIpc = store?.enableIpc !== false // Default to true if not set
+  const enableIpc = store?.enableIpc === true // Default to false if not set
 
   // Use bitcoin-node for IPC support (in libexec), bitcoind otherwise
   const daemonBinary = enableIpc ? '/opt/bitcoin/libexec/bitcoin-node' : 'bitcoind'

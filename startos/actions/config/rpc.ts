@@ -52,7 +52,9 @@ const rpcSpec = sdk.InputSpec.of({
     name: 'Enable IPC',
     description:
       'Enable inter-process communication (IPC) via Unix socket. This allows other services to communicate with Bitcoin Core using a high-performance local socket connection. The socket path will be displayed in Runtime Information.',
-    default: true,
+    warning:
+      'IPC is an experimental feature. Only enable this if you know what you are doing with the IPC socket. An example use case would be Stratum v2 mining services.',
+    default: false,
   }),
 })
 
