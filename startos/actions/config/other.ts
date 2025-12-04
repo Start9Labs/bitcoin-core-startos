@@ -89,7 +89,8 @@ const configSpec = sdk.InputSpec.of({
       name: 'Pruning',
       description:
         'Set the maximum size of the blockchain you wish to store on disk. If your disk is larger than .9TB this value can be set to zero (0) to maintain a full archival node.',
-      warning: 'If your node is already pruned increasing this value will require re-syncing your node. Switching from a full archival node to pruned will disable txindex (if enabled)',
+      warning:
+        'If your node is already pruned increasing this value will require re-syncing your node. Switching from a full archival node to pruned will disable txindex (if enabled)',
       placeholder: 'Enter max blockchain size',
       required: disk.total < archivalMin,
       default: disk.total < archivalMin ? 550 : null,
@@ -101,7 +102,7 @@ const configSpec = sdk.InputSpec.of({
   dbcache: Value.number({
     name: 'Database Cache',
     description:
-      "How much RAM to allocate for caching the TXO set. Higher values improve syncing performance, but may result in some re-work in the event of an ungraceful shutdown. 4-7GB is high enough to get most of the peformance benefit during IBD. Consider reducing this setting for lower resource devices (or a device with less available RAM)",
+      'How much RAM to allocate for caching the TXO set. Higher values improve syncing performance, but may result in some re-work in the event of an ungraceful shutdown. 4-7GB is high enough to get most of the peformance benefit during IBD. Consider reducing this setting for lower resource devices (or a device with less available RAM)',
     required: false,
     default: dbcache,
     min: 0,
@@ -112,7 +113,7 @@ const configSpec = sdk.InputSpec.of({
   dbbatchsize: Value.number({
     name: 'Database Batch',
     description:
-      "Maximum database write batch size in bytes. Higher values will speed up the critical sections when the utxo set is written to disk from memory in big batches.",
+      'Maximum database write batch size in bytes. Higher values will speed up the critical sections when the utxo set is written to disk from memory in big batches.',
     required: false,
     default: dbbatchsize,
     min: 0,
@@ -148,13 +149,17 @@ const configSpec = sdk.InputSpec.of({
     warning:
       'This is ONLY for use with Bisq integration, please use Block Filters for all other applications.',
   }),
-  enableIpc: Value.toggle({
-    name: 'Enable IPC',
-    description:
-      'Enable inter-process communication (IPC) via Unix socket. This allows other services to communicate with Bitcoin Core using a high-performance local socket connection. The socket path will be displayed in Runtime Information.',
-    warning:
-      'IPC is an experimental feature. Only enable this if you know what you are doing with the IPC socket. An example use case would be Stratum v2 mining services.',
-    default: false,
+  enableIpc: Value.dynamicToggle(async ({ effects }) => {
+    let ipcEnabled = await storeJson.read((store) => store.enableIpc).once()
+    return {
+      name: 'Enable IPC',
+      description:
+        'Enable inter-process communication (IPC) via Unix socket. This allows other services to communicate with Bitcoin Core using a high-performance local socket connection. The socket path will be displayed in Runtime Information.',
+      warning: ipcEnabled
+        ? null
+        : 'IPC is an experimental feature. Only enable this if you know what you are doing with the IPC socket. An example use case would be Stratum v2 mining services.',
+      default: false,
+    }
   }),
 })
 
@@ -252,8 +257,10 @@ async function write(effects: T.Effects, input: ConfigSpec) {
 
   // Check if IPC setting changed (requires restart since it changes the binary)
   const currentStore = await storeJson.read().const(effects)
-  const currentEnableIpc = currentStore?.enableIpc !== undefined ? currentStore.enableIpc : enableIpc
-  const newEnableIpc = input.enableIpc !== undefined ? input.enableIpc : enableIpc
+  const currentEnableIpc =
+    currentStore?.enableIpc !== undefined ? currentStore.enableIpc : enableIpc
+  const newEnableIpc =
+    input.enableIpc !== undefined ? input.enableIpc : enableIpc
 
   // Store enableIpc separately in store.json
   await storeJson.merge(effects, {
