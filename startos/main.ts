@@ -14,12 +14,6 @@ export const mainMounts = sdk.Mounts.of()
     mountpoint: rootDir,
     readonly: false,
   })
-  .mountVolume({
-    volumeId: 'ipc',
-    subpath: null,
-    mountpoint: '/ipc',
-    readonly: false,
-  })
 
 export const main = sdk.setupMain(async ({ effects, started }) => {
   /**
