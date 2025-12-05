@@ -18,7 +18,6 @@ const {
   peerblockfilters,
   peerbloomfilters,
   blocknotify,
-  enableIpc,
 } = bitcoinConfDefaults
 
 const { InputSpec, Value } = sdk
@@ -220,7 +219,7 @@ async function read(effects: any): Promise<PartialConfigSpec> {
       peerblockfilters: bitcoinConf.peerblockfilters,
     },
     peerbloomfilters: bitcoinConf.peerbloomfilters,
-    enableIpc: store?.enableIpc !== undefined ? store.enableIpc : enableIpc,
+    enableIpc: store?.enableIpc !== undefined ? store.enableIpc : false,
   }
 }
 
@@ -258,9 +257,9 @@ async function write(effects: T.Effects, input: ConfigSpec) {
   // Check if IPC setting changed (requires restart since it changes the binary)
   const currentStore = await storeJson.read().const(effects)
   const currentEnableIpc =
-    currentStore?.enableIpc !== undefined ? currentStore.enableIpc : enableIpc
+    currentStore?.enableIpc !== undefined ? currentStore.enableIpc : false
   const newEnableIpc =
-    input.enableIpc !== undefined ? input.enableIpc : enableIpc
+    input.enableIpc !== undefined ? input.enableIpc : false
 
   // Store enableIpc separately in store.json
   await storeJson.merge(effects, {
