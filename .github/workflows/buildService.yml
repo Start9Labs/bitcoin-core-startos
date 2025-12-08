@@ -1,5 +1,4 @@
 name: Build Service
-
 on:
   workflow_dispatch:
   pull_request:
@@ -8,23 +7,21 @@ on:
   push:
     paths-ignore: ['*.md']
     branches: ['main', 'master', 'update/040']
-
 jobs:
   BuildPackage:
     runs-on: ubuntu-latest
     steps:
     - name: Prepare StartOS SDK
       uses: start9labs/sdk@v2
-
     - name: Checkout services repository
       uses: actions/checkout@v5
       with:
         submodules: recursive
-    - name: Use classic Docker builder
+    - name: Reset to classic Docker
       run: |
-        docker buildx rm -f buildx_buildkit_start9labs_sdk 2>/dev/null || true
-        docker buildx create --use --name default --driver docker --bootstrap
-        docker buildx inspect --bootstrap
+        docker buildx rm --all-inactive 2>/dev/null || true
+        docker context use default
+        docker buildx version
       shell: bash
     - name: Build the service package
       id: build
