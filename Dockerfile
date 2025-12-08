@@ -68,6 +68,7 @@ RUN apk --no-cache add \
   tini \
   yq \
   jq \
+  capnproto \
 RUN rm -rf /var/cache/apk/*
 
 ARG ARCH

@@ -7,6 +7,7 @@ export const shape = object({
   reindexChainstate: boolean,
   fullySynced: boolean,
   snapshotInUse: boolean,
+  enableIpc: boolean.optional(),
 })
 
 export const storeJson = FileHelper.json(

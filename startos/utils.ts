@@ -60,6 +60,8 @@ export type GetBlockchainInfo = {
   warnings: string
 }
 
+export const ipcSocketPath = `unix:${rootDir}/ipc/bitcoin-core.sock`
+
 export const bitcoinConfDefaults = {
   // RPC
   rpcbind: unprunedRpcbind,

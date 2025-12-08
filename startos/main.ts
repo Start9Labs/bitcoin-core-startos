@@ -1,18 +1,19 @@
 import { sdk } from './sdk'
 import { bitcoinConfFile } from './fileModels/bitcoin.conf'
-import { bitcoinConfDefaults, GetBlockchainInfo, rootDir } from './utils'
+import { bitcoinConfDefaults, GetBlockchainInfo, rootDir, ipcSocketPath } from './utils'
 import { configToml } from './fileModels/config.toml'
 import { rpcPort } from './utils'
 import { promises } from 'fs'
 import { storeJson } from './fileModels/store.json'
 import { access, rm } from 'fs/promises'
 
-export const mainMounts = sdk.Mounts.of().mountVolume({
-  volumeId: 'main',
-  subpath: null,
-  mountpoint: rootDir,
-  readonly: false,
-})
+export const mainMounts = sdk.Mounts.of()
+  .mountVolume({
+    volumeId: 'main',
+    subpath: null,
+    mountpoint: rootDir,
+    readonly: false,
+  })
 
 export const main = sdk.setupMain(async ({ effects, started }) => {
   /**
@@ -41,6 +42,18 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
     throw new Error('bticoin.conf not found')
   }
 
+  // Add IPC binding if enabled
+  const store = await storeJson.read().once()
+  const enableIpc = store?.enableIpc === true // Default to false if not set
+
+  // Use bitcoin-node for IPC support (in libexec), bitcoind otherwise
+  const daemonBinary = enableIpc ? '/opt/bitcoin/libexec/bitcoin-node' : 'bitcoind'
+
+  // Add IPC argument if enabled (bitcoin-node will create parent directories)
+  if (enableIpc) {
+    bitcoinArgs.push(`-ipcbind=${ipcSocketPath}`)
+  }
+
   const bitcoindSub = await sdk.SubContainer.of(
     effects,
     { imageId: 'bitcoind' },
@@ -60,7 +73,7 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
     .addDaemon('primary', {
       subcontainer: bitcoindSub,
       exec: {
-        command: ['bitcoind', ...bitcoinArgs],
+        command: [daemonBinary, ...bitcoinArgs],
         sigtermTimeout: 300_000,
       },
       ready: {

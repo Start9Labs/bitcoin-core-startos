@@ -1,8 +1,9 @@
 import { T } from '@start9labs/start-sdk'
 import { sdk } from '../sdk'
-import { GetBlockchainInfo, GetNetworkInfo, rootDir } from '../utils'
+import { GetBlockchainInfo, GetNetworkInfo, rootDir, ipcSocketPath } from '../utils'
 import { mainMounts } from '../main'
 import { bitcoinConfFile } from '../fileModels/bitcoin.conf'
+import { storeJson } from '../fileModels/store.json'
 import { rpcPort } from '../utils'
 
 export const runtimeInfo = sdk.Action.withoutInput(
@@ -70,8 +71,15 @@ export const runtimeInfo = sdk.Action.withoutInput(
     // return
     const value = [
       getConnections(networkInfoRaw),
-      getBlockchainInfo(blockchainInfoRaw),
     ]
+
+    const store = await storeJson.read().const(effects)
+    if (store?.enableIpc === true) { // Default to false if not set
+      value.push(getIpcSocketPath())
+    }
+
+    value.push(getBlockchainInfo(blockchainInfoRaw))
+
     if (blockchainInfoRaw.softforks) {
       value.push(getSoftforkInfo(blockchainInfoRaw))
     }
@@ -92,6 +100,18 @@ function getConnections(networkInfoRaw: GetNetworkInfo): T.ActionResultMember {
     description: 'The number of peers connected (inbound and outbound)',
     value: `${networkInfoRaw.connections} (${networkInfoRaw.connections_in} in / ${networkInfoRaw.connections_out} out)`,
     copyable: false,
+    masked: false,
+    qr: false,
+  }
+}
+
+function getIpcSocketPath(): T.ActionResultMember {
+  return {
+    type: 'single',
+    name: 'IPC Socket Path',
+    description: 'Unix socket path for IPC communication with Bitcoin Core. Other services can bind to this socket in their Docker configuration.',
+    value: ipcSocketPath,
+    copyable: true,
     masked: false,
     qr: false,
   }
