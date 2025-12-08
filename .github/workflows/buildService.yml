@@ -17,11 +17,22 @@ jobs:
       uses: actions/checkout@v5
       with:
         submodules: recursive
-    - name: Reset to classic Docker
+    - name: Debug Docker state
       run: |
-        docker buildx rm --all-inactive 2>/dev/null || true
+        echo "=== Docker contexts ==="
+        docker context ls
+        echo "=== Buildx builders ==="
+        docker buildx ls || echo "No buildx builders"
+        echo "=== Docker info ==="
+        docker info --format '{{.Driver}}'
+        echo "=== Buildx version ==="
+        docker buildx version || echo "buildx not active"
+      shell: bash
+    - name: Force classic Docker daemon
+      run: |
+        docker buildx ls | grep -v NAME | awk '{print $1}' | xargs -r docker buildx rm -f || true
         docker context use default
-        docker buildx version
+        docker run --rm alpine echo "Classic Docker works"
       shell: bash
     - name: Build the service package
       id: build
