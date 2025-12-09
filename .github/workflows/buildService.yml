@@ -1,4 +1,5 @@
-name: Build Service - Docker Action Test (Nov 28)
+name: Build Service
+
 on:
   workflow_dispatch:
   pull_request:
@@ -12,33 +13,26 @@ jobs:
   BuildPackage:
     runs-on: ubuntu-latest
     steps:
-    - name: Prepare StartOS SDK
-      uses: start9labs/sdk@v2
-      
-    # This is Nov 28, 2025 commit  
-    - name: Set up Docker Buildx (pinned to Nov 28)
-      uses: docker/setup-buildx-action@000d75d273dec231f74115df50b6ee04c9b25e55
-      with:
-        install: true
-        driver: docker
+      - name: Prepare StartOS SDK
+        uses: start9labs/sdk@v2
 
-    - name: Checkout services repository
-      uses: actions/checkout@v5
-      with:
-        submodules: recursive
+      - name: Checkout services repository
+        uses: actions/checkout@v5
+        with:
+          submodules: recursive
 
-    - name: Build the service package
-      id: build
-      run: |
-        start-cli init-key
-        RUST_LOG=debug RUST_BACKTRACE=1 make
-        PACKAGE_ID=$(start-cli s9pk inspect *.s9pk manifest | jq -r '.id')
-        echo "package_id=${PACKAGE_ID}" >> $GITHUB_ENV
-        printf "\n SHA256SUM: $(sha256sum ${PACKAGE_ID}.s9pk) \n"
-      shell: bash
+      - name: Build the service package
+        id: build
+        run: |
+          start-cli init-key
+          RUST_LOG=debug RUST_BACKTRACE=1 make
+          PACKAGE_ID=$(start-cli s9pk inspect *.s9pk manifest | jq -r '.id')
+          echo "package_id=${PACKAGE_ID}" >> $GITHUB_ENV
+          printf "\n SHA256SUM: $(sha256sum ${PACKAGE_ID}.s9pk) \n"
+        shell: bash
 
-    - name: Upload .s9pk
-      uses: actions/upload-artifact@v5
-      with:
-        name: ${{ env.package_id }}.s9pk
-        path: ./${{ env.package_id }}.s9pk
+      - name: Upload .s9pk
+        uses: actions/upload-artifact@v5
+        with:
+          name: ${{ env.package_id }}.s9pk
+          path: ./${{ env.package_id }}.s9pk
