@@ -148,9 +148,9 @@ const configSpec = sdk.InputSpec.of({
   }),
 })
 
-export const config = sdk.Action.withInput(
+export const otherConfig = sdk.Action.withInput(
   // id
-  'config',
+  'other-config',
 
   // metadata
   async ({ effects }) => ({
