@@ -162,9 +162,9 @@ const configSpec = sdk.InputSpec.of({
   }),
 })
 
-export const config = sdk.Action.withInput(
+export const otherConfig = sdk.Action.withInput(
   // id
-  'config',
+  'other-config',
 
   // metadata
   async ({ effects }) => ({
@@ -258,8 +258,7 @@ async function write(effects: T.Effects, input: ConfigSpec) {
   const currentStore = await storeJson.read().const(effects)
   const currentEnableIpc =
     currentStore?.enableIpc !== undefined ? currentStore.enableIpc : false
-  const newEnableIpc =
-    input.enableIpc !== undefined ? input.enableIpc : false
+  const newEnableIpc = input.enableIpc !== undefined ? input.enableIpc : false
 
   // Store enableIpc separately in store.json
   await storeJson.merge(effects, {

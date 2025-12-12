@@ -6,7 +6,7 @@ export const zmqPort = 28332
 export const peerPort = 18333
 export const rpcPort = 8332
 
-export const rootDir = '/.bitcoin'
+export const rootDir = '/root/.bitcoin'
 
 export const unprunedRpcbind = '0.0.0.0:8332'
 export const unprunedRpcallowIp = '0.0.0.0/0'

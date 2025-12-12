@@ -1,19 +1,22 @@
 import { sdk } from './sdk'
 import { bitcoinConfFile } from './fileModels/bitcoin.conf'
-import { bitcoinConfDefaults, GetBlockchainInfo, rootDir, ipcSocketPath } from './utils'
-import { configToml } from './fileModels/config.toml'
+import {
+  bitcoinConfDefaults,
+  GetBlockchainInfo,
+  rootDir,
+  ipcSocketPath,
+} from './utils'
 import { rpcPort } from './utils'
-import { promises } from 'fs'
 import { storeJson } from './fileModels/store.json'
-import { access, rm } from 'fs/promises'
+import { access, rm, writeFile } from 'fs/promises'
+import { TOML } from '@start9labs/start-sdk'
 
-export const mainMounts = sdk.Mounts.of()
-  .mountVolume({
-    volumeId: 'main',
-    subpath: null,
-    mountpoint: rootDir,
-    readonly: false,
-  })
+export const mainMounts = sdk.Mounts.of().mountVolume({
+  volumeId: 'main',
+  subpath: null,
+  mountpoint: rootDir,
+  readonly: false,
+})
 
 export const main = sdk.setupMain(async ({ effects, started }) => {
   /**
@@ -47,7 +50,9 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
   const enableIpc = store?.enableIpc === true // Default to false if not set
 
   // Use bitcoin-node for IPC support (in libexec), bitcoind otherwise
-  const daemonBinary = enableIpc ? '/opt/bitcoin/libexec/bitcoin-node' : 'bitcoind'
+  const daemonBinary = enableIpc
+    ? '/opt/bitcoin/libexec/bitcoin-node'
+    : 'bitcoind'
 
   // Add IPC argument if enabled (bitcoin-node will create parent directories)
   if (enableIpc) {
@@ -83,8 +88,6 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
             await access(`${bitcoindSub.rootfs}${rpcCookieFile}`)
             const res = await bitcoindSub.exec([
               'bitcoin-cli',
-              `-conf=${rootDir}/bitcoin.conf`,
-              `-rpccookiefile=${rpcCookieFile}`,
               `-rpcconnect=${conf.rpcbind}`,
               'getrpcinfo',
             ])
@@ -170,29 +173,32 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
     })
 
   if (conf.prune) {
-    await configToml.write(effects, {
-      bitcoind_address: '127.0.0.1',
-      bitcoind_port: 18332,
-      bind_address: '0.0.0.0',
-      bind_port: rpcPort,
-      cookie_file: `${rootDir}/${bitcoinConfDefaults.rpccookiefile}`,
-      tor_proxy: `${osIp}:9050`,
-      tor_only: conf.onlynet ? conf.onlynet.includes('onion') : false,
-      passthrough_rpcauth: `${rootDir}/bitcoin.conf`,
-      passthrough_rpccookie: `${rootDir}/${bitcoinConfDefaults.rpccookiefile}`,
-    })
+    const subcontainer = await sdk.SubContainer.of(
+      effects,
+      { imageId: 'proxy' },
+      mainMounts,
+      'proxy-sub',
+    )
 
-    await promises.chmod(configToml.path, 0o600)
+    await writeFile(
+      `${subcontainer.rootfs}/config.toml`,
+      TOML.stringify({
+        bitcoind_address: '127.0.0.1',
+        bitcoind_port: 18332,
+        bind_address: '0.0.0.0',
+        bind_port: rpcPort,
+        cookie_file: `${rootDir}/${bitcoinConfDefaults.rpccookiefile}`,
+        tor_proxy: `${osIp}:9050`,
+        tor_only: conf.onlynet ? conf.onlynet.includes('onion') : false,
+        passthrough_rpcauth: `${rootDir}/bitcoin.conf`,
+        passthrough_rpccookie: `${rootDir}/${bitcoinConfDefaults.rpccookiefile}`,
+      }),
+    )
 
     return daemons.addDaemon('proxy', {
-      subcontainer: await sdk.SubContainer.of(
-        effects,
-        { imageId: 'proxy' },
-        mainMounts,
-        'proxy-sub',
-      ),
+      subcontainer,
       exec: {
-        command: ['/usr/bin/btc_rpc_proxy', '--conf', `${rootDir}/config.toml`],
+        command: ['/usr/bin/btc_rpc_proxy', '--conf', `/config.toml`],
       },
       ready: {
         display: 'RPC Proxy',
