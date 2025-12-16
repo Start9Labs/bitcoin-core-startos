@@ -6,7 +6,7 @@
     "check": "tsc --noEmit"
   },
   "dependencies": {
-    "@start9labs/start-sdk": "^0.4.0-beta.44",
+    "@start9labs/start-sdk": "^0.4.0-beta.45",
     "@types/js-yaml": "^4.0.5",
     "diskusage": "^1.2.0",
     "js-yaml": "^4.1.0"

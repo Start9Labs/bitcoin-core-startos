@@ -24,7 +24,7 @@ export const setDefaults = sdk.setupOnInit(async (effects, kind) => {
     const peerInterface = await sdk.serviceInterface
       .getOwn(effects, peerInterfaceId)
       .once()
-    defaults.externalip = peerInterface?.addressInfo?.onionUrls[0]
+    defaults.externalip = peerInterface?.addressInfo?.onion.format()[0]
 
     await bitcoinConfFile.merge(effects, defaults)
   }
