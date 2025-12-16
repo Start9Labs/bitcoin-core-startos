@@ -6,7 +6,7 @@ import { peerInterfaceId } from '../utils'
 export const taskSetExternal = sdk.setupOnInit(async (effects, kind) => {
   const publicPeerUrls =
     (await sdk.serviceInterface.getOwn(effects, peerInterfaceId).const())
-      ?.addressInfo?.publicUrls || []
+      ?.addressInfo?.public.format() || []
 
   const externalIp = await bitcoinConfFile.read((b) => b.externalip).once()
 
