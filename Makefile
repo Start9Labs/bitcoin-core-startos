@@ -1,19 +1,9 @@
 PACKAGE_ID := $(shell awk -F"'" '/id:/ {print $$2}' startos/manifest.ts)
 INGREDIENTS := $(shell start-cli s9pk list-ingredients 2>/dev/null)
 
-CMD_ARCH_GOAL := $(filter aarch64 x86_64 arm x86, $(MAKECMDGOALS))
-ifeq ($(CMD_ARCH_GOAL),)
-  BUILD := universal
-  S9PK := $(PACKAGE_ID).s9pk
-else
-  RAW_ARCH := $(firstword $(CMD_ARCH_GOAL))
-  ACTUAL_ARCH := $(patsubst x86,x86_64,$(patsubst arm,aarch64,$(RAW_ARCH)))
-  BUILD := $(ACTUAL_ARCH)
-  S9PK := $(PACKAGE_ID)_$(BUILD).s9pk
-endif
-
-.PHONY: all aarch64 x86_64 arm x86 clean install check-deps check-init package ingredients
+.PHONY: all aarch64 x86_64 riscv64 arm arm64 x86 riscv arch/* clean install check-deps check-init package ingredients
 .DELETE_ON_ERROR:
+.SECONDARY:
 
 define SUMMARY
 	@manifest=$$(start-cli s9pk inspect $(1) manifest); \
@@ -37,30 +27,41 @@ define SUMMARY
 endef
 
 all: $(PACKAGE_ID).s9pk
-	$(call SUMMARY,$(S9PK))
+	$(call SUMMARY,$<)
 
-$(BUILD): $(PACKAGE_ID)_$(BUILD).s9pk
-	$(call SUMMARY,$(S9PK))
+arch/%: $(PACKAGE_ID)_%.s9pk
+	$(call SUMMARY,$<)
 
-x86: x86_64
-arm: aarch64
+x86 x86_64: arch/x86_64
+arm arm64 aarch64: arch/aarch64
+riscv riscv64: arch/riscv64
 
-$(S9PK): $(INGREDIENTS) .git/HEAD .git/index
+$(PACKAGE_ID).s9pk: $(INGREDIENTS) .git/HEAD .git/index
 	@$(MAKE) --no-print-directory ingredients
-	@echo "   Packing '$(S9PK)'..."
-	BUILD=$(BUILD) start-cli s9pk pack -o $(S9PK)
+	@echo "   Packing '$@'..."
+	start-cli s9pk pack -o $@
+
+$(PACKAGE_ID)_%.s9pk: $(INGREDIENTS) .git/HEAD .git/index
+	@$(MAKE) --no-print-directory ingredients
+	@echo "   Packing '$@'..."
+	start-cli s9pk pack --arch=$* -o $@
 
 ingredients: $(INGREDIENTS)
 	@echo "   Re-evaluating ingredients..."
 
-install: package | check-deps check-init
+install: | check-deps check-init
 	@HOST=$$(awk -F'/' '/^host:/ {print $$3}' ~/.startos/config.yaml); \
 	if [ -z "$$HOST" ]; then \
 		echo "Error: You must define \"host: http://server-name.local\" in ~/.startos/config.yaml"; \
 		exit 1; \
 	fi; \
-	echo "\n🚀 Installing to $$HOST ..."; \
-	start-cli package install -s $(S9PK)
+	S9PK=$$(ls -t *.s9pk 2>/dev/null | head -1); \
+	if [ -z "$$S9PK" ]; then \
+		echo "Error: No .s9pk file found. Run 'make' first."; \
+		exit 1; \
+	fi; \
+	printf "\n🚀 Installing %s to %s ...\n" "$$S9PK" "$$HOST"; \
+	start-cli package install -s "$$S9PK"
 
 check-deps:
 	@command -v start-cli >/dev/null || \
@@ -85,4 +86,3 @@ package-lock.json: package.json
 
 clean:
 	@echo "Cleaning up build artifacts..."
-	@rm -rf $(PACKAGE_ID).s9pk $(PACKAGE_ID)_x86_64.s9pk $(PACKAGE_ID)_aarch64.s9pk javascript node_modules
