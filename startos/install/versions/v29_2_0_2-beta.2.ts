@@ -6,11 +6,15 @@ import { sdk } from '../../sdk'
 import { mainMounts } from '../../main'
 const { whitebind, bind } = bitcoinConfDefaults
 
-export const v29_2_0_1 = VersionInfo.of({
-  version: '29.2:1-beta.0',
+export const v29_2_0_2 = VersionInfo.of({
+  version: '29.2:2-beta.2',
   releaseNotes: 'Revamped for StartOS 0.4.0',
   migrations: {
     up: async ({ effects }) => {
+      const store = await storeJson.read().once()
+
+      if (store) return
+
       await sdk.SubContainer.withTemp(
         effects,
         { imageId: 'bitcoind' },
@@ -20,16 +24,14 @@ export const v29_2_0_1 = VersionInfo.of({
           await subc.execFail(['chattr', '-R', '+C', '/.bitcoin'])
         },
       )
-      const store = await storeJson.read().once()
 
-      if (!store) {
-        await storeJson.write(effects, {
-          reindexBlockchain: false,
-          reindexChainstate: false,
-          fullySynced: false,
-          snapshotInUse: false,
-        })
-      }
+      await storeJson.write(effects, {
+        reindexBlockchain: false,
+        reindexChainstate: false,
+        fullySynced: false,
+        snapshotInUse: false,
+      })
+
       const existingConf = await bitcoinConfFile.read().once()
 
       if (existingConf) {
