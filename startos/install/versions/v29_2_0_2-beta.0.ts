@@ -11,6 +11,10 @@ export const v29_2_0_2 = VersionInfo.of({
   releaseNotes: 'Revamped for StartOS 0.4.0',
   migrations: {
     up: async ({ effects }) => {
+      const store = await storeJson.read().once()
+
+      if (store) return
+
       await sdk.SubContainer.withTemp(
         effects,
         { imageId: 'bitcoind' },
@@ -20,16 +24,14 @@ export const v29_2_0_2 = VersionInfo.of({
           await subc.execFail(['chattr', '-R', '+C', '/.bitcoin'])
         },
       )
-      const store = await storeJson.read().once()
 
-      if (!store) {
-        await storeJson.write(effects, {
-          reindexBlockchain: false,
-          reindexChainstate: false,
-          fullySynced: false,
-          snapshotInUse: false,
-        })
-      }
+      await storeJson.write(effects, {
+        reindexBlockchain: false,
+        reindexChainstate: false,
+        fullySynced: false,
+        snapshotInUse: false,
+      })
+
       const existingConf = await bitcoinConfFile.read().once()
 
       if (existingConf) {
