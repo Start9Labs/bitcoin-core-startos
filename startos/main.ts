@@ -102,8 +102,6 @@ export const main = sdk.setupMain(async ({ effects }) => {
         fn: async () => {
           const res = await bitcoindSub.exec([
             'bitcoin-cli',
-            `-conf=${rootDir}/bitcoin.conf`,
-            `-rpccookiefile=${rootDir}/${bitcoinConfDefaults.rpccookiefile}`,
             `-rpcconnect=${conf.rpcbind}`,
             'getblockchaininfo',
           ])
