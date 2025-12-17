@@ -1,5 +1,5 @@
 # Build stage for Bitcoin Core
-FROM alpine:3.21 AS bitcoin-core
+FROM alpine:3.22 AS bitcoin-core
 
 RUN sed -i 's/http\:\/\/dl-cdn.alpinelinux.org/https\:\/\/alpine.global.ssl.fastly.net/g' /etc/apk/repositories
 RUN apk --no-cache add \
@@ -28,35 +28,27 @@ ENV BITCOIN_PREFIX=/opt/bitcoin
 
 WORKDIR /bitcoin
 
-RUN make -C depends NO_BOOST=1 NO_LIBEVENT=1 NO_QT=1 NO_SQLITE=1 NO_UPNP=1 NO_ZMQ=1 NO_USDT=1
-
-RUN cmake -B build -DCMAKE_LD_FLAGS=-L`ls -d /opt/db*`/lib/ -DCMAKE_CPP_FLAGS=-I`ls -d /opt/db*`/include/ \
-  # If building on Mac make sure to increase Docker VM memory, or uncomment this line. See https://github.com/bitcoin/bitcoin/issues/6658 for more info.
-  # CXXFLAGS="--param ggc-min-expand=1 --param ggc-min-heapsize=32768" \
-  -DENABLE_IPC=ON \
-  -DCMAKE_CXX_FLAGS="-O2" \
-  -DCMAKE_CXX=clang++ CC=clang \
+RUN cmake -B build \
+  -DCMAKE_CXX_FLAGS_RELWITHDEBINFO="-O2 -g0" \
+  -DCMAKE_CXX_COMPILER=clang++ \
+  -DCMAKE_C_COMPILER=clang \
   -DCMAKE_INSTALL_PREFIX=${BITCOIN_PREFIX} \
   -DINSTALL_MAN=OFF \
   -DBUILD_TESTS=OFF \
   -DBUILD_BENCH=OFF \
-  -DWITH_CCACHE=OFF \
   -DBUILD_GUI=OFF \
-  #--with-utils \
   -DBUILD_CLI=ON \
-  -DBUILD_BITCOINCONSENSUS_LIB=ON \
-  -DWITH_SQLITE=ON \
   -DBUILD_DAEMON=ON \
-  -DENABLE_HARDENING=ON \
+  -DENABLE_IPC=ON \
   -DREDUCE_EXPORTS=ON \
+  -DWITH_CCACHE=OFF \
   -DWITH_ZMQ=ON
 RUN cmake --build build -j$(nproc)
 RUN cmake --install build
 RUN strip ${BITCOIN_PREFIX}/bin/*
 
 # Build stage for compiled artifacts
-FROM alpine:3.21
-
+FROM alpine:3.22
 
 RUN sed -i 's/http\:\/\/dl-cdn.alpinelinux.org/https\:\/\/alpine.global.ssl.fastly.net/g' /etc/apk/repositories
 RUN apk --no-cache add \
@@ -68,8 +60,7 @@ RUN apk --no-cache add \
   tini \
   yq \
   jq \
-  capnproto \
-RUN rm -rf /var/cache/apk/*
+  capnproto
 
 ARG ARCH
 
