@@ -8,6 +8,7 @@ import { deletePeers } from './deletePeers'
 import { deleteRpcAuth } from './deleteRpcAuth'
 import { deleteTxIndex } from './deleteTxIndex'
 import { generateRpcUser } from './generateRpcUser'
+import { generateRpcUserDependent } from './generateRpcUserDependent'
 import { otherConfig } from './config/other'
 import { reindexBlockchain } from './reindexBlockchain'
 import { reindexChainstate } from './reindexChainstate'
@@ -23,6 +24,7 @@ export const actions = sdk.Actions.of()
   .addAction(deleteRpcAuth)
   .addAction(deleteTxIndex)
   .addAction(generateRpcUser)
+  .addAction(generateRpcUserDependent)
   .addAction(otherConfig)
   .addAction(reindexBlockchain)
   .addAction(reindexChainstate)
