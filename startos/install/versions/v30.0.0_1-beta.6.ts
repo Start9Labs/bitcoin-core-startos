@@ -5,8 +5,8 @@ import { bitcoinConfDefaults } from '../../utils'
 const { whitebind, bind } = bitcoinConfDefaults
 
 export const v30_0_0_1 = VersionInfo.of({
-  version: '30.0.0:1-beta.5',
-  releaseNotes: 'Revamped for StartOS 0.4.0. Added IPC socket binding support for inter-process communication.',
+  version: '30.0.0:1-beta.6',
+  releaseNotes: 'Revamped for StartOS 0.4.0.',
   migrations: {
     up: async ({ effects }) => {
       const store = await storeJson.read().once()
