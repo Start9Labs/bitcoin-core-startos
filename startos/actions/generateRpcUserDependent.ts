@@ -26,6 +26,7 @@ export const inputSpec = InputSpec.of({
       disabled: 'Cannot edit dependent specified password',
       required: true,
       default: null,
+      masked: true,
       patterns: [
         {
           regex: '^[A-Za-z0-9_-]+$',
@@ -42,7 +43,7 @@ export const generateRpcUserDependent = sdk.Action.withInput(
 
   // metadata
   async ({ effects }) => ({
-    name: 'Generate RPC Dependent Credentials',
+    name: 'Create RPC Credentials',
     description:
       'Generate RPC Credentials using the provided username and password for a dependent service running locally',
     warning: null,

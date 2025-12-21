@@ -24,7 +24,8 @@ jobs:
       - name: Build the service package
         id: build
         run: |
-          start-cli init-key
+          mkdir -p ~/.startos
+          printf '%s' "${{ secrets.DEV_KEY }}" > ~/.startos/developer.key.pem
           RUST_LOG=debug RUST_BACKTRACE=1 make
           PACKAGE_ID=$(start-cli s9pk inspect *.s9pk manifest | jq -r '.id')
           echo "package_id=${PACKAGE_ID}" >> $GITHUB_ENV
