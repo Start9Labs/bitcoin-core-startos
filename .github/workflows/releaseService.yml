@@ -8,9 +8,9 @@ on:
 jobs:
   release:
     uses: start9labs/shared-workflows/.github/workflows/releaseService.yml@master
-    # with:
-    #   REGISTRY: https://my-custom-registry.example.com
+    with:
+      REGISTRY: ${{ vars.REGISTRY }} # Optional. Defaults to https://alpha-registry-x.start9.com
     secrets:
-      DEV_KEY: ${{ secrets.DEV_KEY }}
+      DEV_KEY: ${{ secrets.DEV_KEY }} # Required
     permissions:
       contents: write
