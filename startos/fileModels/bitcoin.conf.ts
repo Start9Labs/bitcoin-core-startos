@@ -83,6 +83,7 @@ export const shape = object({
   datacarrier: boolean.onMismatch(datacarrier),
   datacarriersize: natural.onMismatch(datacarriersize),
   permitbaremultisig: boolean.onMismatch(permitbaremultisig),
+  mempoolfullrbf: matches.literal(undefined).optional().onMismatch(undefined),
 
   // Peers
   listen: matches.literal(listen).onMismatch(listen),

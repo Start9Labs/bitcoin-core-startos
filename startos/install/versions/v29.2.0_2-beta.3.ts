@@ -41,6 +41,7 @@ export const v29_2_0_2 = VersionInfo.of({
           bind,
           whitebind,
           whitelist: undefined,
+          mempoolfullrbf: undefined,
         })
         return
       } // Only write conf defaults if no existing bitcoin.conf found
