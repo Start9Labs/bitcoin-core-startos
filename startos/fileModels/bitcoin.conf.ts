@@ -37,7 +37,6 @@ const {
   persistmempool,
   maxmempool,
   mempoolexpiry,
-  mempoolfullrbf,
   permitbaremultisig,
   datacarrier,
   datacarriersize,
@@ -79,7 +78,6 @@ export const shape = object({
   deprecatedrpc: matches.literal('create_bdb').onMismatch('create_bdb'), // necessary for creating bdb wallets i.e. jam
 
   // Mempool
-  mempoolfullrbf: boolean.onMismatch(mempoolfullrbf),
   persistmempool: boolean.optional().onMismatch(persistmempool),
   maxmempool: natural.optional().onMismatch(maxmempool),
   mempoolexpiry: natural.onMismatch(mempoolexpiry),

@@ -1,5 +1,5 @@
 import { T } from '@start9labs/start-sdk'
-import { bitcoinConfFile, shape } from '../../fileModels/bitcoin.conf'
+import { bitcoinConfFile } from '../../fileModels/bitcoin.conf'
 import { sdk } from '../../sdk'
 import { bitcoinConfDefaults } from '../../utils'
 
@@ -7,7 +7,6 @@ const {
   persistmempool,
   maxmempool,
   mempoolexpiry,
-  mempoolfullrbf,
   permitbaremultisig,
   datacarrier,
   datacarriersize,
@@ -41,12 +40,6 @@ const mempoolSpec = sdk.InputSpec.of({
     integer: true,
     units: 'Hr',
     placeholder: mempoolexpiry.toString(),
-  }),
-  mempoolfullrbf: Value.toggle({
-    name: 'Enable Full RBF',
-    default: mempoolfullrbf,
-    description:
-      'Policy for your node to use for relaying and mining unconfirmed transactions.  For details, see https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-24.0.1.md#notice-of-new-option-for-transaction-replacement-policies',
   }),
   permitbaremultisig: Value.toggle({
     name: 'Permit Bare Multisig',
@@ -103,7 +96,6 @@ async function read(effects: any): Promise<PartialMempoolSpec> {
     maxmempool: bitcoinConf.maxmempool,
     mempoolexpiry: bitcoinConf.mempoolexpiry,
     datacarriersize: bitcoinConf.datacarriersize,
-    mempoolfullrbf: bitcoinConf.mempoolfullrbf,
     persistmempool: bitcoinConf.persistmempool,
     datacarrier: bitcoinConf.datacarrier,
     permitbaremultisig: bitcoinConf.permitbaremultisig,
@@ -113,7 +105,6 @@ async function read(effects: any): Promise<PartialMempoolSpec> {
 
 async function write(effects: T.Effects, input: MempoolSpec) {
   const mempoolSettings = {
-    mempoolfullrbf: input.mempoolfullrbf,
     persistmempool: input.persistmempool,
     datacarrier: input.datacarrier,
     permitbaremultisig: input.permitbaremultisig,
