@@ -207,13 +207,6 @@ export const getConfig: T.ExpectedExports.getConfig = async (effects) => {
               units: "Hr",
               default: 336,
             },
-            mempoolfullrbf: {
-              name: "Enable Full RBF",
-              description:
-                "Policy for your node to use for relaying and mining unconfirmed transactions.  For details, see https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-24.0.1.md#notice-of-new-option-for-transaction-replacement-policies",
-              type: "boolean",
-              default: true,
-            },
             permitbaremultisig: {
               type: "boolean",
               name: "Permit Bare Multisig",

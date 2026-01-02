@@ -23,12 +23,6 @@ rpcthreads={{rpc.advanced.threads}}
 rpcworkqueue={{rpc.advanced.workqueue}}
 
 ## MEMPOOL
-{{#IF advanced.mempool.mempoolfullrbf
-mempoolfullrbf=1
-}}
-{{#IF !advanced.mempool.mempoolfullrbf
-mempoolfullrbf=0
-}}
 {{#IF advanced.mempool.persistmempool
 persistmempool=1
 }}
