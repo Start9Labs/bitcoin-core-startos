@@ -1,53 +1,67 @@
-# Build stage for Bitcoin Core
-FROM alpine:3.22 AS bitcoin-core
+# Sysroot stage - runs on target platform to get native libraries
+FROM alpine:3.22 AS sysroot
+
+RUN sed -i 's/http\:\/\/dl-cdn.alpinelinux.org/https\:\/\/alpine.global.ssl.fastly.net/g' /etc/apk/repositories
+RUN apk --no-cache add \
+        musl-dev \
+        gcc \
+        g++ \
+        libstdc++-dev \
+        clang \
+        compiler-rt \
+        boost-dev \
+        libevent-dev \
+        sqlite-dev \
+        libsodium-dev \
+        zeromq-dev \
+        capnproto-dev \
+        linux-headers && \
+    # Remove ZeroMQ cmake config - it has hardcoded absolute paths that break cross-compilation
+    rm -rf /usr/lib/cmake/ZeroMQ
+
+# Build stage for Bitcoin Core - runs on build platform
+FROM --platform=$BUILDPLATFORM alpine:3.22 AS builder
+
+ARG TARGETARCH
 
 RUN sed -i 's/http\:\/\/dl-cdn.alpinelinux.org/https\:\/\/alpine.global.ssl.fastly.net/g' /etc/apk/repositories
 RUN apk --no-cache add \
         cmake \
         automake \
-        boost-dev \
         build-base \
         clang \
+        lld \
+        llvm \
         chrpath \
         file \
         gnupg \
-        libevent-dev \
         libressl \
         libtool \
         linux-headers \
-        sqlite-dev \
-        zeromq-dev \
         bash \
         curl \
-        capnproto-dev \
-        capnproto
+        pkgconf \
+        capnproto-dev
 
 ADD ./bitcoin /bitcoin
+
+# Build mpgen for native host
+RUN cmake -B /bitcoin/src/ipc/libmultiprocess/build-native \
+        -S /bitcoin/src/ipc/libmultiprocess \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DBUILD_TESTING=OFF && \
+    cmake --build /bitcoin/src/ipc/libmultiprocess/build-native --target mpgen -j$(nproc)
+
+COPY build.sh /build.sh
 
 ENV BITCOIN_PREFIX=/opt/bitcoin
 
 WORKDIR /bitcoin
 
-RUN cmake -B build \
-  -DCMAKE_CXX_FLAGS_RELWITHDEBINFO="-O2 -g0" \
-  -DCMAKE_CXX_COMPILER=clang++ \
-  -DCMAKE_C_COMPILER=clang \
-  -DCMAKE_INSTALL_PREFIX=${BITCOIN_PREFIX} \
-  -DINSTALL_MAN=OFF \
-  -DBUILD_TESTS=OFF \
-  -DBUILD_BENCH=OFF \
-  -DBUILD_GUI=OFF \
-  -DBUILD_CLI=ON \
-  -DBUILD_DAEMON=ON \
-  -DENABLE_IPC=ON \
-  -DREDUCE_EXPORTS=ON \
-  -DWITH_CCACHE=OFF \
-  -DWITH_ZMQ=ON
-RUN cmake --build build -j$(nproc)
-RUN cmake --install build
-RUN strip ${BITCOIN_PREFIX}/bin/*
+RUN --mount=type=bind,from=sysroot,source=/,target=/sysroot,ro \
+    /build.sh
 
-# Build stage for compiled artifacts
+# Runtime stage
 FROM alpine:3.22
 
 RUN sed -i 's/http\:\/\/dl-cdn.alpinelinux.org/https\:\/\/alpine.global.ssl.fastly.net/g' /etc/apk/repositories
@@ -55,6 +69,7 @@ RUN apk --no-cache add \
   bash \
   curl \
   libevent \
+  libsodium \
   libzmq \
   sqlite-dev \
   tini \
@@ -68,6 +83,6 @@ ENV BITCOIN_DATA=/root/.bitcoin
 ENV BITCOIN_PREFIX=/opt/bitcoin
 ENV PATH=${BITCOIN_PREFIX}/bin:$PATH
 
-COPY --from=bitcoin-core /opt /opt
+COPY --from=builder /opt /opt
 
 EXPOSE 8332 8333
