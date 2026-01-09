@@ -89,6 +89,8 @@ export const bitcoinConfDefaults = {
   v2transport: true,
   connect: undefined,
   addnode: undefined,
+  i2psam: undefined,
+  i2pacceptincoming: true,
 
   // Wallet
   disablewallet: false,

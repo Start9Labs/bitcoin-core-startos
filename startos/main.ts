@@ -10,6 +10,7 @@ import { rpcPort } from './utils'
 import { storeJson } from './fileModels/store.json'
 import { access, rm, writeFile } from 'fs/promises'
 import { TOML } from '@start9labs/start-sdk'
+import { i2pdConfFile } from './fileModels/i2pd.conf'
 
 export const mainMounts = sdk.Mounts.of().mountVolume({
   volumeId: 'main',
@@ -74,7 +75,48 @@ export const main = sdk.setupMain(async ({ effects }) => {
 
   await rm(`${bitcoindSub.rootfs}/${rpcCookieFile}`, { force: true, recursive: true })
 
+  const i2pSubcontainer = conf.i2psam
+    ? await sdk.SubContainer.of(
+        effects,
+        { imageId: 'i2pd' },
+        sdk.Mounts.of().mountVolume({
+          volumeId: 'i2pd',
+          mountpoint: '/home/i2pd',
+          subpath: null,
+          readonly: false,
+          type: 'directory',
+        }),
+        'i2pd-sub',
+      )
+    : null
+
+  if (conf.i2psam) {
+    // Ensure i2pd config is present with default values, then watch for changes
+    await i2pdConfFile.merge(effects, {})
+    await i2pdConfFile.read().const(effects)
+  }
+
   const daemons = sdk.Daemons.of(effects)
+    .addDaemon('i2pd', () =>
+      conf.i2psam
+        ? {
+            subcontainer: i2pSubcontainer,
+            exec: {
+              command: ['sh', '-c', 'ulimit -n 4096; /entrypoint.sh'],
+              user: 'root',
+            },
+            ready: {
+              display: 'I2P Proxy',
+              fn: () =>
+                sdk.healthCheck.checkPortListening(effects, 7656, {
+                  successMessage: 'I2P Proxy is ready',
+                  errorMessage: 'I2P Proxy is not ready',
+                }),
+            },
+            requires: [],
+          }
+        : null,
+    )
     .addDaemon('primary', {
       subcontainer: bitcoindSub,
       exec: {
@@ -109,7 +151,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
           }
         },
       },
-      requires: [],
+      requires: conf.i2psam ? ['i2pd'] : [],
     })
     .addHealthCheck('sync-progress', {
       ready: {
