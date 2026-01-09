@@ -1,7 +1,11 @@
 import { T } from '@start9labs/start-sdk'
 import { bitcoinConfFile, shape } from '../../fileModels/bitcoin.conf'
 import { sdk } from '../../sdk'
-import { bitcoinConfDefaults, getExteralAddresses } from '../../utils'
+import {
+  bitcoinConfDefaults,
+  embeddedI2PSamAddress,
+  getExteralAddresses,
+} from '../../utils'
 import { i2pdConfDefaults, i2pdConfFile } from '../../fileModels/i2pd.conf'
 
 const { onlynet, v2transport, externalip, addnode, connect } =
@@ -31,80 +35,119 @@ const peerSpec = sdk.InputSpec.of({
       'Enable or disable the use of BIP324 V2 P2P transport protocol.',
   }),
   externalip: getExteralAddresses(),
-  i2p: Value.toggle({
-    name: 'Enable I2P',
-    default: false,
-    description: 'Enable or disable I2P networking support.',
-  }),
-  i2psettings: Value.object(
-    {
-      name: 'I2P Advanced Settings',
-      description: 'Configure I2P related settings.',      
-    },
-    sdk.InputSpec.of({
-      i2pacceptincoming: Value.toggle({
-        name: 'Accept Incoming I2P Connections',
-        default: true,
-        description: 'Accept inbound I2P connections.',
-      }),
-      loglevel: Value.select({
-        name: 'Log Level',
-        description: 'Set the logging level for the I2P router.',
-        values: {
-          none: 'none',
-          critical: 'critical (default)',
-          error: 'error',
-          warn: 'warning',
-          info: 'info',
-          debug: 'debug',
-        },
-        default: 'critical',
-      }),
-      bandwidth: Value.select({
-        name: 'Bandwidth',
-        description: 'Bandwidth configuration for I2P router.',
-        values: {
-          L: '32 KB/sec (L, default)',
-          O: '256 KB/sec (O)',
-          P: '2048 KB/sec (P)',
-        },
-        default: 'L',
-      }),
-      share: Value.number({
-        name: 'Share (%)',
-        description:
-          'Max % of bandwidth limit for transit. 0-100 (default: 100)',
-        min: 0,
-        max: 100,
-        default: 100,
-        integer: true,
-        required: true,
-        units: '%',
-      }),
-      notransit: Value.toggle({
-        name: 'Disable Transit',
-        default: false,
-        description:
-          'Router will not accept transit tunnels, disabling transit traffic completely.',
-      }),
-      floodfill: Value.toggle({
-        name: 'Floodfill mode',
-        default: false,
-        description:
-          'Router will participate in the distributed network database as a floodfill peer.',
-        warning: 'Note: this mode uses much more network connections and CPU!',
-      }),
-      transittunnels: Value.number({
-        name: 'Transit Tunnels Limit',
-        description:
-          'Maximum active transit sessions (default: 10000). This value is doubled if floodfill mode is enabled!',
-        default: 10000,
-        min: 0,
-        integer: true,
-        required: true,
-      }),
+  i2psam: Value.union({
+    name: 'I2P SAM Proxy',
+    description: 'Select how to connect to the I2P network.',
+    default: 'none',
+    variants: Variants.of({
+      none: {
+        name: 'Disable I2P',
+        spec: InputSpec.of({}),
+      },
+      embedded: {
+        name: 'Embedded I2P Daemon (i2pd)',
+        spec: sdk.InputSpec.of({
+          i2pacceptincoming: Value.toggle({
+            name: 'Accept Incoming I2P Connections',
+            default: true,
+            description:
+              'Accept inbound I2P connections (effective only when I2P is enabled).',
+          }),
+          advanced: Value.object(
+            {
+              name: 'Advanced I2P Daemon Settings',
+              description:
+                'Configure advanced settings for the embedded I2P daemon.',
+            },
+            sdk.InputSpec.of({
+              loglevel: Value.select({
+                name: 'Log Level',
+                description: 'Set the logging level for the I2P router.',
+                values: {
+                  none: 'none',
+                  critical: 'critical (default)',
+                  error: 'error',
+                  warn: 'warning',
+                  info: 'info',
+                  debug: 'debug',
+                },
+                default: 'critical',
+              }),
+              bandwidth: Value.select({
+                name: 'Bandwidth',
+                description: 'Bandwidth configuration for I2P router.',
+                values: {
+                  L: '32 KB/sec (L, default)',
+                  O: '256 KB/sec (O)',
+                  P: '2048 KB/sec (P)',
+                },
+                default: 'L',
+              }),
+              share: Value.number({
+                name: 'Share (%)',
+                description:
+                  'Max % of bandwidth limit for transit. 0-100 (default: 100)',
+                min: 0,
+                max: 100,
+                default: 100,
+                integer: true,
+                required: true,
+                units: '%',
+              }),
+              notransit: Value.toggle({
+                name: 'Disable Transit',
+                default: false,
+                description:
+                  'Router will not accept transit tunnels, disabling transit traffic completely.',
+              }),
+              floodfill: Value.toggle({
+                name: 'Floodfill mode',
+                default: false,
+                description:
+                  'Router will participate in the distributed network database as a floodfill peer.',
+                warning:
+                  'Note: this mode uses much more network connections and CPU!',
+              }),
+              transittunnels: Value.number({
+                name: 'Transit Tunnels Limit',
+                description:
+                  'Maximum active transit sessions (default: 10000). This value is doubled if floodfill mode is enabled!',
+                default: 10000,
+                min: 0,
+                integer: true,
+                required: true,
+              }),
+            }),
+          ),
+        }),
+      },
+      custom: {
+        name: 'Custom I2P SAM Address',
+        spec: sdk.InputSpec.of({
+          i2pacceptincoming: Value.toggle({
+            name: 'Accept Incoming I2P Connections',
+            default: true,
+            description:
+              'Accept inbound I2P connections (effective only when I2P is enabled).',
+          }),
+          address: Value.text({
+            name: 'I2P SAM Address',
+            description:
+              'IP Address and port of an external I2P daemon SAM bridge (e.g., 192.168.1.1:7656)',
+            default: '',
+            required: true,
+            patterns: [
+              {
+                description:
+                  'A valid IP address and port number (e.g., 192.168.1.1:7656)',
+                regex: '^[^:\s]+:\d{1,5}$',
+              },
+            ],
+          }),
+        }),
+      },
     }),
-  ),
+  }),
   connectpeer: Value.union({
     name: 'Connect Peer',
     default: 'addnode',
@@ -202,16 +245,37 @@ async function read(effects: any): Promise<PartialPeerSpec> {
               x !== undefined && (validNets as readonly string[]).includes(x),
           )
       : onlynet,
-    i2p: bitcoinConf.i2psam !== undefined,
-    i2psettings: {
-      i2pacceptincoming: bitcoinConf.i2pacceptincoming,
-      loglevel: i2pdConf.loglevel as 'none' | 'critical' | 'error' | 'warn' | 'info' | 'debug',
-      bandwidth: i2pdConf.bandwidth as 'L' | 'O' | 'P',
-      share: i2pdConf.share,
-      notransit: i2pdConf.notransit,
-      floodfill: i2pdConf.floodfill,
-      transittunnels: i2pdConf.limits.transittunnels,
-    },
+    i2psam:
+      bitcoinConf.i2psam === undefined
+        ? { selection: 'none', value: {} }
+        : bitcoinConf.i2psam === embeddedI2PSamAddress
+          ? {
+              selection: 'embedded',
+              value: {
+                i2pacceptincoming: bitcoinConf.i2pacceptincoming,
+                advanced: {
+                  loglevel: i2pdConf.loglevel as
+                    | 'none'
+                    | 'critical'
+                    | 'error'
+                    | 'warn'
+                    | 'info'
+                    | 'debug',
+                  bandwidth: i2pdConf.bandwidth as 'L' | 'O' | 'P',
+                  share: i2pdConf.share,
+                  notransit: i2pdConf.notransit,
+                  floodfill: i2pdConf.floodfill,
+                  transittunnels: i2pdConf.limits.transittunnels,
+                },
+              },
+            }
+          : {
+              selection: 'custom',
+              value: {
+                i2pacceptincoming: bitcoinConf.i2pacceptincoming,
+                address: bitcoinConf.i2psam,
+              },
+            },
     v2transport: bitcoinConf.v2transport,
     externalip:
       bitcoinConf.externalip === undefined ? 'none' : bitcoinConf.externalip,
@@ -235,8 +299,17 @@ async function read(effects: any): Promise<PartialPeerSpec> {
 
 async function write(effects: T.Effects, input: peerSpec) {
   const peerSettings = {
-    i2psam: input.i2p ? '127.0.0.1:7656' : undefined,
-    i2pacceptincoming: input.i2psettings.i2pacceptincoming,
+    i2psam:
+      input.i2psam.selection === 'embedded'
+        ? embeddedI2PSamAddress
+        : input.i2psam.selection === 'custom'
+          ? input.i2psam.value.address
+          : undefined,
+    i2pacceptincoming:
+      input.i2psam.selection === 'embedded' ||
+      input.i2psam.selection === 'custom'
+        ? input.i2psam.value.i2pacceptincoming
+        : true,
     v2transport: input.v2transport,
     onlynet: input.onlynet.length > 0 ? input.onlynet : onlynet,
     externalip: input.externalip !== 'none' ? input.externalip : externalip,
@@ -252,16 +325,18 @@ async function write(effects: T.Effects, input: peerSpec) {
 
   await bitcoinConfFile.merge(effects, peerSettings)
 
-  await i2pdConfFile.merge(effects, {
-    loglevel: input.i2psettings.loglevel,
-    bandwidth: input.i2psettings.bandwidth,
-    share: input.i2psettings.share,
-    notransit: input.i2psettings.notransit,
-    floodfill: input.i2psettings.floodfill,
-    limits: {
-      transittunnels: input.i2psettings.transittunnels,
-    },
-  })
+  if (input.i2psam.selection === 'embedded') {
+    await i2pdConfFile.merge(effects, {
+      loglevel: input.i2psam.value.advanced.loglevel,
+      bandwidth: input.i2psam.value.advanced.bandwidth,
+      share: input.i2psam.value.advanced.share,
+      notransit: input.i2psam.value.advanced.notransit,
+      floodfill: input.i2psam.value.advanced.floodfill,
+      limits: {
+        transittunnels: input.i2psam.value.advanced.transittunnels,
+      },
+    })
+  }
 }
 
 type peerSpec = typeof peerSpec._TYPE

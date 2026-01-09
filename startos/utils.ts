@@ -14,6 +14,8 @@ export const unprunedRpcallowIp = '0.0.0.0/0'
 export const prunedRpcbind = '127.0.0.1:18332'
 export const prunedRpcallowip = '127.0.0.1/32'
 
+export const embeddedI2PSamAddress = '127.0.0.1:7656'
+
 export type GetNetworkInfo = {
   connections: number
   connections_in: number
