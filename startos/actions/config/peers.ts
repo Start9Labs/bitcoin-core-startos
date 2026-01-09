@@ -7,6 +7,7 @@ import {
   getExteralAddresses,
 } from '../../utils'
 import { i2pdConfDefaults, i2pdConfFile } from '../../fileModels/i2pd.conf'
+import { ipv4 } from '@start9labs/start-sdk/base/lib/util/regexes'
 
 const { onlynet, v2transport, externalip, addnode, connect } =
   bitcoinConfDefaults
@@ -146,7 +147,7 @@ const peerSpec = sdk.InputSpec.of({
               {
                 description:
                   'A valid IP address and port number (e.g., 192.168.1.1:7656)',
-                regex: '^[^:\s]+:\d{1,5}$',
+                regex: `^${ipv4.regex.source}:[0-9]{1,5}$`,
               },
             ],
           }),
