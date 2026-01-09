@@ -73,6 +73,12 @@ const peerSpec = sdk.InputSpec.of({
                 },
                 default: 'critical',
               }),
+              enablewebconsole: Value.toggle({
+                name: 'Enable Web Console',
+                default: false,
+                description:
+                  'Enable the web console for the embedded I2P daemon.',
+              }),
               bandwidth: Value.select({
                 name: 'Bandwidth',
                 description: 'Bandwidth configuration for I2P router.',
@@ -261,6 +267,7 @@ async function read(effects: any): Promise<PartialPeerSpec> {
                     | 'warn'
                     | 'info'
                     | 'debug',
+                  enablewebconsole: i2pdConf.http.enabled,
                   bandwidth: i2pdConf.bandwidth as 'L' | 'O' | 'P',
                   share: i2pdConf.share,
                   notransit: i2pdConf.notransit,
@@ -332,6 +339,9 @@ async function write(effects: T.Effects, input: peerSpec) {
       share: input.i2psam.value.advanced.share,
       notransit: input.i2psam.value.advanced.notransit,
       floodfill: input.i2psam.value.advanced.floodfill,
+      http: {
+        enabled: input.i2psam.value.advanced.enablewebconsole,
+      },
       limits: {
         transittunnels: input.i2psam.value.advanced.transittunnels,
       },

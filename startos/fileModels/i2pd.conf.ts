@@ -7,6 +7,7 @@ const number = string.map((a) => Number(a)).orParser(matches.number)
 export const i2pdConfDefaults = {
   log: 'stdout' as const,
   loglevel: 'critical' as const,
+  port: 14096,
   ipv4: true,
   ipv6: false,
   bandwidth: 'L' as const,
@@ -23,6 +24,9 @@ export const i2pdConfDefaults = {
   },
   http: {
     enabled: false,
+    address: '0.0.0.0',
+    port: 7070,
+    strictheaders: false,
   },
   httpproxy: {
     enabled: false,
@@ -50,6 +54,7 @@ export const shape = object({
   loglevel: literals('none', 'critical', 'error', 'warn', 'info', 'debug')
     .onMismatch(defaults.loglevel)
     .defaultTo(defaults.loglevel),
+  port: number.onMismatch(defaults.port).defaultTo(defaults.port),
   ipv4: boolean.onMismatch(defaults.ipv4).defaultTo(defaults.ipv4),
   ipv6: boolean.onMismatch(defaults.ipv6).defaultTo(defaults.ipv6),
   bandwidth: literals('L', 'O', 'P')
@@ -86,6 +91,13 @@ export const shape = object({
     enabled: boolean
       .onMismatch(defaults.http.enabled)
       .defaultTo(defaults.http.enabled),
+    address: string
+      .onMismatch(defaults.http.address)
+      .defaultTo(defaults.http.address),
+    port: number.onMismatch(defaults.http.port).defaultTo(defaults.http.port),
+    strictheaders: boolean
+      .onMismatch(defaults.http.strictheaders)
+      .defaultTo(defaults.http.strictheaders),
   })
     .onMismatch(defaults.http)
     .defaultTo(defaults.http),
