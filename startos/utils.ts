@@ -15,6 +15,9 @@ export const prunedRpcbind = '127.0.0.1:18332'
 export const prunedRpcallowip = '127.0.0.1/32'
 
 export const embeddedI2PSamAddress = '127.0.0.1:7656'
+export function isEmbeddedI2P(i2psam: string | undefined) {
+  return i2psam === embeddedI2PSamAddress
+}
 
 export type GetNetworkInfo = {
   connections: number

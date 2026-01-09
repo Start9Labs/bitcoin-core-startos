@@ -5,6 +5,7 @@ import {
   GetBlockchainInfo,
   rootDir,
   ipcSocketPath,
+  isEmbeddedI2P,
 } from './utils'
 import { rpcPort } from './utils'
 import { storeJson } from './fileModels/store.json'
@@ -75,7 +76,8 @@ export const main = sdk.setupMain(async ({ effects }) => {
 
   await rm(`${bitcoindSub.rootfs}/${rpcCookieFile}`, { force: true, recursive: true })
 
-  const i2pSubcontainer = conf.i2psam
+  const usingEmbeddedI2P = isEmbeddedI2P(conf.i2psam)
+  const i2pSubcontainer = usingEmbeddedI2P
     ? await sdk.SubContainer.of(
         effects,
         { imageId: 'i2pd' },
@@ -90,7 +92,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
       )
     : null
 
-  if (conf.i2psam) {
+  if (usingEmbeddedI2P) {
     // Ensure i2pd config is present with default values, then watch for changes
     await i2pdConfFile.merge(effects, {})
     await i2pdConfFile.read().const(effects)
@@ -98,7 +100,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
 
   const daemons = sdk.Daemons.of(effects)
     .addDaemon('i2pd', () =>
-      conf.i2psam
+      usingEmbeddedI2P
         ? {
             subcontainer: i2pSubcontainer,
             exec: {
@@ -151,7 +153,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
           }
         },
       },
-      requires: conf.i2psam ? ['i2pd'] : [],
+      requires: usingEmbeddedI2P ? ['i2pd'] : [],
     })
     .addHealthCheck('sync-progress', {
       ready: {
