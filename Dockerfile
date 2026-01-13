@@ -1,11 +1,5 @@
-# Build stage for BerkeleyDB
-ARG PLATFORM
-FROM lncm/berkeleydb:db-4.8.30.NC-${PLATFORM} AS berkeleydb
-
 # Build stage for Bitcoin Core
 FROM alpine:3.21 AS bitcoin-core
-
-COPY --from=berkeleydb /opt /opt
 
 RUN sed -i 's/http\:\/\/dl-cdn.alpinelinux.org/https\:\/\/alpine.global.ssl.fastly.net/g' /etc/apk/repositories
 RUN apk --no-cache add \

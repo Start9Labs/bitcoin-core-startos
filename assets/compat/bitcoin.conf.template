@@ -122,7 +122,6 @@ disablewallet=1
 }}
 {{#IF wallet.enable
 disablewallet=0
-deprecatedrpc=create_bdb
 }}
 {{#IF wallet.avoidpartialspends
 avoidpartialspends=1
