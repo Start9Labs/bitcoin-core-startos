@@ -1,9 +1,9 @@
 id: bitcoind
 title: "Bitcoin Core"
-version: 30.1.0
+version: 30.2.0
 eos-version: 0.3.4.4
 release-notes: |
-  * Update Bitcoin to [v30.1](https://github.com/bitcoin/bitcoin/releases/tag/v30.1)
+  * Update Bitcoin to [v30.2](https://github.com/bitcoin/bitcoin/releases/tag/v30.2)
   * Removed deprecated config options and build flags
 license: MIT
 wrapper-repo: https://github.com/Start9Labs/bitcoind-startos
