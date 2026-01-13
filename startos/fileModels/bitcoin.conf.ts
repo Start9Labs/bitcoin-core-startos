@@ -1,5 +1,6 @@
 import { FileHelper, matches } from '@start9labs/start-sdk'
 import { bitcoinConfDefaults } from '../utils'
+import { sdk } from '../sdk'
 
 const { anyOf, arrayOf, object } = matches
 
@@ -153,7 +154,7 @@ function onWrite(a: unknown): any {
 
 export const bitcoinConfFile = FileHelper.ini(
   {
-    volumeId: 'main',
+    base: sdk.volumes.main,
     subpath: '/bitcoin.conf',
   },
   shape,

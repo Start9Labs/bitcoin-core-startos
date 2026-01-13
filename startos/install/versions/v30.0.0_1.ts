@@ -5,7 +5,7 @@ import { bitcoinConfDefaults } from '../../utils'
 const { whitebind, bind } = bitcoinConfDefaults
 
 export const v30_0_0_1 = VersionInfo.of({
-  version: '30.0.0:1-beta.7',
+  version: '30.0.0:1-beta.8',
   releaseNotes: 'Revamped for StartOS 0.4.0.',
   migrations: {
     up: async ({ effects }) => {
