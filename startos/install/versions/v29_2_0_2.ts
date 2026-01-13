@@ -7,7 +7,7 @@ import { mainMounts } from '../../main'
 const { whitebind, bind } = bitcoinConfDefaults
 
 export const v29_2_0_2 = VersionInfo.of({
-  version: '29.2:2-beta.4',
+  version: '29.2:2-beta.5',
   releaseNotes: 'Revamped for StartOS 0.4.0',
   migrations: {
     up: async ({ effects }) => {
