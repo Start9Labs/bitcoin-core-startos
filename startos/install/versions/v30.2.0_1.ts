@@ -4,8 +4,8 @@ import { bitcoinConfFile } from '../../fileModels/bitcoin.conf'
 import { bitcoinConfDefaults } from '../../utils'
 const { whitebind, bind } = bitcoinConfDefaults
 
-export const v30_0_0_1 = VersionInfo.of({
-  version: '30.0.0:1-beta.7',
+export const v30_2_0_1 = VersionInfo.of({
+  version: '30.2.0:1-beta.0',
   releaseNotes: 'Revamped for StartOS 0.4.0.',
   migrations: {
     up: async ({ effects }) => {
