@@ -1,0 +1,71 @@
+#!/bin/bash
+set -euo pipefail
+
+TARGETARCH="${TARGETARCH:-}"
+BITCOIN_PREFIX="${BITCOIN_PREFIX:-/opt/bitcoin}"
+
+# Configure pkg-config to use sysroot
+export PKG_CONFIG_SYSROOT_DIR=/sysroot
+export PKG_CONFIG_PATH=/sysroot/usr/lib/pkgconfig:/sysroot/usr/share/pkgconfig
+export PKG_CONFIG_LIBDIR=/sysroot/usr/lib/pkgconfig:/sysroot/usr/share/pkgconfig
+
+case "$TARGETARCH" in
+    amd64)
+        CLANG_TARGET="x86_64-alpine-linux-musl"
+        CMAKE_SYSTEM_PROCESSOR="x86_64"
+        ;;
+    arm64)
+        CLANG_TARGET="aarch64-alpine-linux-musl"
+        CMAKE_SYSTEM_PROCESSOR="aarch64"
+        ;;
+    riscv64)
+        CLANG_TARGET="riscv64-alpine-linux-musl"
+        CMAKE_SYSTEM_PROCESSOR="riscv64"
+        ;;
+    *)
+        echo "Unsupported TARGETARCH: $TARGETARCH" >&2
+        exit 1
+        ;;
+esac
+
+cat > /tmp/toolchain.cmake <<EOF
+set(CMAKE_SYSTEM_NAME Linux)
+set(CMAKE_SYSTEM_PROCESSOR ${CMAKE_SYSTEM_PROCESSOR})
+set(CMAKE_SYSROOT /sysroot)
+set(CMAKE_C_COMPILER clang)
+set(CMAKE_CXX_COMPILER clang++)
+set(CMAKE_C_COMPILER_TARGET ${CLANG_TARGET})
+set(CMAKE_CXX_COMPILER_TARGET ${CLANG_TARGET})
+set(CMAKE_EXE_LINKER_FLAGS_INIT "-fuse-ld=lld -L/sysroot/usr/lib")
+set(CMAKE_SHARED_LINKER_FLAGS_INIT "-fuse-ld=lld -L/sysroot/usr/lib")
+set(CMAKE_FIND_ROOT_PATH /sysroot)
+set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
+
+# Use host CapnProto package config, not sysroot's
+set(CapnProto_DIR /usr/share/cmake/capnproto)
+EOF
+
+cmake -B build \
+    -DCMAKE_TOOLCHAIN_FILE=/tmp/toolchain.cmake \
+    -DCAPNP_EXECUTABLE=/usr/bin/capnp \
+    -DCAPNPC_CXX_EXECUTABLE=/usr/bin/capnpc-c++ \
+    -DMPGEN_EXECUTABLE=/bitcoin/src/ipc/libmultiprocess/build-native/mpgen \
+    -DCMAKE_CXX_FLAGS_RELWITHDEBINFO="-O2 -g0" \
+    -DCMAKE_INSTALL_PREFIX="${BITCOIN_PREFIX}" \
+    -DINSTALL_MAN=OFF \
+    -DBUILD_TESTS=OFF \
+    -DBUILD_BENCH=OFF \
+    -DBUILD_GUI=OFF \
+    -DBUILD_CLI=ON \
+    -DBUILD_DAEMON=ON \
+    -DENABLE_IPC=ON \
+    -DREDUCE_EXPORTS=ON \
+    -DWITH_CCACHE=OFF \
+    -DWITH_ZMQ=ON
+
+cmake --build build -j"$(nproc)"
+cmake --install build
+llvm-strip "${BITCOIN_PREFIX}/bin/"*
