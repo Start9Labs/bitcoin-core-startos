@@ -1,4 +1,5 @@
 import { FileHelper, matches } from '@start9labs/start-sdk'
+import { sdk } from '../sdk'
 
 const { object, string, boolean, literal, literals } = matches
 
@@ -147,7 +148,7 @@ export const shape = object({
 
 export const i2pdConfFile = FileHelper.ini(
   {
-    volumeId: 'i2pd',
+    base: sdk.volumes.i2pd,
     subpath: '/data/i2pd.conf',
   },
   shape,
