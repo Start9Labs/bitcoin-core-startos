@@ -5,6 +5,7 @@ import { mainMounts } from '../main'
 import { bitcoinConfFile } from '../fileModels/bitcoin.conf'
 import { storeJson } from '../fileModels/store.json'
 import { rpcPort } from '../utils'
+import { i18n } from '../i18n'
 
 export const runtimeInfo = sdk.Action.withoutInput(
   // id
@@ -12,9 +13,10 @@ export const runtimeInfo = sdk.Action.withoutInput(
 
   // metadata
   async ({ effects }) => ({
-    name: 'Runtime Information',
-    description:
+    name: i18n('Runtime Information'),
+    description: i18n(
       'Network and other runtime information about this Bitcoin node',
+    ),
     warning: null,
     allowedStatuses: 'only-running',
     group: null,
@@ -86,7 +88,7 @@ export const runtimeInfo = sdk.Action.withoutInput(
 
     return {
       version: '1',
-      title: 'Node Runtime Info',
+      title: i18n('Node Runtime Info'),
       message: null,
       result: { type: 'group', value },
     }
@@ -96,8 +98,8 @@ export const runtimeInfo = sdk.Action.withoutInput(
 function getConnections(networkInfoRaw: GetNetworkInfo): T.ActionResultMember {
   return {
     type: 'single',
-    name: 'Connections',
-    description: 'The number of peers connected (inbound and outbound)',
+    name: i18n('Connections'),
+    description: i18n('The number of peers connected (inbound and outbound)'),
     value: `${networkInfoRaw.connections} (${networkInfoRaw.connections_in} in / ${networkInfoRaw.connections_out} out)`,
     copyable: false,
     masked: false,
@@ -108,8 +110,8 @@ function getConnections(networkInfoRaw: GetNetworkInfo): T.ActionResultMember {
 function getIpcSocketPath(): T.ActionResultMember {
   return {
     type: 'single',
-    name: 'IPC Socket Path',
-    description: 'Unix socket path for IPC communication with Bitcoin Core. Other services can bind to this socket in their Docker configuration.',
+    name: i18n('IPC Socket Path'),
+    description: i18n('Unix socket path for IPC communication with Bitcoin Core. Other services can bind to this socket in their Docker configuration.'),
     value: ipcSocketPath,
     copyable: true,
     masked: false,
@@ -122,36 +124,36 @@ function getBlockchainInfo(
 ): T.ActionResultMember {
   return {
     type: 'group',
-    name: 'Blockchain Info',
+    name: i18n('Blockchain Info'),
     description: null,
     value: [
       {
         type: 'single',
-        name: 'Block Height',
+        name: i18n('Block Height'),
         value: String(blockchainInfoRaw.headers),
-        description: 'The current block height for the network',
+        description: i18n('The current block height for the network'),
         copyable: false,
         masked: false,
         qr: false,
       },
       {
         type: 'single',
-        name: 'Synced Block Height',
+        name: i18n('Synced Block Height'),
         value: String(blockchainInfoRaw.blocks),
-        description: 'The number of blocks the node has verified',
+        description: i18n('The number of blocks the node has verified'),
         copyable: false,
         masked: false,
         qr: false,
       },
       {
         type: 'single',
-        name: 'Sync Progress',
+        name: i18n('Sync Progress'),
         value:
           blockchainInfoRaw.blocks < blockchainInfoRaw.headers ||
           blockchainInfoRaw.blocks === 0
             ? `${(blockchainInfoRaw.verificationprogress * 100).toFixed(2)}%`
             : '100%',
-        description: 'The percentage of the blockchain that has been verified',
+        description: i18n('The percentage of the blockchain that has been verified'),
         copyable: false,
         masked: false,
         qr: false,
@@ -165,12 +167,12 @@ function getSoftforkInfo(
 ): T.ActionResultMember {
   return {
     type: 'group',
-    name: 'Softfork Info',
+    name: i18n('Softfork Info'),
     description: null,
     value: [
       {
         type: 'group',
-        name: 'Softforks',
+        name: i18n('Softforks'),
         description: null,
         value: getSoftforks(blockchainInfoRaw),
       },
@@ -185,29 +187,31 @@ function getSoftforks(
     const value: T.ActionResultMember[] = [
       {
         type: 'single',
-        name: 'Type',
+        name: i18n('Type'),
         value: val.type,
-        description: 'Either "buried", "bip9"',
+        description: i18n('Either "buried", "bip9"'),
         copyable: false,
         masked: false,
         qr: false,
       },
       {
         type: 'single',
-        name: 'Height',
+        name: i18n('Height'),
         value: val.height ? String(val.height) : 'N/A',
-        description:
+        description: i18n(
           'height of the first block which the rules are or will be enforced (only for "buried" type, or "bip9" type with "active" status)',
+        ),
         copyable: false,
         masked: false,
         qr: false,
       },
       {
         type: 'single',
-        name: 'Active',
+        name: i18n('Active'),
         value: String(val.active),
-        description:
+        description: i18n(
           'true if the rules are enforced for the mempool and the next block',
+        ),
         copyable: false,
         masked: false,
         qr: false,
@@ -231,54 +235,58 @@ function getBip9Info(bip9: Bip9): T.ActionResultMember {
 
   return {
     type: 'group',
-    name: 'Bip9',
+    name: i18n('Bip9'),
     description: null,
     value: [
       {
         type: 'single',
-        name: 'Status',
+        name: i18n('Status'),
         value: status,
-        description:
+        description: i18n(
           'One of "defined", "started", "locked_in", "active", "failed"',
+        ),
         copyable: false,
         masked: false,
         qr: false,
       },
       {
         type: 'single',
-        name: 'Bit',
+        name: i18n('Bit'),
         value: bit ? String(bit) : 'N/A',
-        description:
+        description: i18n(
           'The bit (0-28) in the block version field used to signal this softfork (only for "started" status)',
+        ),
         copyable: false,
         masked: false,
         qr: false,
       },
       {
         type: 'single',
-        name: 'Start Time',
+        name: i18n('Start Time'),
         value: String(start_time),
-        description:
+        description: i18n(
           'The minimum median time past of a block at which the bit gains its meaning',
+        ),
         copyable: false,
         masked: false,
         qr: false,
       },
       {
         type: 'single',
-        name: 'Timeout',
+        name: i18n('Timeout'),
         value: String(timeout),
-        description:
+        description: i18n(
           'The median time past of a block at which the deployment is considered failed if not yet locked in',
+        ),
         copyable: false,
         masked: false,
         qr: false,
       },
       {
         type: 'single',
-        name: 'Since',
+        name: i18n('Since'),
         value: String(since),
-        description: 'height of the first block to which the status applies',
+        description: i18n('height of the first block to which the status applies'),
         copyable: false,
         masked: false,
         qr: false,
@@ -292,54 +300,58 @@ function getBip9Statistics(statistics: Bip9Stats): T.ActionResultMember {
 
   return {
     type: 'group',
-    name: 'Statistics',
+    name: i18n('Statistics'),
     description: null,
     value: [
       {
         type: 'single',
-        name: 'Period',
+        name: i18n('Period'),
         value: String(period),
-        description: 'The length in blocks of the BIP9 signalling period',
+        description: i18n('The length in blocks of the BIP9 signalling period'),
         copyable: false,
         masked: false,
         qr: false,
       },
       {
         type: 'single',
-        name: 'Threshold',
+        name: i18n('Threshold'),
         value: String(threshold),
-        description:
+        description: i18n(
           'The number of blocks with the version bit set required to activate the feature',
+        ),
         copyable: false,
         masked: false,
         qr: false,
       },
       {
         type: 'single',
-        name: 'Elapsed',
+        name: i18n('Elapsed'),
         value: String(elapsed),
-        description:
+        description: i18n(
           'The number of blocks elapsed since the beginning of the current period',
+        ),
         copyable: false,
         masked: false,
         qr: false,
       },
       {
         type: 'single',
-        name: 'Count',
+        name: i18n('Count'),
         value: String(count),
-        description:
+        description: i18n(
           'The number of blocks with the version bit set in the current period',
+        ),
         copyable: false,
         masked: false,
         qr: false,
       },
       {
         type: 'single',
-        name: 'Possible',
+        name: i18n('Possible'),
         value: String(possible),
-        description:
+        description: i18n(
           'returns false if there are not enough blocks left in this period to pass activation threshold',
+        ),
         copyable: false,
         masked: false,
         qr: false,

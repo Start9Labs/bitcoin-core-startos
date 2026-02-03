@@ -2,6 +2,7 @@ import { mainMounts } from '../main'
 import { sdk } from '../sdk'
 import * as fs from 'fs/promises'
 import { rootDir } from '../utils'
+import { i18n } from '../i18n'
 
 export const deletePeers = sdk.Action.withoutInput(
   // id
@@ -9,11 +10,11 @@ export const deletePeers = sdk.Action.withoutInput(
 
   // metadata
   async ({ effects }) => ({
-    name: 'Delete Peer List',
-    description: 'Deletes the Peer List (peers.dat) in case it gets corrupted.',
+    name: i18n('Delete Peer List'),
+    description: i18n('Deletes the Peer List (peers.dat) in case it gets corrupted.'),
     warning: null,
     allowedStatuses: 'only-stopped',
-    group: 'Delete Corrupted Files',
+    group: i18n('Delete Corrupted Files'),
     visibility: 'enabled',
   }),
 
@@ -31,8 +32,8 @@ export const deletePeers = sdk.Action.withoutInput(
 
     return {
       version: '1',
-      title: 'Success',
-      message: 'Successfully deleted peers.dat',
+      title: i18n('Success'),
+      message: i18n('Successfully deleted peers.dat'),
       result: null,
     }
   },

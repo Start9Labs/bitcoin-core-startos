@@ -10,6 +10,7 @@ import {
   zmqInterfaceId,
   zmqPort,
 } from './utils'
+import { i18n } from './i18n'
 
 export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
   let config = await bitcoinConfFile.read().const(effects)
@@ -23,9 +24,9 @@ export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
     preferredExternalPort: rpcPort,
   })
   const rpc = sdk.createInterface(effects, {
-    name: 'RPC Interface',
+    name: i18n('RPC Interface'),
     id: rpcInterfaceId,
-    description: 'Listens for JSON-RPC commands',
+    description: i18n('Listens for JSON-RPC commands'),
     type: 'api',
     masked: false,
     schemeOverride: null,
@@ -46,10 +47,11 @@ export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
     secure: { ssl: false },
   })
   const peer = sdk.createInterface(effects, {
-    name: 'Peer Interface',
+    name: i18n('Peer Interface'),
     id: peerInterfaceId,
-    description:
+    description: i18n(
       'Listens for incoming connections from peers on the bitcoin network',
+    ),
     type: 'p2p',
     masked: false,
     schemeOverride: { ssl: null, noSsl: null },
@@ -71,10 +73,11 @@ export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
       protocol: null,
     })
     const zmq = sdk.createInterface(effects, {
-      name: 'ZeroMQ Interface',
+      name: i18n('ZeroMQ Interface'),
       id: zmqInterfaceId,
-      description:
+      description: i18n(
         'Listens for incoming connections from peers on the bitcoin network',
+      ),
       type: 'api',
       masked: false,
       schemeOverride: null,
@@ -95,9 +98,9 @@ export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
     })
 
     const i2pConsole = sdk.createInterface(effects, {
-      name: 'I2P Daemon Console',
+      name: i18n('I2P Daemon Console'),
       id: 'i2p-console',
-      description: 'Interface to access the embedded I2P daemon console',
+      description: i18n('Interface to access the embedded I2P daemon console'),
       type: 'ui',
       masked: false,
       schemeOverride: null,

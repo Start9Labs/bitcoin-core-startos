@@ -1,36 +1,37 @@
 import { bitcoinConfFile } from '../fileModels/bitcoin.conf'
 import { sdk } from '../sdk'
 import { getRpcAuth, getRpcUsers } from './deleteRpcAuth'
+import { i18n } from '../i18n'
 const { InputSpec, Value } = sdk
 
 export const inputSpec = InputSpec.of({
   username: Value.dynamicText(async ({ effects }) => {
     return {
-      name: 'Username',
-      description: 'RPC Auth Username',
-      disabled: 'Cannot edit dependent specified username',
+      name: i18n('Username'),
+      description: i18n('RPC Auth Username'),
+      disabled: i18n('Cannot edit dependent specified username'),
       required: true,
       default: null,
       patterns: [
         {
           regex: '^[a-zA-Z0-9_]+$',
-          description: 'Must be alphanumeric (can contain underscore).',
+          description: i18n('Must be alphanumeric (can contain underscore).'),
         },
       ],
     }
   }),
   password: Value.dynamicText(async ({ effects }) => {
     return {
-      name: 'Password',
-      description: 'RPC Auth Password',
-      disabled: 'Cannot edit dependent specified password',
+      name: i18n('Password'),
+      description: i18n('RPC Auth Password'),
+      disabled: i18n('Cannot edit dependent specified password'),
       required: true,
       default: null,
       masked: true,
       patterns: [
         {
           regex: '^[A-Za-z0-9_-]+$',
-          description: 'Must be alphanumeric (can contain underscore).',
+          description: i18n('Must be alphanumeric (can contain underscore).'),
         },
       ],
     }
@@ -43,9 +44,10 @@ export const generateRpcUserDependent = sdk.Action.withInput(
 
   // metadata
   async ({ effects }) => ({
-    name: 'Create RPC Credentials',
-    description:
+    name: i18n('Create RPC Credentials'),
+    description: i18n(
       'Generate RPC Credentials using the provided username and password for a dependent service running locally',
+    ),
     warning: null,
     allowedStatuses: 'any',
     group: null,
@@ -66,8 +68,8 @@ export const generateRpcUserDependent = sdk.Action.withInput(
     if (existingUsernames?.includes(username!)) {
       return {
         version: '1',
-        title: 'Error creating RPC Auth User',
-        message: 'RPCAuth entry with this username already exists.',
+        title: i18n('Error creating RPC Auth User'),
+        message: i18n('RPCAuth entry with this username already exists.'),
         result: null,
       }
     }
@@ -99,16 +101,20 @@ export const generateRpcUserDependent = sdk.Action.withInput(
 
       return {
         version: '1',
-        title: 'Success',
-        message: `RPC password created for ${username}`,
+        title: i18n('Success'),
+        message: i18n('RPC password created for ${username}', {
+          username: username!,
+        }),
         result: null,
       }
     }
 
     return {
       version: '1',
-      title: 'Failure',
-      message: `rpcauth.py failed with error: ${res.stderr}`,
+      title: i18n('Failure'),
+      message: i18n('rpcauth.py failed with error: ${error}', {
+        error: res.stderr as string,
+      }),
       result: null,
     }
   },

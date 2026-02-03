@@ -12,6 +12,7 @@ import { storeJson } from './fileModels/store.json'
 import { access, rm, writeFile } from 'fs/promises'
 import { TOML } from '@start9labs/start-sdk'
 import { i2pdConfFile } from './fileModels/i2pd.conf'
+import { i18n } from './i18n'
 
 export const mainMounts = sdk.Mounts.of().mountVolume({
   volumeId: 'main',
@@ -137,17 +138,17 @@ export const main = sdk.setupMain(async ({ effects }) => {
             ])
             return res.exitCode === 0
               ? {
-                  message: 'The Bitcoin RPC Interface is ready',
+                  message: i18n('The Bitcoin RPC Interface is ready'),
                   result: 'success',
                 }
               : {
-                  message: 'The Bitcoin RPC Interface is not ready',
+                  message: i18n('The Bitcoin RPC Interface is not ready'),
                   result: 'starting',
                 }
           } catch {
             console.log('Waiting for cookie to be created')
             return {
-              message: 'The Bitcoin RPC Interface is not ready',
+              message: i18n('The Bitcoin RPC Interface is not ready'),
               result: 'starting',
             }
           }
@@ -157,7 +158,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
     })
     .addHealthCheck('sync-progress', {
       ready: {
-        display: 'Blockchain Sync Progress',
+        display: i18n('Blockchain Sync Progress'),
         fn: async () => {
           const res = await bitcoindSub.exec([
             'bitcoin-cli',
@@ -177,16 +178,16 @@ export const main = sdk.setupMain(async ({ effects }) => {
             if (info.initialblockdownload) {
               const percentage = (info.verificationprogress * 100).toFixed(2)
               return {
-                message: `Syncing blocks...${percentage}%`,
+                message: i18n('Syncing blocks...${percentage}%', { percentage }),
                 result: 'loading',
               }
             }
 
-            return { message: 'Bitcoin is fully synced', result: 'success' }
+            return { message: i18n('Bitcoin is fully synced'), result: 'success' }
           }
 
           if (res.stderr.includes('error code: -28')) {
-            return { message: 'Bitcoin is starting…', result: 'starting' }
+            return { message: i18n('Bitcoin is starting…'), result: 'starting' }
           } else {
             return { message: res.stderr as string, result: 'failure' }
           }
@@ -245,11 +246,11 @@ export const main = sdk.setupMain(async ({ effects }) => {
         command: ['/usr/bin/btc_rpc_proxy', '--conf', `/config.toml`],
       },
       ready: {
-        display: 'RPC Proxy',
+        display: i18n('RPC Proxy'),
         fn: () =>
           sdk.healthCheck.checkPortListening(effects, rpcPort, {
-            successMessage: 'The Bitcoin RPC Proxy is ready',
-            errorMessage: 'The Bitcoin RPC Proxy is not ready',
+            successMessage: i18n('The Bitcoin RPC Proxy is ready'),
+            errorMessage: i18n('The Bitcoin RPC Proxy is not ready'),
           }),
       },
       requires: ['primary'],
