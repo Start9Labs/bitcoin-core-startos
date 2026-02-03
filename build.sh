@@ -30,6 +30,20 @@ case "$TARGETARCH" in
         ;;
 esac
 
+# Build BDB 4.8 from depends system for the target architecture
+BDB_PREFIX="/bitcoin/depends/${CLANG_TARGET}"
+echo "Building BDB 4.8 for ${CLANG_TARGET}..."
+make -C /bitcoin/depends \
+    HOST="${CLANG_TARGET}" \
+    CC="clang --target=${CLANG_TARGET} --sysroot=/sysroot" \
+    CXX="clang++ --target=${CLANG_TARGET} --sysroot=/sysroot" \
+    AR="llvm-ar" \
+    RANLIB="llvm-ranlib" \
+    STRIP="llvm-strip" \
+    NM="llvm-nm" \
+    NO_BOOST=1 NO_LIBEVENT=1 NO_QT=1 NO_SQLITE=1 NO_UPNP=1 NO_ZMQ=1 NO_USDT=1 \
+    -j"$(nproc)"
+
 cat > /tmp/toolchain.cmake <<EOF
 set(CMAKE_SYSTEM_NAME Linux)
 set(CMAKE_SYSTEM_PROCESSOR ${CMAKE_SYSTEM_PROCESSOR})
@@ -42,7 +56,7 @@ set(CMAKE_C_FLAGS_INIT "${RISCV_ARCH_FLAGS:-}")
 set(CMAKE_CXX_FLAGS_INIT "${RISCV_ARCH_FLAGS:-}")
 set(CMAKE_EXE_LINKER_FLAGS_INIT "-fuse-ld=lld -L/sysroot/usr/lib")
 set(CMAKE_SHARED_LINKER_FLAGS_INIT "-fuse-ld=lld -L/sysroot/usr/lib")
-set(CMAKE_FIND_ROOT_PATH /sysroot)
+set(CMAKE_FIND_ROOT_PATH /sysroot ${BDB_PREFIX})
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
@@ -62,7 +76,8 @@ cmake -B build \
     -DBUILD_DAEMON=ON \
     -DREDUCE_EXPORTS=ON \
     -DWITH_CCACHE=OFF \
-    -DWITH_ZMQ=ON
+    -DWITH_ZMQ=ON \
+    -DWITH_BDB=ON
 
 cmake --build build -j"$(nproc)"
 cmake --install build
