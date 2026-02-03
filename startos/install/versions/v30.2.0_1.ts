@@ -1,7 +1,7 @@
 import { VersionInfo } from '@start9labs/start-sdk'
 import { storeJson } from '../../fileModels/store.json'
 import { bitcoinConfFile } from '../../fileModels/bitcoin.conf'
-import { bitcoinConfDefaults } from '../../utils'
+import { bitcoinConfDefaults, isEmbeddedI2P } from '../../utils'
 const { whitebind, bind } = bitcoinConfDefaults
 
 export const v30_2_0_1 = VersionInfo.of({
@@ -41,6 +41,14 @@ export const v30_2_0_1 = VersionInfo.of({
 
       await bitcoinConfFile.write(effects, bitcoinConfDefaults)
     },
-    down: async ({ effects }) => {},
+    down: async ({ effects }) => {
+      // if using embedded I2P, remove i2psam setting because it won't work after downgrade
+      const i2psam = await bitcoinConfFile.read((x) => x.i2psam).once()
+      if (i2psam && isEmbeddedI2P(i2psam)) {
+        await bitcoinConfFile.merge(effects, {
+          i2psam: undefined,
+        })
+      }
+    },
   },
 })

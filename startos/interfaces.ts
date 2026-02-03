@@ -1,6 +1,8 @@
 import { bitcoinConfFile } from './fileModels/bitcoin.conf'
+import { i2pdConfFile } from './fileModels/i2pd.conf'
 import { sdk } from './sdk'
 import {
+  embeddedI2PSamAddress,
   peerInterfaceId,
   peerPort,
   rpcInterfaceId,
@@ -83,6 +85,29 @@ export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
     const zmqReceipt = await zmqMultiOrigin.export([zmq])
 
     receipts.push(zmqReceipt)
+  }
+
+  const i2pConsoleEnabled = await i2pdConfFile.read((x) => x.http.enabled).const(effects) ?? false
+  if (config.i2psam === embeddedI2PSamAddress && i2pConsoleEnabled) {
+    const i2pMulti = sdk.MultiHost.of(effects, 'i2p-console')
+    const i2pConsoleOrigin = await i2pMulti.bindPort(7070, {
+      protocol: 'http',
+    })
+
+    const i2pConsole = sdk.createInterface(effects, {
+      name: 'I2P Daemon Console',
+      id: 'i2p-console',
+      description: 'Interface to access the embedded I2P daemon console',
+      type: 'ui',
+      masked: false,
+      schemeOverride: null,
+      username: null,
+      path: '',
+      query: {},
+    })
+
+    const i2pConsoleReceipt = await i2pConsoleOrigin.export([i2pConsole])
+    receipts.push(i2pConsoleReceipt)
   }
 
   return receipts

@@ -5,11 +5,13 @@ import {
   GetBlockchainInfo,
   rootDir,
   ipcSocketPath,
+  isEmbeddedI2P,
 } from './utils'
 import { rpcPort } from './utils'
 import { storeJson } from './fileModels/store.json'
 import { access, rm, writeFile } from 'fs/promises'
 import { TOML } from '@start9labs/start-sdk'
+import { i2pdConfFile } from './fileModels/i2pd.conf'
 
 export const mainMounts = sdk.Mounts.of().mountVolume({
   volumeId: 'main',
@@ -74,7 +76,49 @@ export const main = sdk.setupMain(async ({ effects }) => {
 
   await rm(`${bitcoindSub.rootfs}/${rpcCookieFile}`, { force: true, recursive: true })
 
+  const usingEmbeddedI2P = isEmbeddedI2P(conf.i2psam)
+  const i2pSubcontainer = usingEmbeddedI2P
+    ? await sdk.SubContainer.of(
+        effects,
+        { imageId: 'i2pd' },
+        sdk.Mounts.of().mountVolume({
+          volumeId: 'i2pd',
+          mountpoint: '/home/i2pd',
+          subpath: null,
+          readonly: false,
+          type: 'directory',
+        }),
+        'i2pd-sub',
+      )
+    : null
+
+  if (usingEmbeddedI2P) {
+    // Ensure i2pd config is present with default values, then watch for changes
+    await i2pdConfFile.merge(effects, {})
+    await i2pdConfFile.read().const(effects)
+  }
+
   const daemons = sdk.Daemons.of(effects)
+    .addDaemon('i2pd', () =>
+      usingEmbeddedI2P
+        ? {
+            subcontainer: i2pSubcontainer,
+            exec: {
+              command: ['sh', '-c', 'ulimit -n 4096; /entrypoint.sh'],
+              user: 'root',
+            },
+            ready: {
+              display: 'I2P Proxy',
+              fn: () =>
+                sdk.healthCheck.checkPortListening(effects, 7656, {
+                  successMessage: 'I2P Proxy is ready',
+                  errorMessage: 'I2P Proxy is not ready',
+                }),
+            },
+            requires: [],
+          }
+        : null,
+    )
     .addDaemon('primary', {
       subcontainer: bitcoindSub,
       exec: {
@@ -109,7 +153,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
           }
         },
       },
-      requires: [],
+      requires: usingEmbeddedI2P ? ['i2pd'] : [],
     })
     .addHealthCheck('sync-progress', {
       ready: {

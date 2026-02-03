@@ -43,6 +43,8 @@ const {
   datacarriersize,
   listen,
   externalip,
+  i2psam,
+  i2pacceptincoming,
   v2transport,
   connect,
   addnode,
@@ -94,6 +96,8 @@ export const shape = object({
   onlynet: onlyNetOptions.orParser(arrayOf(onlyNetOptions.optional().onMismatch(undefined))).optional(),
   v2transport: boolean.onMismatch(v2transport),
   externalip: string.optional().onMismatch(externalip),
+  i2psam: string.optional().onMismatch(i2psam),
+  i2pacceptincoming: boolean.optional().onMismatch(true).defaultTo(i2pacceptincoming),
 
   // Blocknotify
   blocknotify: string.optional().onMismatch(blocknotify),
