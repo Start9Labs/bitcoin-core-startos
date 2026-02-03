@@ -2,6 +2,7 @@ import { mainMounts } from '../main'
 import { sdk } from '../sdk'
 import * as fs from 'fs/promises'
 import { rootDir } from '../utils'
+import { i18n } from '../i18n'
 
 export const deleteTxIndex = sdk.Action.withoutInput(
   // id
@@ -9,13 +10,15 @@ export const deleteTxIndex = sdk.Action.withoutInput(
 
   // metadata
   async ({ effects }) => ({
-    name: 'Delete Transaction Index',
-    description:
+    name: i18n('Delete Transaction Index'),
+    description: i18n(
       'Deletes the Transaction Index (txindex) in the event it gets corrupted.',
-    warning:
+    ),
+    warning: i18n(
       "The Transaction Index will be rebuilt once Bitcoin Core is started again, unless 'Coinstats Index' is disabled in the config settings. Please don't do this unless you fully understand what you are doing.",
+    ),
     allowedStatuses: 'only-stopped',
-    group: 'Delete Corrupted Files',
+    group: i18n('Delete Corrupted Files'),
     visibility: 'enabled',
   }),
 
@@ -35,8 +38,8 @@ export const deleteTxIndex = sdk.Action.withoutInput(
 
     return {
       version: '1',
-      title: 'Success',
-      message: 'Successfully deleted txindex',
+      title: i18n('Success'),
+      message: i18n('Successfully deleted txindex'),
       result: null,
     }
   },

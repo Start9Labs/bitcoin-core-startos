@@ -8,6 +8,7 @@ import * as fs from 'fs/promises'
 import { SubContainer } from '@start9labs/start-sdk'
 import { manifest } from '../manifest'
 import { storeJson } from '../fileModels/store.json'
+import { i18n } from '../i18n'
 
 export const snapshotTempFile = `/tmp/snap/snapshot`
 const block_840_000 =
@@ -19,8 +20,8 @@ let retriggerActionMetadata: (() => void) | undefined
 
 const assumeutxoInputSpec = sdk.InputSpec.of({
   snapshotUrl: Value.text({
-    name: 'UTXO Snapshot URL',
-    description: 'URL of UTXO Snapshot to bootstrap bitcoin',
+    name: i18n('UTXO Snapshot URL'),
+    description: i18n('URL of UTXO Snapshot to bootstrap bitcoin'),
     required: true,
     default: null, // @TODO update to start9 hosted and placeholder
     // @TODO add pattern for url ending in .dat
@@ -41,17 +42,19 @@ export const assumeutxo = sdk.Action.withInput(
       fullySynced: false,
     }
     return {
-      name: 'Download UTXO Snapshot (assumeutxo)',
-      description:
+      name: i18n('Download UTXO Snapshot (assumeutxo)'),
+      description: i18n(
         'assumeutxo is a feature that allows fast bootstrapping of a validating bitcoind instance. It may take some additional time for any blocks between the snapshot blockheight and the tip to be downloaded and validated. While the snapshot is in use the IBD will continue in the background until it validates up to the snapshot blockheight',
-      warning:
+      ),
+      warning: i18n(
         "While any downloaded snapshot will be checked against a hash that's been hardcoded in source code, this action will download anything at the provided URL to the server - Only download from trusted sources!",
+      ),
       allowedStatuses: 'only-running',
       group: null,
       visibility: assumeutxoPromise
-        ? { disabled: 'Download in progress...' }
+        ? { disabled: i18n('Download in progress...') }
         : snapshotInUse
-          ? { disabled: 'Snapshot in use' }
+          ? { disabled: i18n('Snapshot in use') }
           : fullySynced
             ? 'hidden'
             : 'enabled',
@@ -141,9 +144,10 @@ export const assumeutxo = sdk.Action.withInput(
 
     return {
       version: '1',
-      title: 'Success',
-      message:
+      title: i18n('Success'),
+      message: i18n(
         'Snapshot download in progress. Upon successful download the snapshot will be loaded as the active chainstate and any blocks between the snapshot blockheight and tip will be downloaded and verified. Blocks from genesis to the snapshot blockheight will continue to be verfied in the background. Once the IBD catches up to the snapshot height the chain will have been fully validated',
+      ),
       result: null,
     }
   },

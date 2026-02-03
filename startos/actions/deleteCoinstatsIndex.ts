@@ -2,6 +2,7 @@ import { mainMounts } from '../main'
 import { sdk } from '../sdk'
 import * as fs from 'fs/promises'
 import { rootDir } from '../utils'
+import { i18n } from '../i18n'
 
 export const deleteCoinstatsIndex = sdk.Action.withoutInput(
   // id
@@ -9,13 +10,15 @@ export const deleteCoinstatsIndex = sdk.Action.withoutInput(
 
   // metadata
   async ({ effects }) => ({
-    name: 'Delete Coinstats Index',
-    description:
+    name: i18n('Delete Coinstats Index'),
+    description: i18n(
       'Deletes the Coinstats Index (coinstatsindex) in case it gets corrupted.',
-    warning:
+    ),
+    warning: i18n(
       "The Coinstats Index will be rebuilt once Bitcoin Core is started again, unless 'Transaction Index' is disabled in the config settings. Please don't do this unless you fully understand what you are doing.",
+    ),
     allowedStatuses: 'only-stopped',
-    group: 'Delete Corrupted Files',
+    group: i18n('Delete Corrupted Files'),
     visibility: 'enabled',
   }),
 
@@ -35,8 +38,8 @@ export const deleteCoinstatsIndex = sdk.Action.withoutInput(
 
     return {
       version: '1',
-      title: 'Success',
-      message: 'Successfully deleted coinstats index',
+      title: i18n('Success'),
+      message: i18n('Successfully deleted coinstats index'),
       result: null,
     }
   },

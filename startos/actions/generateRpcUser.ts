@@ -1,18 +1,19 @@
 import { bitcoinConfFile } from '../fileModels/bitcoin.conf'
 import { sdk } from '../sdk'
 import { getRpcAuth, getRpcUsers } from './deleteRpcAuth'
+import { i18n } from '../i18n'
 const { InputSpec, Value } = sdk
 
 export const inputSpec = InputSpec.of({
   username: Value.text({
-    name: 'Username',
-    description: 'RPC Auth Username',
+    name: i18n('Username'),
+    description: i18n('RPC Auth Username'),
     required: true,
     default: null,
     patterns: [
       {
         regex: '^[a-zA-Z0-9_]+$',
-        description: 'Must be alphanumeric (can contain underscore).',
+        description: i18n('Must be alphanumeric (can contain underscore).'),
       },
     ],
   }),
@@ -24,12 +25,13 @@ export const generateRpcUser = sdk.Action.withInput(
 
   // metadata
   async ({ effects }) => ({
-    name: 'Generate RPC User Credentials',
-    description:
+    name: i18n('Generate RPC User Credentials'),
+    description: i18n(
       'Generate RPC User Credentials for remote connections i.e. Sparrow. rpcauth.py will randomly generate a secure password. The username and hashed password will be persisted in Bitcoin.conf',
+    ),
     warning: null,
     allowedStatuses: 'any',
-    group: 'RPC Users',
+    group: i18n('RPC Users'),
     visibility: 'enabled',
   }),
 
@@ -46,8 +48,8 @@ export const generateRpcUser = sdk.Action.withInput(
     if (existingUsernames?.includes(input.username)) {
       return {
         version: '1',
-        title: 'Error creating RPC Auth User',
-        message: 'RPCAuth entry with this username already exists.',
+        title: i18n('Error creating RPC Auth User'),
+        message: i18n('RPCAuth entry with this username already exists.'),
         result: null,
       }
     }
@@ -75,13 +77,18 @@ export const generateRpcUser = sdk.Action.withInput(
 
       return {
         version: '1',
-        title: 'RPC user successfully created',
-        message: `RPC password created for ${input.username}. Store this password in a secure place. If lost, a new RPC user will need to be created as Bitcoin.conf only stores a hash of the password`,
+        title: i18n('RPC user successfully created'),
+        message: i18n(
+          'RPC password created for ${username}. Store this password in a secure place. If lost, a new RPC user will need to be created as Bitcoin.conf only stores a hash of the password',
+          { username: input.username },
+        ),
         result: {
-          name: 'RPC Password',
+          name: i18n('RPC Password'),
           type: 'single',
           value: password,
-          description: `${input.username} RPC Password`,
+          description: i18n('${username} RPC Password', {
+            username: input.username,
+          }),
           copyable: true,
           masked: true,
           qr: false,
@@ -90,8 +97,10 @@ export const generateRpcUser = sdk.Action.withInput(
     }
     return {
       version: '1',
-      title: 'Failed to create RPC user',
-      message: `rpcauth.py failed with error: ${res.stderr}`,
+      title: i18n('Failed to create RPC user'),
+      message: i18n('rpcauth.py failed with error: ${error}', {
+        error: res.stderr as string,
+      }),
       result: null,
     }
   },

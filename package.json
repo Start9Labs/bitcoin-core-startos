@@ -6,13 +6,13 @@
     "check": "tsc --noEmit"
   },
   "dependencies": {
-    "@start9labs/start-sdk": "^0.4.0-beta.47",
+    "@start9labs/start-sdk": "^0.4.0-beta.48",
     "diskusage": "^1.2.0"
   },
   "devDependencies": {
-    "@types/node": "^22.19.6",
+    "@types/node": "^22.19.7",
     "@vercel/ncc": "^0.38.4",
-    "prettier": "^3.7.4",
+    "prettier": "^3.8.1",
     "typescript": "^5.9.3"
   },
   "prettier": {

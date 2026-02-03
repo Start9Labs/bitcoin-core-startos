@@ -1,6 +1,7 @@
 import { Effects } from '@start9labs/start-sdk/base/lib/Effects'
 import { bitcoinConfFile } from '../fileModels/bitcoin.conf'
 import { sdk } from '../sdk'
+import { i18n } from '../i18n'
 const { InputSpec, Value } = sdk
 
 
@@ -19,7 +20,7 @@ export const inputSpec = InputSpec.of({
     const existingUsernames = (await getRpcUsers(effects)) || []
 
     return {
-      name: 'Existing RPC Users',
+      name: i18n('Existing RPC Users'),
       default: [],
       values: existingUsernames.reduce(
         (obj, curr) => ({ ...obj, [curr]: curr }),
@@ -37,16 +38,17 @@ export const deleteRpcAuth = sdk.Action.withInput(
   async ({ effects }) => {
     const rpcUsers = await getRpcUsers(effects)
     return {
-      name: 'Delete RPC Users',
-      description:
+      name: i18n('Delete RPC Users'),
+      description: i18n(
         'Delete RPC users from Bitcoin.conf. You may want to run this action if the RPC Auth entry is no longer needed or if the password is lost.',
+      ),
       warning: null,
       allowedStatuses: 'any',
-      group: 'RPC Users',
+      group: i18n('RPC Users'),
       visibility:
         rpcUsers && rpcUsers.length > 0
           ? 'enabled'
-          : { disabled: 'There are no RPC users' },
+          : { disabled: i18n('There are no RPC users') },
     }
   },
 
