@@ -37,6 +37,7 @@ make -C /bitcoin/depends \
     HOST="${CLANG_TARGET}" \
     CC="clang --target=${CLANG_TARGET} --sysroot=/sysroot" \
     CXX="clang++ --target=${CLANG_TARGET} --sysroot=/sysroot" \
+    LDFLAGS="-fuse-ld=lld" \
     AR="llvm-ar" \
     RANLIB="llvm-ranlib" \
     STRIP="llvm-strip" \
