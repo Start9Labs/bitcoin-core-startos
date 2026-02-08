@@ -77,6 +77,30 @@ install: | check-deps check-init
 	printf "\n🚀 Installing %s to %s ...\n" "$$S9PK" "$$HOST"; \
 	start-cli package install -s "$$S9PK"
 
+publish: | all
+	@REGISTRY=$$(awk -F'/' '/^registry:/ {print $$3}' ~/.startos/config.yaml); \
+	if [ -z "$$REGISTRY" ]; then \
+		echo "Error: You must define \"registry: https://my-registry.tld\" in ~/.startos/config.yaml"; \
+		exit 1; \
+	fi; \
+	S3BASE=$$(awk -F'/' '/^s9pk-s3base:/ {print $$3}' ~/.startos/config.yaml); \
+	if [ -z "$$S3BASE" ]; then \
+		echo "Error: You must define \"s3base: https://s9pks.my-s3-bucket.tld\" in ~/.startos/config.yaml"; \
+		exit 1; \
+	fi; \
+	command -v s3cmd >/dev/null || \
+		(echo "Error: s3cmd not found. It must be installed to publish using s3." && exit 1); \
+	printf "\n🚀 Publishing to %s; indexing on %s ...\n" "$$S3BASE" "$$REGISTRY"; \
+	for s9pk in *.s9pk; do \
+		age=$$(( $$(date +%s) - $$(stat -c %Y "$$s9pk") )); \
+		if [ "$$age" -gt 3600 ]; then \
+			printf "\033[1;33m⚠️  %s is %d minutes old. Publish anyway? [y/N] \033[0m" "$$s9pk" "$$((age / 60))"; \
+			read -r ans; \
+			case "$$ans" in [yY]*) ;; *) echo "Skipping $$s9pk"; continue ;; esac; \
+		fi; \
+		start-cli s9pk publish "$$s9pk"; \
+	done
+
 check-deps:
 	@command -v start-cli >/dev/null || \
 		(echo "Error: start-cli not found. Please see https://docs.start9.com/latest/developer-guide/sdk/installing-the-sdk" && exit 1)

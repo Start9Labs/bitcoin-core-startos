@@ -10,7 +10,7 @@ export const manifest = setupManifest({
   supportSite: 'https://github.com/bitcoin/bitcoin/issues',
   marketingSite: 'https://bitcoincore.org/',
   docsUrl:
-    'https://github.com/Start9Labs/bitcoind-startos/blob/update/040/instructions.md',
+    'https://www.lopp.net/bitcoin-information.html',
   description: {
     short: {
       en_US: 'A Bitcoin Full Node by Bitcoin Core',
