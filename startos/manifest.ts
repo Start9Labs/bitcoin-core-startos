@@ -5,12 +5,11 @@ export const manifest = setupManifest({
   title: 'Bitcoin Core',
   license: 'MIT',
   donationUrl: null,
-  wrapperRepo: 'https://github.com/Start9Labs/bitcoind-startos',
+  wrapperRepo: 'https://github.com/Start9Labs/bitcoin-core-startos',
   upstreamRepo: 'https://github.com/bitcoin/bitcoin',
   supportSite: 'https://github.com/bitcoin/bitcoin/issues',
   marketingSite: 'https://bitcoincore.org/',
-  docsUrl:
-    'https://www.lopp.net/bitcoin-information.html',
+  docsUrl: 'https://www.lopp.net/bitcoin-information.html',
   description: {
     short: {
       en_US: 'A Bitcoin Full Node by Bitcoin Core',
@@ -62,7 +61,7 @@ export const manifest = setupManifest({
       },
       arch: ['x86_64', 'aarch64'],
       emulateMissingAs: 'aarch64',
-    }
+    },
   },
   alerts: {
     uninstall: {
@@ -75,7 +74,7 @@ export const manifest = setupManifest({
       pl_PL:
         'Odinstalowanie Bitcoin Core spowoduje trwałą utratę danych. Bez kopii zapasowej wszelkie środki przechowywane w domyślnym gorącym portfelu węzła zostaną utracone na zawsze. Jeśli nie jesteś pewien, zalecamy wykonanie kopii zapasowej na wszelki wypadek.',
       fr_FR:
-        "La désinstallation de Bitcoin Core entraînera la perte permanente des données. Sans sauvegarde, tous les fonds stockés dans le portefeuille chaud par défaut de votre nœud seront perdus à jamais. En cas de doute, nous vous recommandons de faire une sauvegarde par précaution.",
+        'La désinstallation de Bitcoin Core entraînera la perte permanente des données. Sans sauvegarde, tous les fonds stockés dans le portefeuille chaud par défaut de votre nœud seront perdus à jamais. En cas de doute, nous vous recommandons de faire une sauvegarde par précaution.',
     },
     restore: {
       en_US:
@@ -87,8 +86,8 @@ export const manifest = setupManifest({
       pl_PL:
         'Przywrócenie Bitcoin Core nadpisze jego bieżące dane. Utracisz wszystkie transakcje zapisane w portfelach tylko do odczytu oraz wszelkie środki otrzymane do gorącego portfela od ostatniej kopii zapasowej.',
       fr_FR:
-        "La restauration de Bitcoin Core écrasera ses données actuelles. Vous perdrez toutes les transactions enregistrées dans les portefeuilles en lecture seule, ainsi que tous les fonds reçus dans le portefeuille chaud depuis la dernière sauvegarde.",
-    }
+        'La restauration de Bitcoin Core écrasera ses données actuelles. Vous perdrez toutes les transactions enregistrées dans les portefeuilles en lecture seule, ainsi que tous les fonds reçus dans le portefeuille chaud depuis la dernière sauvegarde.',
+    },
   },
   dependencies: {},
 })
