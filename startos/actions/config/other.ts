@@ -79,7 +79,6 @@ const configSpec = sdk.InputSpec.of({
         max: 0.01,
         integer: false,
         units: i18n('BTC/kB'),
-        // @TODO claude how to use the discardfee const here? Will `String(discardfee)` parse correctly given discardfee is a number = .0001?
         placeholder: String(d.discardfee),
       }),
     }),
@@ -104,8 +103,7 @@ const configSpec = sdk.InputSpec.of({
       integer: true,
       units: 'MiB',
       min: 1,
-      // @TODO claude how best to set max here?
-      // max: disk.total * .75,
+      max: Math.floor((disk.total * 0.75) / (1024 * 1024)),
     }
   }),
   dbcache: Value.number({

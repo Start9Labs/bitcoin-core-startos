@@ -65,52 +65,22 @@ export const main = sdk.setupMain(async ({ effects }) => {
 
   /**
    * ======================== Daemons ========================
+   *
+   * Unconditional daemons are chained synchronously on baseDaemons.
+   * Conditional daemons (i2pd, proxy) use async factories that return
+   * null to skip or params to include. Type assertions (as [...]) are
+   * needed because async factories weaken TypeScript's contextual typing.
    */
 
-  let daemons: any = sdk.Daemons.of(effects).addOneshot('nocow', {
-    subcontainer: bitcoindSub,
-    exec: {
-      command: ['chattr', '-R', '+C', '/.bitcoin'],
-    },
-    requires: [],
-  })
-
-  if (bitcoinConf.i2psam) {
-    if (!i2pdConf) {
-      throw new Error('No i2pd.conf')
-    }
-
-    daemons = daemons.addDaemon('i2pd', {
-      subcontainer: await sdk.SubContainer.of(
-        effects,
-        { imageId: 'i2pd' },
-        sdk.Mounts.of().mountVolume({
-          volumeId: 'i2pd',
-          mountpoint: '/home/i2pd',
-          subpath: null,
-          readonly: false,
-          type: 'directory',
-        }),
-        'i2pd-sub',
-      ),
+  const baseDaemons = sdk.Daemons.of(effects)
+    .addOneshot('nocow', {
+      subcontainer: bitcoindSub,
       exec: {
-        command: ['sh', '-c', 'ulimit -n 4096; /entrypoint.sh'],
-        user: 'root',
-      },
-      ready: {
-        display: 'I2P Proxy',
-        fn: () =>
-          sdk.healthCheck.checkPortListening(effects, 7656, {
-            successMessage: 'I2P Proxy is ready',
-            errorMessage: 'I2P Proxy is not ready',
-          }),
+        command: ['chattr', '-R', '+C', '/.bitcoin'],
       },
       requires: [],
     })
-  }
-
-  daemons = daemons
-    .addDaemon('primary', {
+    .addDaemon('bitcoind', {
       subcontainer: bitcoindSub,
       exec: {
         command: [
@@ -191,7 +161,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
           }
         },
       },
-      requires: ['primary'],
+      requires: ['bitcoind'],
     })
     .addOneshot('synced-true', {
       subcontainer: null,
@@ -210,7 +180,49 @@ export const main = sdk.setupMain(async ({ effects }) => {
       requires: ['sync-progress'],
     })
 
-  if (bitcoinConf.prune) {
+  // ---- Conditional: I2P daemon (enabled when i2psam is configured) ----
+  const withI2pd = await baseDaemons.addDaemon('i2pd', async () => {
+    if (!bitcoinConf.i2psam) return null
+    if (!i2pdConf) throw new Error('No i2pd.conf')
+
+    const subcontainer = await sdk.SubContainer.of(
+      effects,
+      { imageId: 'i2pd' },
+      sdk.Mounts.of().mountVolume({
+        volumeId: 'i2pd',
+        mountpoint: '/home/i2pd',
+        subpath: null,
+        readonly: false,
+        type: 'directory',
+      }),
+      'i2pd-sub',
+    )
+
+    return {
+      subcontainer,
+      exec: {
+        command: ['sh', '-c', 'ulimit -n 4096; /entrypoint.sh'] as [
+          string,
+          ...string[],
+        ],
+        user: 'root',
+      },
+      ready: {
+        display: 'I2P Proxy',
+        fn: () =>
+          sdk.healthCheck.checkPortListening(effects, 7656, {
+            successMessage: 'I2P Proxy is ready',
+            errorMessage: 'I2P Proxy is not ready',
+          }),
+      },
+      requires: [],
+    }
+  })
+
+  // ---- Conditional: RPC proxy (enabled when pruning) ----
+  return withI2pd.addDaemon('proxy', async () => {
+    if (!bitcoinConf.prune) return null
+
     const subcontainer = await sdk.SubContainer.of(
       effects,
       { imageId: 'proxy' },
@@ -235,10 +247,13 @@ export const main = sdk.setupMain(async ({ effects }) => {
       }),
     )
 
-    return daemons.addDaemon('proxy', {
+    return {
       subcontainer,
       exec: {
-        command: ['/usr/bin/btc_rpc_proxy', '--conf', `/config.toml`],
+        command: ['/usr/bin/btc_rpc_proxy', '--conf', '/config.toml'] as [
+          string,
+          ...string[],
+        ],
       },
       ready: {
         display: i18n('RPC Proxy'),
@@ -248,8 +263,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
             errorMessage: i18n('The Bitcoin RPC Proxy is not ready'),
           }),
       },
-      requires: ['primary'],
-    })
-  }
-  return daemons
+      requires: ['bitcoind' as const],
+    }
+  })
 })
