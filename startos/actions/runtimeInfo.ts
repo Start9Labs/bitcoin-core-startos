@@ -1,10 +1,14 @@
 import { T } from '@start9labs/start-sdk'
 import { sdk } from '../sdk'
-import { GetBlockchainInfo, GetNetworkInfo, rootDir, ipcSocketPath } from '../utils'
-import { mainMounts } from '../main'
+import {
+  GetBlockchainInfo,
+  GetNetworkInfo,
+  rootDir,
+  ipcSocketPath,
+} from '../utils'
 import { bitcoinConfFile } from '../fileModels/bitcoin.conf'
 import { storeJson } from '../fileModels/store.json'
-import { rpcPort } from '../utils'
+import { rpcPort, bitcoinMounts } from '../utils'
 import { i18n } from '../i18n'
 
 export const runtimeInfo = sdk.Action.withoutInput(
@@ -53,7 +57,7 @@ export const runtimeInfo = sdk.Action.withoutInput(
     const blockchainInfoRes = await sdk.SubContainer.withTemp(
       effects,
       { imageId: 'bitcoind' },
-      mainMounts,
+      bitcoinMounts,
       'getblockchaininfo',
       async (subc) => {
         return await subc.execFail([
@@ -71,12 +75,11 @@ export const runtimeInfo = sdk.Action.withoutInput(
     )
 
     // return
-    const value = [
-      getConnections(networkInfoRaw),
-    ]
+    const value = [getConnections(networkInfoRaw)]
 
     const store = await storeJson.read().const(effects)
-    if (store?.enableIpc === true) { // Default to false if not set
+    if (store?.enableIpc === true) {
+      // Default to false if not set
       value.push(getIpcSocketPath())
     }
 
@@ -111,7 +114,9 @@ function getIpcSocketPath(): T.ActionResultMember {
   return {
     type: 'single',
     name: i18n('IPC Socket Path'),
-    description: i18n('Unix socket path for IPC communication with Bitcoin Core. Other services can bind to this socket in their Docker configuration.'),
+    description: i18n(
+      'Unix socket path for IPC communication with Bitcoin Core. Other services can bind to this socket in their Docker configuration.',
+    ),
     value: ipcSocketPath,
     copyable: true,
     masked: false,
@@ -153,7 +158,9 @@ function getBlockchainInfo(
           blockchainInfoRaw.blocks === 0
             ? `${(blockchainInfoRaw.verificationprogress * 100).toFixed(2)}%`
             : '100%',
-        description: i18n('The percentage of the blockchain that has been verified'),
+        description: i18n(
+          'The percentage of the blockchain that has been verified',
+        ),
         copyable: false,
         masked: false,
         qr: false,
@@ -286,7 +293,9 @@ function getBip9Info(bip9: Bip9): T.ActionResultMember {
         type: 'single',
         name: i18n('Since'),
         value: String(since),
-        description: i18n('height of the first block to which the status applies'),
+        description: i18n(
+          'height of the first block to which the status applies',
+        ),
         copyable: false,
         masked: false,
         qr: false,

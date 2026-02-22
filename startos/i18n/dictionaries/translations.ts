@@ -145,10 +145,10 @@ export default {
     1143: 'devuelve falso si no quedan suficientes bloques en este período para superar el umbral de activación',
 
     // actions/config/peers.ts
+    1198: 'Deshabilitado',
+    1199: 'Habilitado',
     1200: 'Proxy SAM I2P',
     1201: 'Seleccione cómo conectarse a la red I2P.',
-    1202: 'Deshabilitar I2P',
-    1203: 'Daemon I2P integrado (i2pd)',
     1204: 'Aceptar conexiones I2P entrantes',
     1205: 'Aceptar conexiones I2P entrantes (efectivo solo cuando I2P está habilitado).',
     1206: 'Configuración avanzada del daemon I2P',
@@ -177,10 +177,6 @@ export default {
     1229: '¡Nota: este modo usa muchas más conexiones de red y CPU!',
     1230: 'Límite de túneles de tránsito',
     1231: 'Sesiones de tránsito activas máximas (predeterminado: 10000). ¡Este valor se duplica si el modo floodfill está habilitado!',
-    1232: 'Dirección SAM I2P personalizada',
-    1233: 'Dirección SAM I2P',
-    1234: 'Dirección IP y puerto de un puente SAM del daemon I2P externo (p. ej., 192.168.1.1:7656)',
-    1235: 'Una dirección IP y número de puerto válidos (p. ej., 192.168.1.1:7656)',
 
 
     // actions/config/peers.ts - Peer settings
@@ -276,6 +272,24 @@ export default {
     1738: 'IPC es una característica experimental. Solo habilite esto si sabe lo que está haciendo con el socket IPC. Un caso de uso de ejemplo sería servicios de minería Stratum v2.',
     1739: 'Otras configuraciones',
     1740: 'Editar más valores en bitcoin.conf',
+    1741: 'Dejar en blanco para archivo completo',
+
+    // actions/config/setExternalIp.ts
+    1850: 'Publicar nodo',
+    1851: 'Configurar si y cómo su nodo es accesible por pares en la red Bitcoin.',
+    1852: 'Conexiones entrantes',
+    1853: 'Elegir si permitir que otros nodos se conecten al suyo.',
+    1854: 'Permitir conexiones entrantes (recomendado)',
+    1855: 'Dirección pública',
+    1856: 'Seleccione la dirección donde su nodo puede ser contactado por pares.',
+    1857: 'Deshabilitar conexiones entrantes',
+    1858: 'Crear dirección Tor',
+
+    // dependencies.ts
+    1859: 'Bitcoin Core necesita una dirección onion de Tor para conexiones entrantes de pares.',
+
+    // init/taskSetExternal.ts
+    1860: 'Dirección externa eliminada. Su nodo solo puede hacer conexiones salientes. Seleccione una nueva dirección externa para volver a habilitar las conexiones entrantes.',
 
     // Common
     1800: 'Configuración',
@@ -424,10 +438,10 @@ export default {
     1143: 'gibt falsch zurück, wenn nicht genügend Blöcke in diesem Zeitraum verbleiben, um den Aktivierungsschwellenwert zu überschreiten',
 
     // actions/config/peers.ts
+    1198: 'Deaktiviert',
+    1199: 'Aktiviert',
     1200: 'I2P SAM-Proxy',
     1201: 'Wählen Sie aus, wie eine Verbindung zum I2P-Netzwerk hergestellt werden soll.',
-    1202: 'I2P deaktivieren',
-    1203: 'Eingebetteter I2P-Daemon (i2pd)',
     1204: 'Eingehende I2P-Verbindungen akzeptieren',
     1205: 'Eingehende I2P-Verbindungen akzeptieren (nur wirksam, wenn I2P aktiviert ist).',
     1206: 'Erweiterte I2P-Daemon-Einstellungen',
@@ -456,10 +470,6 @@ export default {
     1229: 'Hinweis: Dieser Modus verwendet viel mehr Netzwerkverbindungen und CPU!',
     1230: 'Transit-Tunnel-Limit',
     1231: 'Maximale aktive Transit-Sitzungen (Standard: 10000). Dieser Wert verdoppelt sich, wenn der Floodfill-Modus aktiviert ist!',
-    1232: 'Benutzerdefinierte I2P SAM-Adresse',
-    1233: 'I2P SAM-Adresse',
-    1234: 'IP-Adresse und Port einer externen I2P-Daemon-SAM-Brücke (z. B. 192.168.1.1:7656)',
-    1235: 'Eine gültige IP-Adresse und Portnummer (z. B. 192.168.1.1:7656)',
 
 
     // actions/config/peers.ts - Peer settings
@@ -555,6 +565,24 @@ export default {
     1738: 'IPC ist eine experimentelle Funktion. Aktivieren Sie dies nur, wenn Sie wissen, was Sie mit dem IPC-Socket tun. Ein Beispiel-Anwendungsfall wären Stratum v2 Mining-Dienste.',
     1739: 'Weitere Einstellungen',
     1740: 'Weitere Werte in bitcoin.conf bearbeiten',
+    1741: 'Leer lassen für vollständiges Archiv',
+
+    // actions/config/setExternalIp.ts
+    1850: 'Knoten veröffentlichen',
+    1851: 'Konfigurieren Sie, ob und wie Ihr Knoten von Peers im Bitcoin-Netzwerk erreichbar ist.',
+    1852: 'Eingehende Verbindungen',
+    1853: 'Wählen Sie, ob andere Knoten sich mit Ihrem verbinden können.',
+    1854: 'Eingehende Verbindungen zulassen (empfohlen)',
+    1855: 'Öffentliche Adresse',
+    1856: 'Wählen Sie die Adresse, unter der Ihr Knoten von Peers erreicht werden kann.',
+    1857: 'Eingehende Verbindungen deaktivieren',
+    1858: 'Tor-Adresse erstellen',
+
+    // dependencies.ts
+    1859: 'Bitcoin Core benötigt eine Tor-Onion-Adresse für eingehende Peer-Verbindungen.',
+
+    // init/taskSetExternal.ts
+    1860: 'Externe Adresse entfernt. Ihr Knoten kann nur ausgehende Verbindungen herstellen. Wählen Sie eine neue externe Adresse, um eingehende Verbindungen wieder zu aktivieren.',
 
     // Common
     1800: 'Konfiguration',
@@ -703,10 +731,10 @@ export default {
     1143: 'zwraca false, jeśli w tym okresie nie ma wystarczającej liczby bloków, aby przekroczyć próg aktywacji',
 
     // actions/config/peers.ts
+    1198: 'Wyłączony',
+    1199: 'Włączony',
     1200: 'Proxy SAM I2P',
     1201: 'Wybierz sposób łączenia się z siecią I2P.',
-    1202: 'Wyłącz I2P',
-    1203: 'Wbudowany daemon I2P (i2pd)',
     1204: 'Akceptuj przychodzące połączenia I2P',
     1205: 'Akceptuj przychodzące połączenia I2P (skuteczne tylko gdy I2P jest włączone).',
     1206: 'Zaawansowane ustawienia daemona I2P',
@@ -735,10 +763,6 @@ export default {
     1229: 'Uwaga: ten tryb używa znacznie więcej połączeń sieciowych i CPU!',
     1230: 'Limit tuneli tranzytowych',
     1231: 'Maksymalna liczba aktywnych sesji tranzytowych (domyślnie: 10000). Ta wartość jest podwajana, jeśli tryb floodfill jest włączony!',
-    1232: 'Niestandardowy adres SAM I2P',
-    1233: 'Adres SAM I2P',
-    1234: 'Adres IP i port zewnętrznego mostu SAM daemona I2P (np. 192.168.1.1:7656)',
-    1235: 'Prawidłowy adres IP i numer portu (np. 192.168.1.1:7656)',
 
 
     // actions/config/peers.ts - Peer settings
@@ -834,6 +858,24 @@ export default {
     1738: 'IPC jest funkcją eksperymentalną. Włącz to tylko wtedy, gdy wiesz, co robisz z gniazdem IPC. Przykładowym przypadkiem użycia byłyby usługi wydobycia Stratum v2.',
     1739: 'Inne ustawienia',
     1740: 'Edytuj więcej wartości w bitcoin.conf',
+    1741: 'Pozostaw puste dla pełnego archiwum',
+
+    // actions/config/setExternalIp.ts
+    1850: 'Opublikuj węzeł',
+    1851: 'Skonfiguruj, czy i jak Twój węzeł jest osiągalny przez peerów w sieci Bitcoin.',
+    1852: 'Połączenia przychodzące',
+    1853: 'Wybierz, czy zezwolić innym węzłom na łączenie się z Twoim.',
+    1854: 'Zezwól na połączenia przychodzące (zalecane)',
+    1855: 'Adres publiczny',
+    1856: 'Wybierz adres, pod którym Twój węzeł może być osiągalny przez peerów.',
+    1857: 'Wyłącz połączenia przychodzące',
+    1858: 'Utwórz adres Tor',
+
+    // dependencies.ts
+    1859: 'Bitcoin Core potrzebuje adresu onion Tor dla przychodzących połączeń peerów.',
+
+    // init/taskSetExternal.ts
+    1860: 'Adres zewnętrzny usunięty. Twój węzeł może nawiązywać tylko połączenia wychodzące. Wybierz nowy adres zewnętrzny, aby ponownie włączyć połączenia przychodzące.',
 
     // Common
     1800: 'Konfiguracja',
@@ -982,10 +1024,10 @@ export default {
     1143: 'renvoie false s\'il ne reste pas assez de blocs dans cette période pour dépasser le seuil d\'activation',
 
     // actions/config/peers.ts
+    1198: 'Désactivé',
+    1199: 'Activé',
     1200: 'Proxy SAM I2P',
     1201: 'Sélectionnez comment vous connecter au réseau I2P.',
-    1202: 'Désactiver I2P',
-    1203: 'Démon I2P intégré (i2pd)',
     1204: 'Accepter les connexions I2P entrantes',
     1205: 'Accepter les connexions I2P entrantes (effectif uniquement lorsque I2P est activé).',
     1206: 'Paramètres avancés du démon I2P',
@@ -1014,10 +1056,6 @@ export default {
     1229: 'Remarque : ce mode utilise beaucoup plus de connexions réseau et de CPU !',
     1230: 'Limite des tunnels de transit',
     1231: 'Sessions de transit actives maximales (par défaut : 10000). Cette valeur est doublée si le mode floodfill est activé !',
-    1232: 'Adresse SAM I2P personnalisée',
-    1233: 'Adresse SAM I2P',
-    1234: 'Adresse IP et port d\'un pont SAM de démon I2P externe (par exemple, 192.168.1.1:7656)',
-    1235: 'Une adresse IP et un numéro de port valides (par exemple, 192.168.1.1:7656)',
 
 
     // actions/config/peers.ts - Peer settings
@@ -1113,6 +1151,24 @@ export default {
     1738: 'IPC est une fonctionnalité expérimentale. N\'activez ceci que si vous savez ce que vous faites avec le socket IPC. Un exemple d\'utilisation serait les services de minage Stratum v2.',
     1739: 'Autres paramètres',
     1740: 'Modifier plus de valeurs dans bitcoin.conf',
+    1741: 'Laisser vide pour archive complète',
+
+    // actions/config/setExternalIp.ts
+    1850: 'Publier le nœud',
+    1851: 'Configurer si et comment votre nœud est accessible par les pairs sur le réseau Bitcoin.',
+    1852: 'Connexions entrantes',
+    1853: "Choisir d'autoriser ou non d'autres nœuds à se connecter au vôtre.",
+    1854: 'Autoriser les connexions entrantes (recommandé)',
+    1855: 'Adresse publique',
+    1856: "Sélectionnez l'adresse à laquelle votre nœud peut être contacté par les pairs.",
+    1857: 'Désactiver les connexions entrantes',
+    1858: 'Créer une adresse Tor',
+
+    // dependencies.ts
+    1859: "Bitcoin Core a besoin d'une adresse onion Tor pour les connexions entrantes des pairs.",
+
+    // init/taskSetExternal.ts
+    1860: "Adresse externe supprimée. Votre nœud ne peut établir que des connexions sortantes. Sélectionnez une nouvelle adresse externe pour réactiver les connexions entrantes.",
 
     // Common
     1800: 'Configuration',

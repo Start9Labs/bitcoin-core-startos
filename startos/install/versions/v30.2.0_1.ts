@@ -1,8 +1,5 @@
 import { VersionInfo } from '@start9labs/start-sdk'
-import { storeJson } from '../../fileModels/store.json'
-import { bitcoinConfFile } from '../../fileModels/bitcoin.conf'
-import { bitcoinConfDefaults, isEmbeddedI2P } from '../../utils'
-const { whitebind, bind } = bitcoinConfDefaults
+import { ensureFiles } from './ensureFiles'
 
 export const v30_2_0_1 = VersionInfo.of({
   version: '30.2.0:1-beta.0',
@@ -15,46 +12,8 @@ export const v30_2_0_1 = VersionInfo.of({
   },
   migrations: {
     up: async ({ effects }) => {
-      const store = await storeJson.read().once()
-      // Add enableIpc to store.json (not bitcoin.conf)
-      if (!store) {
-        await storeJson.write(effects, {
-          reindexBlockchain: false,
-          reindexChainstate: false,
-          fullySynced: false,
-          snapshotInUse: false,
-          enableIpc: false,
-        })
-      } else {
-        await storeJson.merge(effects, {
-          enableIpc: false,
-        })
-      }
-
-      const existingConf = await bitcoinConfFile.read().once()
-
-      if (existingConf) {
-        await bitcoinConfFile.merge(effects, {
-          rpcuser: undefined,
-          rpcpassword: undefined,
-          bind,
-          whitebind,
-          whitelist: undefined,
-          mempoolfullrbf: undefined,
-        })
-        return
-      } // Only write conf defaults if no existing bitcoin.conf found
-
-      await bitcoinConfFile.write(effects, bitcoinConfDefaults)
+      await ensureFiles(effects)
     },
-    down: async ({ effects }) => {
-      // if using embedded I2P, remove i2psam setting because it won't work after downgrade
-      const i2psam = await bitcoinConfFile.read((x) => x.i2psam).once()
-      if (i2psam && isEmbeddedI2P(i2psam)) {
-        await bitcoinConfFile.merge(effects, {
-          i2psam: undefined,
-        })
-      }
-    },
+    down: async ({ effects }) => {},
   },
 })

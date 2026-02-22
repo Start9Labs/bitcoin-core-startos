@@ -1,18 +1,12 @@
-import { T } from '@start9labs/start-sdk'
-import { bitcoinConfFile, shape } from '../../fileModels/bitcoin.conf'
+import { bitcoinConfFile } from '../../fileModels/bitcoin.conf'
 import { sdk } from '../../sdk'
-import {
-  bitcoinConfDefaults,
-  embeddedI2PSamAddress,
-  getExteralAddresses,
-} from '../../utils'
+import { bitcoinConfDefaults as d, i2PSamAddress } from '../../utils'
 import { i2pdConfDefaults, i2pdConfFile } from '../../fileModels/i2pd.conf'
-import { ipv4 } from '@start9labs/start-sdk/base/lib/util/regexes'
 import { i18n } from '../../i18n'
 
-const { onlynet, v2transport, externalip, addnode, connect } =
-  bitcoinConfDefaults
 const { Value, Variants, List, InputSpec } = sdk
+
+// @Claude these types also exist bitcoin.conf.ts. How can we abstract?
 const validNets = ['ipv4', 'ipv6', 'onion', 'i2p', 'cjdns'] as const
 type ValidNets = (typeof validNets)[number]
 
@@ -33,30 +27,29 @@ const peerSpec = sdk.InputSpec.of({
   }),
   v2transport: Value.toggle({
     name: i18n('Use V2 P2P Transport Protocol'),
-    default: v2transport,
     description: i18n(
       'Enable or disable the use of BIP324 V2 P2P transport protocol.',
     ),
+    default: d.v2transport,
   }),
-  externalip: getExteralAddresses(),
   i2psam: Value.union({
     name: i18n('I2P SAM Proxy'),
     description: i18n('Select how to connect to the I2P network.'),
-    default: 'none',
+    default: 'disabled',
     variants: Variants.of({
-      none: {
-        name: i18n('Disable I2P'),
+      disabled: {
+        name: i18n('Disabled'),
         spec: InputSpec.of({}),
       },
-      embedded: {
-        name: i18n('Embedded I2P Daemon (i2pd)'),
+      enabled: {
+        name: i18n('Enabled'),
         spec: sdk.InputSpec.of({
           i2pacceptincoming: Value.toggle({
             name: i18n('Accept Incoming I2P Connections'),
-            default: true,
             description: i18n(
               'Accept inbound I2P connections (effective only when I2P is enabled).',
             ),
+            default: true,
           }),
           advanced: Value.object(
             {
@@ -137,34 +130,6 @@ const peerSpec = sdk.InputSpec.of({
               }),
             }),
           ),
-        }),
-      },
-      custom: {
-        name: i18n('Custom I2P SAM Address'),
-        spec: sdk.InputSpec.of({
-          i2pacceptincoming: Value.toggle({
-            name: i18n('Accept Incoming I2P Connections'),
-            default: true,
-            description: i18n(
-              'Accept inbound I2P connections (effective only when I2P is enabled).',
-            ),
-          }),
-          address: Value.text({
-            name: i18n('I2P SAM Address'),
-            description: i18n(
-              'IP Address and port of an external I2P daemon SAM bridge (e.g., 192.168.1.1:7656)',
-            ),
-            default: '',
-            required: true,
-            patterns: [
-              {
-                description: i18n(
-                  'A valid IP address and port number (e.g., 192.168.1.1:7656)',
-                ),
-                regex: `^${ipv4.regex.source}:[0-9]{1,5}$`,
-              },
-            ],
-          }),
         }),
       },
     }),
@@ -249,35 +214,38 @@ export const peerConfig = sdk.Action.withInput(
   peerSpec,
 
   // optionally pre-fill the input form
-  ({ effects }) => read(effects),
+  async ({ effects }) => {
+    const bitcoinConf = await bitcoinConfFile.read().once()
 
-  // the execution function
-  ({ effects, input }) => write(effects, input),
-)
+    if (!bitcoinConf) return {}
 
-async function read(effects: any): Promise<PartialPeerSpec> {
-  const bitcoinConf = await bitcoinConfFile.read().const(effects)
-  const i2pdConf =
-    (await i2pdConfFile.read().const(effects)) ?? i2pdConfDefaults
-  if (!bitcoinConf) return {}
+    const {
+      onlynet,
+      i2psam,
+      i2pacceptincoming,
+      v2transport,
+      connect,
+      addnode,
+    } = bitcoinConf
 
-  const peerSettings: PartialPeerSpec = {
-    onlynet: bitcoinConf.onlynet
-      ? [bitcoinConf.onlynet]
-          .flat()
-          .filter(
-            (x): x is ValidNets =>
-              x !== undefined && (validNets as readonly string[]).includes(x),
-          )
-      : onlynet,
-    i2psam:
-      bitcoinConf.i2psam === undefined
-        ? { selection: 'none', value: {} }
-        : bitcoinConf.i2psam === embeddedI2PSamAddress
-          ? {
-              selection: 'embedded',
+    const i2pdConf = (await i2pdConfFile.read().once()) ?? i2pdConfDefaults
+
+    return {
+      onlynet: onlynet
+        ? [onlynet]
+            .flat()
+            .filter(
+              (x): x is ValidNets =>
+                x !== undefined && (validNets as readonly string[]).includes(x),
+            )
+        : onlynet,
+      i2psam:
+        i2psam === undefined
+          ? { selection: 'disabled' as const, value: {} }
+          : {
+              selection: 'enabled' as const,
               value: {
-                i2pacceptincoming: bitcoinConf.i2pacceptincoming,
+                i2pacceptincoming: i2pacceptincoming ?? true,
                 advanced: {
                   loglevel: i2pdConf.loglevel as
                     | 'none'
@@ -294,79 +262,65 @@ async function read(effects: any): Promise<PartialPeerSpec> {
                   transittunnels: i2pdConf.limits.transittunnels,
                 },
               },
-            }
-          : {
-              selection: 'custom',
-              value: {
-                i2pacceptincoming: bitcoinConf.i2pacceptincoming,
-                address: bitcoinConf.i2psam,
-              },
             },
-    v2transport: bitcoinConf.v2transport,
-    externalip:
-      bitcoinConf.externalip === undefined ? 'none' : bitcoinConf.externalip,
-    connectpeer: {
-      selection: bitcoinConf.connect !== undefined ? 'connect' : 'addnode',
-      value: {
-        peers:
-          bitcoinConf.connect !== undefined
-            ? [bitcoinConf.connect]
-                .flat()
-                .filter((x): x is string => x !== undefined)
-            : [bitcoinConf.addnode]
-                .flat()
-                .filter((x): x is string => x !== undefined),
+      v2transport,
+      connectpeer: {
+        selection:
+          connect !== undefined ? ('connect' as const) : ('addnode' as const),
+        value: {
+          peers:
+            connect !== undefined
+              ? [connect].flat().filter((x): x is string => x !== undefined)
+              : [addnode].flat().filter((x): x is string => x !== undefined),
+        },
       },
-    },
-  }
+    }
+  },
 
-  return peerSettings
-}
+  // the execution function
+  async ({ effects, input }) => {
+    const { i2psam, v2transport, onlynet, connectpeer } = input
 
-async function write(effects: T.Effects, input: peerSpec) {
-  const peerSettings = {
-    i2psam:
-      input.i2psam.selection === 'embedded'
-        ? embeddedI2PSamAddress
-        : input.i2psam.selection === 'custom'
-          ? input.i2psam.value.address
+    await bitcoinConfFile.merge(effects, {
+      i2psam: i2psam.selection === 'enabled' ? i2PSamAddress : undefined,
+      i2pacceptincoming:
+        i2psam.selection === 'enabled' && i2psam.value.i2pacceptincoming,
+      v2transport,
+      onlynet: onlynet.length ? input.onlynet : undefined,
+      connect:
+        connectpeer.selection === 'connect'
+          ? connectpeer.value.peers
           : undefined,
-    i2pacceptincoming:
-      input.i2psam.selection === 'embedded' ||
-      input.i2psam.selection === 'custom'
-        ? input.i2psam.value.i2pacceptincoming
-        : true,
-    v2transport: input.v2transport,
-    onlynet: input.onlynet.length > 0 ? input.onlynet : onlynet,
-    externalip: input.externalip !== 'none' ? input.externalip : externalip,
-  }
-
-  if (input.connectpeer.selection === 'connect') {
-    Object.assign(peerSettings, { connect: input.connectpeer.value.peers })
-    Object.assign(peerSettings, { addnode: addnode })
-  } else if (input.connectpeer.selection === 'addnode') {
-    Object.assign(peerSettings, { addnode: input.connectpeer.value.peers })
-    Object.assign(peerSettings, { connect: connect })
-  }
-
-  await bitcoinConfFile.merge(effects, peerSettings)
-
-  if (input.i2psam.selection === 'embedded') {
-    await i2pdConfFile.merge(effects, {
-      loglevel: input.i2psam.value.advanced.loglevel,
-      bandwidth: input.i2psam.value.advanced.bandwidth,
-      share: input.i2psam.value.advanced.share,
-      notransit: input.i2psam.value.advanced.notransit,
-      floodfill: input.i2psam.value.advanced.floodfill,
-      http: {
-        enabled: input.i2psam.value.advanced.enablewebconsole,
-      },
-      limits: {
-        transittunnels: input.i2psam.value.advanced.transittunnels,
-      },
+      addnode:
+        connectpeer.selection === 'addnode'
+          ? connectpeer.value.peers
+          : undefined,
     })
-  }
-}
 
-type peerSpec = typeof peerSpec._TYPE
-type PartialPeerSpec = typeof peerSpec._PARTIAL
+    if (i2psam.selection === 'enabled') {
+      const {
+        loglevel,
+        bandwidth,
+        share,
+        notransit,
+        floodfill,
+        enablewebconsole,
+        transittunnels,
+      } = i2psam.value.advanced
+
+      await i2pdConfFile.merge(effects, {
+        loglevel,
+        bandwidth,
+        share,
+        notransit,
+        floodfill,
+        http: {
+          enabled: enablewebconsole,
+        },
+        limits: {
+          transittunnels,
+        },
+      })
+    }
+  },
+)

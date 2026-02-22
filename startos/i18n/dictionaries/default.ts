@@ -144,10 +144,10 @@ const dict = {
   'returns false if there are not enough blocks left in this period to pass activation threshold': 1143,
 
   // actions/config/peers.ts
+  'Disabled': 1198,
+  'Enabled': 1199,
   'I2P SAM Proxy': 1200,
   'Select how to connect to the I2P network.': 1201,
-  'Disable I2P': 1202,
-  'Embedded I2P Daemon (i2pd)': 1203,
   'Accept Incoming I2P Connections': 1204,
   'Accept inbound I2P connections (effective only when I2P is enabled).': 1205,
   'Advanced I2P Daemon Settings': 1206,
@@ -176,10 +176,6 @@ const dict = {
   'Note: this mode uses much more network connections and CPU!': 1229,
   'Transit Tunnels Limit': 1230,
   'Maximum active transit sessions (default: 10000). This value is doubled if floodfill mode is enabled!': 1231,
-  'Custom I2P SAM Address': 1232,
-  'I2P SAM Address': 1233,
-  'IP Address and port of an external I2P daemon SAM bridge (e.g., 192.168.1.1:7656)': 1234,
-  'A valid IP address and port number (e.g., 192.168.1.1:7656)': 1235,
   'Onlynet': 1236,
   'Make automatic outbound connections only to network <net> (ipv4, ipv6, onion, i2p, cjdns). Inbound and manual connections are not affected by this option': 1237,
   'ipv4': 1238,
@@ -272,6 +268,25 @@ const dict = {
   'IPC is an experimental feature. Only enable this if you know what you are doing with the IPC socket. An example use case would be Stratum v2 mining services.': 1738,
   'Other Settings': 1739,
   'Edit more values in bitcoin.conf': 1740,
+
+  'Leave blank for full archival': 1741,
+
+  // actions/config/setExternalIp.ts
+  'Publish Node': 1850,
+  'Configure whether and how your node is reachable by peers on the Bitcoin network.': 1851,
+  'Inbound Connections': 1852,
+  'Choose whether to allow other nodes to connect to yours.': 1853,
+  'Allow Inbound Connections (recommended)': 1854,
+  'Public Address': 1855,
+  'Select the address at which your node can be reached by peers.': 1856,
+  'Disable Inbound Connections': 1857,
+  'Create Tor Address': 1858,
+
+  // dependencies.ts
+  'Bitcoin Core needs a Tor onion address for inbound peer connections.': 1859,
+
+  // init/taskSetExternal.ts
+  'External address removed. Your node can only make outbound connections. Select a new external address to re-enable inbound connections.': 1860,
 
   // Common
   'Configuration': 1800,
