@@ -271,8 +271,7 @@ const dict = {
 
   'Leave blank for full archival': 1741,
 
-  // actions/config/setExternalIp.ts
-  'Publish Node': 1850,
+  // actions/config/inboundConnections.ts
   'Configure whether and how your node is reachable by peers on the Bitcoin network.': 1851,
   'Inbound Connections': 1852,
   'Choose whether to allow other nodes to connect to yours.': 1853,

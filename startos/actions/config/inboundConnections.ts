@@ -6,7 +6,7 @@ import { i18n } from '../../i18n'
 
 const { Value, Variants, InputSpec } = sdk
 
-const publishNodeSpec = InputSpec.of({
+const inboundConnectionsSpec = InputSpec.of({
   inbound: Value.dynamicUnion(async ({ effects }) => {
     const urls = await sdk.serviceInterface
       .getOwn(
@@ -55,13 +55,13 @@ const publishNodeSpec = InputSpec.of({
   }),
 })
 
-export const publishNode = sdk.Action.withInput(
+export const inboundConnections = sdk.Action.withInput(
   // id
-  'publish-node',
+  'inbound-connections',
 
   // metadata
   async ({ effects }) => ({
-    name: i18n('Publish Node'),
+    name: i18n('Inbound Connections'),
     description: i18n(
       'Configure whether and how your node is reachable by peers on the Bitcoin network.',
     ),
@@ -72,7 +72,7 @@ export const publishNode = sdk.Action.withInput(
   }),
 
   // form input specification
-  publishNodeSpec,
+  inboundConnectionsSpec,
 
   // optionally pre-fill the input form
   async ({ effects }) => {

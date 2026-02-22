@@ -1,4 +1,4 @@
-import { publishNode } from '../actions/config/setExternalIp'
+import { inboundConnections } from '../actions/config/inboundConnections'
 import { bitcoinConfFile } from '../fileModels/bitcoin.conf'
 import { storeJson } from '../fileModels/store.json'
 import { i18n } from '../i18n'
@@ -28,7 +28,7 @@ export const taskSetExternal = sdk.setupOnInit(async (effects, kind) => {
       { allowWriteAfterConst: true },
     )
 
-    await sdk.action.createOwnTask(effects, publishNode, 'important', {
+    await sdk.action.createOwnTask(effects, inboundConnections, 'important', {
       reason: i18n(
         'External address removed. Your node can only make outbound connections. Select a new external address to re-enable inbound connections.',
       ),

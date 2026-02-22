@@ -35,7 +35,7 @@ export const runtimeInfo = sdk.Action.withoutInput(
     const networkInfoRes = await sdk.SubContainer.withTemp(
       effects,
       { imageId: 'bitcoind' },
-      mainMounts,
+      bitcoinMounts,
       'getnetworkinfo',
       async (subc) => {
         return await subc.execFail([

@@ -275,7 +275,6 @@ export default {
     1741: 'Dejar en blanco para archivo completo',
 
     // actions/config/setExternalIp.ts
-    1850: 'Publicar nodo',
     1851: 'Configurar si y cómo su nodo es accesible por pares en la red Bitcoin.',
     1852: 'Conexiones entrantes',
     1853: 'Elegir si permitir que otros nodos se conecten al suyo.',
@@ -568,7 +567,6 @@ export default {
     1741: 'Leer lassen für vollständiges Archiv',
 
     // actions/config/setExternalIp.ts
-    1850: 'Knoten veröffentlichen',
     1851: 'Konfigurieren Sie, ob und wie Ihr Knoten von Peers im Bitcoin-Netzwerk erreichbar ist.',
     1852: 'Eingehende Verbindungen',
     1853: 'Wählen Sie, ob andere Knoten sich mit Ihrem verbinden können.',
@@ -861,7 +859,6 @@ export default {
     1741: 'Pozostaw puste dla pełnego archiwum',
 
     // actions/config/setExternalIp.ts
-    1850: 'Opublikuj węzeł',
     1851: 'Skonfiguruj, czy i jak Twój węzeł jest osiągalny przez peerów w sieci Bitcoin.',
     1852: 'Połączenia przychodzące',
     1853: 'Wybierz, czy zezwolić innym węzłom na łączenie się z Twoim.',
@@ -1154,7 +1151,6 @@ export default {
     1741: 'Laisser vide pour archive complète',
 
     // actions/config/setExternalIp.ts
-    1850: 'Publier le nœud',
     1851: 'Configurer si et comment votre nœud est accessible par les pairs sur le réseau Bitcoin.',
     1852: 'Connexions entrantes',
     1853: "Choisir d'autoriser ou non d'autres nœuds à se connecter au vôtre.",

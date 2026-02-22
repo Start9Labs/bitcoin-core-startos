@@ -61,7 +61,7 @@ StartOS-specific files on the `main` volume:
 
 | File | Purpose |
 |------|---------|
-| `store.json` | Persistent StartOS state (reindex flags, sync status, IPC toggle) |
+| `store.json` | Persistent StartOS state (reindex flags, sync status, IPC toggle, wantsOnion) |
 
 Blockchain data directories (`blocks/`, `chainstate/`, `indexes/`) reside on the `main` volume alongside the standard `bitcoin.conf` and `.cookie` files.
 
@@ -70,7 +70,7 @@ Blockchain data directories (`blocks/`, `chainstate/`, `indexes/`) reside on the
 1. On install, StartOS sets the `nocow` attribute on the data directory (btrfs optimization via `chattr -R +C`)
 2. Default `bitcoin.conf` and `store.json` are written with defaults mostly aligned with upstream, plus some optimizations for typical StartOS hardware and ecosystem needs (e.g. larger `dbcache`, ZMQ and block filter index pre-enabled for dependent services)
 3. **Disk-aware defaults**: on disks smaller than 900 GB, pruning is automatically enabled (550 MiB target) and `txindex` is disabled; on larger disks, a full archival node is configured by default
-4. The node's Tor onion address is set as the `externalip`
+4. No `externalip` is set by default; the user configures inbound connectivity via the **Inbound Connections** action (allow with a public address, create a Tor onion address, or disable inbound connections)
 5. Bitcoin Core begins syncing the blockchain (Initial Block Download)
 
 ## Configuration Management
@@ -82,7 +82,8 @@ Bitcoin Core is configured through **StartOS actions** that write to `bitcoin.co
 | Action | Settings |
 |--------|----------|
 | **Mempool Settings** | persistmempool, maxmempool, mempoolexpiry, permitbaremultisig, OP_RETURN (datacarrier/datacarriersize) |
-| **Peer Settings** | onlynet (ipv4/ipv6/onion/i2p/cjdns), BIP324 v2transport, externalip, I2P SAM proxy (none/embedded/custom with advanced i2pd settings), connect/addnode peers |
+| **Peer Settings** | onlynet (ipv4/ipv6/onion/i2p/cjdns), BIP324 v2transport, I2P SAM proxy (disabled/embedded with advanced i2pd settings), connect/addnode peers |
+| **Inbound Connections** | externalip (select public address, create Tor address, or disable inbound connections) |
 | **RPC Settings** | rpcservertimeout, rpcthreads, rpcworkqueue |
 | **Other Settings** | ZMQ, txindex, blocknotify, coinstatsindex, wallet settings (enable/avoidpartialspends/discardfee), pruning, dbcache, dbbatchsize, BIP158/BIP157 block filters, bloom filters, IPC (experimental) |
 
@@ -92,7 +93,7 @@ Settings **not** managed by StartOS (hardcoded):
 |---------|-------|--------|
 | `rpccookiefile` | `.cookie` | Fixed RPC authentication |
 | `whitebind` | `0.0.0.0:8333` | Required for peer connections |
-| `bind` | `0.0.0.0:18333` | Fixed peer listening port |
+| `bind` | `0.0.0.0:58333` | Internal peer listening port |
 | `listen` | `1` | Always accepting connections |
 | `assumevalid` | Hardcoded block hash | Performance optimization |
 | `-onion` | `<osIp>:9050` | StartOS Tor proxy (set at runtime) |
@@ -111,7 +112,7 @@ This is transparent to dependent services — port 8332 always serves RPC.
 | Interface | Port | Protocol | Purpose | Condition |
 |-----------|------|----------|---------|-----------|
 | RPC | 8332 | HTTP | JSON-RPC commands | Always |
-| Peer | 18333 | TCP | Bitcoin peer-to-peer connections | Always |
+| Peer | 8333 | TCP | Bitcoin peer-to-peer connections | Always |
 | ZeroMQ | 28332 | TCP | Block/transaction notifications | When ZMQ enabled |
 | I2P Console | 7070 | HTTP | I2P daemon web console | When embedded I2P enabled with web console |
 
@@ -123,6 +124,7 @@ This is transparent to dependent services — port 8332 always serves RPC.
 |--------|---------|-------------|
 | **Mempool Settings** | Configure mempool behavior | Any |
 | **Peer Settings** | Configure networking, I2P, peer connections | Any |
+| **Inbound Connections** | Configure inbound peer connectivity (public address, Tor, or disabled) | Any |
 | **RPC Settings** | Configure RPC server parameters | Any |
 | **Other Settings** | Configure ZMQ, indexes, wallets, pruning, IPC | Any |
 
@@ -169,12 +171,16 @@ This is transparent to dependent services — port 8332 always serves RPC.
 
 ## Dependencies
 
-None. Bitcoin Core is a standalone service. Other StartOS services (LND, Core Lightning, Electrs, etc.) depend on it.
+| Dependency | Condition | Required State |
+|------------|-----------|----------------|
+| **Tor** | When `wantsOnion` is true, `externalip` contains `.onion`, or `onlynet` includes `onion` | Running (>= 0.4.8:0-beta.0) |
+
+When a Tor onion address is requested via the **Inbound Connections** action, a task is created asking Tor to provision an onion service. Once fulfilled, the onion address is set as `externalip` automatically. Other StartOS services (LND, Core Lightning, Electrs, etc.) depend on Bitcoin Core.
 
 ## Limitations and Differences
 
 1. **Custom Docker image** — built from source with IPC and ZMQ support; adds runtime utilities not in upstream releases
-2. **Tor always enabled** — the `-onion` flag is set to the StartOS Tor proxy on every start
+2. **Tor proxy always configured** — the `-onion` flag is set to the StartOS Tor proxy on every start; Tor itself is a conditional dependency (required only when onion connectivity is configured)
 3. **RPC cookie auth enforced** — `rpcuser`/`rpcpassword` are forcibly removed; authentication uses `.cookie` or `rpcauth` credentials generated via the action
 4. **Disk-aware defaults** — pruning and txindex are auto-configured based on available disk space (< 900 GB enables pruning)
 5. **Pruned nodes use RPC proxy** — an intermediary `btc-rpc-proxy` container transparently fetches pruned blocks over the P2P network, allowing dependent services to request any block even from a pruned node
@@ -216,15 +222,17 @@ volumes:
   i2pd: /home/i2pd
 ports:
   rpc: 8332
-  peer: 18333
+  peer: 8333
   zmq: 28332 (conditional)
   i2p-console: 7070 (conditional)
-dependencies: none
+dependencies:
+  tor: conditional (onion connectivity)
 startos_managed_files:
   - store.json
 actions:
   - mempool-config
   - peers-config
+  - inbound-connections
   - rpc-config
   - other-config
   - generate-rpcuser
