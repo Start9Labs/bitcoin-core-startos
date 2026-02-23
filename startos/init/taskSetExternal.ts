@@ -14,12 +14,12 @@ export const taskSetExternal = sdk.setupOnInit(async (effects, kind) => {
     )
     .const()
 
+  // If wantsOnion is true, dependencies.ts handles the externalip lifecycle
+  const wantsOnion = await storeJson.read((s) => s.wantsOnion).const(effects)
+
   const externalIp = await bitcoinConfFile
     .read((b) => b.externalip)
     .const(effects)
-
-  // If wantsOnion is true, dependencies.ts handles the externalip lifecycle
-  const wantsOnion = await storeJson.read((s) => s.wantsOnion).const(effects)
 
   if (!wantsOnion && externalIp && !publicPeerUrls.includes(externalIp)) {
     await bitcoinConfFile.merge(

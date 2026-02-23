@@ -69,38 +69,56 @@ export const shape = z.object({
   share: iniNumber.catch(d.share),
   notransit: iniBoolean.catch(d.notransit),
   floodfill: iniBoolean.catch(d.floodfill),
-  ntcp2: z.object({
-    enabled: iniBoolean.catch(d.ntcp2.enabled),
-    published: iniBoolean.catch(d.ntcp2.published),
-  }),
-  ssu2: z.object({
-    enabled: iniBoolean.catch(d.ssu2.enabled),
-    published: iniBoolean.catch(d.ssu2.published),
-  }),
-  http: z.object({
-    enabled: iniBoolean.catch(d.http.enabled),
-    address: z.string().catch(d.http.address),
-    port: iniNumber.catch(d.http.port),
-    strictheaders: iniBoolean.catch(d.http.strictheaders),
-  }),
-  httpproxy: z.object({
-    enabled: iniBoolean.catch(d.httpproxy.enabled),
-  }),
-  socksproxy: z.object({
-    enabled: iniBoolean.catch(d.socksproxy.enabled),
-  }),
-  sam: z.object({
-    enabled: iniBoolean.catch(d.sam.enabled),
-  }),
-  upnp: z.object({
-    enabled: iniBoolean.catch(d.upnp.enabled),
-  }),
-  reseed: z.object({
-    verify: iniBoolean.catch(d.reseed.verify),
-  }),
-  limits: z.object({
-    transittunnels: iniNumber.catch(d.limits.transittunnels),
-  }),
+  ntcp2: z
+    .object({
+      enabled: iniBoolean.catch(d.ntcp2.enabled),
+      published: iniBoolean.catch(d.ntcp2.published),
+    })
+    .catch(d.ntcp2),
+  ssu2: z
+    .object({
+      enabled: iniBoolean.catch(d.ssu2.enabled),
+      published: iniBoolean.catch(d.ssu2.published),
+    })
+    .catch(d.ssu2),
+  http: z
+    .object({
+      enabled: iniBoolean.catch(d.http.enabled),
+      address: z.string().catch(d.http.address),
+      port: iniNumber.catch(d.http.port),
+      strictheaders: iniBoolean.catch(d.http.strictheaders),
+    })
+    .catch(d.http),
+  httpproxy: z
+    .object({
+      enabled: iniBoolean.catch(d.httpproxy.enabled),
+    })
+    .catch(d.httpproxy),
+  socksproxy: z
+    .object({
+      enabled: iniBoolean.catch(d.socksproxy.enabled),
+    })
+    .catch(d.socksproxy),
+  sam: z
+    .object({
+      enabled: iniBoolean.catch(d.sam.enabled),
+    })
+    .catch(d.sam),
+  upnp: z
+    .object({
+      enabled: iniBoolean.catch(d.upnp.enabled),
+    })
+    .catch(d.upnp),
+  reseed: z
+    .object({
+      verify: iniBoolean.catch(d.reseed.verify),
+    })
+    .catch(d.reseed),
+  limits: z
+    .object({
+      transittunnels: iniNumber.catch(d.limits.transittunnels),
+    })
+    .catch(d.limits),
 })
 
 export const i2pdConfFile = FileHelper.ini(

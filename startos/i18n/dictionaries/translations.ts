@@ -278,10 +278,9 @@ export default {
     1851: 'Configurar si y cómo su nodo es accesible por pares en la red Bitcoin.',
     1852: 'Conexiones entrantes',
     1853: 'Elegir si permitir que otros nodos se conecten al suyo.',
-    1854: 'Permitir conexiones entrantes (recomendado)',
+    1854: 'Habilitado (Recomendado)',
     1855: 'Dirección pública',
     1856: 'Seleccione la dirección donde su nodo puede ser contactado por pares.',
-    1857: 'Deshabilitar conexiones entrantes',
     1858: 'Crear dirección Tor',
 
     // dependencies.ts
@@ -289,6 +288,9 @@ export default {
 
     // init/taskSetExternal.ts
     1860: 'Dirección externa eliminada. Su nodo solo puede hacer conexiones salientes. Seleccione una nueva dirección externa para volver a habilitar las conexiones entrantes.',
+
+    // init/seedFiles.ts
+    1861: 'Configure cómo su nodo es accesible por pares. Puede permitir conexiones entrantes a través de una dirección pública o Tor, o deshabilitarlas por completo.',
 
     // Common
     1800: 'Configuración',
@@ -570,10 +572,9 @@ export default {
     1851: 'Konfigurieren Sie, ob und wie Ihr Knoten von Peers im Bitcoin-Netzwerk erreichbar ist.',
     1852: 'Eingehende Verbindungen',
     1853: 'Wählen Sie, ob andere Knoten sich mit Ihrem verbinden können.',
-    1854: 'Eingehende Verbindungen zulassen (empfohlen)',
+    1854: 'Aktiviert (Empfohlen)',
     1855: 'Öffentliche Adresse',
     1856: 'Wählen Sie die Adresse, unter der Ihr Knoten von Peers erreicht werden kann.',
-    1857: 'Eingehende Verbindungen deaktivieren',
     1858: 'Tor-Adresse erstellen',
 
     // dependencies.ts
@@ -581,6 +582,9 @@ export default {
 
     // init/taskSetExternal.ts
     1860: 'Externe Adresse entfernt. Ihr Knoten kann nur ausgehende Verbindungen herstellen. Wählen Sie eine neue externe Adresse, um eingehende Verbindungen wieder zu aktivieren.',
+
+    // init/seedFiles.ts
+    1861: 'Konfigurieren Sie, wie Ihr Knoten von Peers erreichbar ist. Sie können eingehende Verbindungen über eine öffentliche Adresse oder Tor zulassen oder sie vollständig deaktivieren.',
 
     // Common
     1800: 'Konfiguration',
@@ -862,10 +866,9 @@ export default {
     1851: 'Skonfiguruj, czy i jak Twój węzeł jest osiągalny przez peerów w sieci Bitcoin.',
     1852: 'Połączenia przychodzące',
     1853: 'Wybierz, czy zezwolić innym węzłom na łączenie się z Twoim.',
-    1854: 'Zezwól na połączenia przychodzące (zalecane)',
+    1854: 'Włączone (Zalecane)',
     1855: 'Adres publiczny',
     1856: 'Wybierz adres, pod którym Twój węzeł może być osiągalny przez peerów.',
-    1857: 'Wyłącz połączenia przychodzące',
     1858: 'Utwórz adres Tor',
 
     // dependencies.ts
@@ -873,6 +876,9 @@ export default {
 
     // init/taskSetExternal.ts
     1860: 'Adres zewnętrzny usunięty. Twój węzeł może nawiązywać tylko połączenia wychodzące. Wybierz nowy adres zewnętrzny, aby ponownie włączyć połączenia przychodzące.',
+
+    // init/seedFiles.ts
+    1861: 'Skonfiguruj, w jaki sposób Twój węzeł jest dostępny dla innych węzłów. Możesz zezwolić na połączenia przychodzące przez adres publiczny lub Tor, albo całkowicie je wyłączyć.',
 
     // Common
     1800: 'Konfiguracja',
@@ -1154,10 +1160,9 @@ export default {
     1851: 'Configurer si et comment votre nœud est accessible par les pairs sur le réseau Bitcoin.',
     1852: 'Connexions entrantes',
     1853: "Choisir d'autoriser ou non d'autres nœuds à se connecter au vôtre.",
-    1854: 'Autoriser les connexions entrantes (recommandé)',
+    1854: 'Activé (Recommandé)',
     1855: 'Adresse publique',
     1856: "Sélectionnez l'adresse à laquelle votre nœud peut être contacté par les pairs.",
-    1857: 'Désactiver les connexions entrantes',
     1858: 'Créer une adresse Tor',
 
     // dependencies.ts
@@ -1165,6 +1170,9 @@ export default {
 
     // init/taskSetExternal.ts
     1860: "Adresse externe supprimée. Votre nœud ne peut établir que des connexions sortantes. Sélectionnez une nouvelle adresse externe pour réactiver les connexions entrantes.",
+
+    // init/seedFiles.ts
+    1861: "Configurez comment votre nœud est accessible par les pairs. Vous pouvez autoriser les connexions entrantes via une adresse publique ou Tor, ou les désactiver entièrement.",
 
     // Common
     1800: 'Configuration',

@@ -7,7 +7,7 @@ export const shape = z.object({
   fullySynced: z.boolean().catch(false),
   snapshotInUse: z.boolean().catch(false),
   enableIpc: z.boolean().catch(false),
-  wantsOnion: z.boolean().catch(false),
+  wantsOnion: z.boolean().nullable().catch(null),
 })
 
 export const storeJson = FileHelper.json(

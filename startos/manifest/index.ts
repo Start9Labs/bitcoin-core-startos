@@ -59,7 +59,7 @@ export const manifest = setupManifest({
       optional: true,
       metadata: {
         title: 'Tor',
-        icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Tor-logo-2011-flat.svg/1200px-Tor-logo-2011-flat.svg.png',
+        icon: 'https://raw.githubusercontent.com/Start9Labs/tor-startos/refs/heads/update/040/icon.png',
       },
     },
   },

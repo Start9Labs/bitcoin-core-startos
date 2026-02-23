@@ -34,7 +34,7 @@ const inboundConnectionsSpec = InputSpec.of({
       disabled: false,
       variants: Variants.of({
         allow: {
-          name: i18n('Allow Inbound Connections (recommended)'),
+          name: i18n('Enabled (Recommended)'),
           spec: InputSpec.of({
             externalip: Value.select({
               name: i18n('Public Address'),
@@ -47,7 +47,7 @@ const inboundConnectionsSpec = InputSpec.of({
           }),
         },
         disable: {
-          name: i18n('Disable Inbound Connections'),
+          name: i18n('Disabled'),
           spec: InputSpec.of({}),
         },
       }),
@@ -81,17 +81,17 @@ export const inboundConnections = sdk.Action.withInput(
     if (!externalip) {
       const wantsOnion = await storeJson.read((s) => s.wantsOnion).once()
 
-      if (wantsOnion) {
+      if (wantsOnion === false) {
         return {
-          inbound: {
-            selection: 'allow' as const,
-            value: { externalip: 'create-tor' },
-          },
+          inbound: { selection: 'disable' as const, value: {} },
         }
       }
 
       return {
-        inbound: { selection: 'disable' as const, value: {} },
+        inbound: {
+          selection: 'allow' as const,
+          value: { externalip: 'create-tor' },
+        },
       }
     }
 

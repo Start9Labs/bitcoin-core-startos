@@ -275,10 +275,9 @@ const dict = {
   'Configure whether and how your node is reachable by peers on the Bitcoin network.': 1851,
   'Inbound Connections': 1852,
   'Choose whether to allow other nodes to connect to yours.': 1853,
-  'Allow Inbound Connections (recommended)': 1854,
+  'Enabled (Recommended)': 1854,
   'Public Address': 1855,
   'Select the address at which your node can be reached by peers.': 1856,
-  'Disable Inbound Connections': 1857,
   'Create Tor Address': 1858,
 
   // dependencies.ts
@@ -286,6 +285,9 @@ const dict = {
 
   // init/taskSetExternal.ts
   'External address removed. Your node can only make outbound connections. Select a new external address to re-enable inbound connections.': 1860,
+
+  // init/seedFiles.ts
+  'Configure how your node is reachable by peers. You can allow inbound connections via a public address or Tor, or disable them entirely.': 1861,
 
   // Common
   'Configuration': 1800,
