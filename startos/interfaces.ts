@@ -4,6 +4,7 @@ import { sdk } from './sdk'
 import {
   peerInterfaceId,
   peerPortExternal,
+  peerPortInternal,
   rpcInterfaceId,
   rpcPort,
   zmqInterfaceId,
@@ -39,7 +40,7 @@ export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
 
   // Peer
   const peerMulti = sdk.MultiHost.of(effects, 'peer')
-  const peerMultiOrigin = await peerMulti.bindPort(peerPortExternal, {
+  const peerMultiOrigin = await peerMulti.bindPort(peerPortInternal, {
     protocol: null,
     preferredExternalPort: peerPortExternal,
     addSsl: null,

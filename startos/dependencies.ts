@@ -3,7 +3,7 @@ import { bitcoinConfFile } from './fileModels/bitcoin.conf'
 import { storeJson } from './fileModels/store.json'
 import { i18n } from './i18n'
 import { sdk } from './sdk'
-import { peerInterfaceId, peerPortExternal } from './utils'
+import { peerInterfaceId, peerPortInternal } from './utils'
 
 const torTaskReplayId = 'tor:add-onion-service'
 
@@ -74,7 +74,7 @@ export const setDependencies = sdk.setupDependencies(async ({ effects }) => {
             packageId: 'bitcoind',
             interfaceId: peerInterfaceId,
             hostId: 'peer',
-            internalPort: peerPortExternal,
+            internalPort: peerPortInternal,
           },
           address: { selection: 'new', value: {} },
         },

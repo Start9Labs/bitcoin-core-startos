@@ -1,7 +1,7 @@
 # ** Plumbing. DO NOT EDIT **.
 # This file is imported by ./Makefile. Make edits there
 
-PACKAGE_ID := $(shell awk -F"'" '/id:/ {print $$2}' startos/manifest.ts)
+PACKAGE_ID := $(shell awk -F"'" '/id:/ {print $$2}' startos/manifest/index.ts)
 INGREDIENTS := $(shell start-cli s9pk list-ingredients 2>/dev/null)
 ARCHES ?= x86 arm riscv
 TARGETS ?= arches
