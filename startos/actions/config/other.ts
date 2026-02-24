@@ -102,7 +102,7 @@ const configSpec = sdk.InputSpec.of({
       default: disk.total < archivalMin ? 550 : null,
       integer: true,
       units: 'MiB',
-      min: 1,
+      min: 0,
       max: Math.floor((disk.total * 0.75) / (1024 * 1024)),
     }
   }),
