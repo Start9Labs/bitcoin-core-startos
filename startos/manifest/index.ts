@@ -21,10 +21,7 @@ export const manifest = setupManifest({
   images: {
     bitcoind: {
       source: {
-        dockerBuild: {
-          workdir: './',
-          dockerfile: 'Dockerfile',
-        },
+        dockerBuild: {},
       },
       arch: ['x86_64', 'aarch64', 'riscv64'],
     },
@@ -32,12 +29,11 @@ export const manifest = setupManifest({
       source: {
         dockerTag: 'ghcr.io/start9labs/btc-rpc-proxy',
       },
-      arch: ['x86_64', 'aarch64'],
-      emulateMissingAs: 'aarch64',
+      arch: ['x86_64', 'aarch64', 'riscv64'],
     },
     python: {
       source: {
-        dockerTag: 'python:3.13.11-alpine',
+        dockerTag: 'python:3.14.2-alpine',
       },
       arch: ['x86_64', 'aarch64', 'riscv64'],
     },
@@ -46,7 +42,7 @@ export const manifest = setupManifest({
         dockerTag: 'purplei2p/i2pd:release-2.58.0',
       },
       arch: ['x86_64', 'aarch64'],
-      emulateMissingAs: 'aarch64',
+      emulateMissingAs: 'x86_64',
     },
   },
   alerts: {
