@@ -292,6 +292,11 @@ export default {
     // init/seedFiles.ts
     1861: 'Configure cómo su nodo es accesible por pares. Puede permitir conexiones entrantes a través de una dirección pública o Tor, o deshabilitarlas por completo.',
 
+    // actions/config/autoconfig.ts
+    1900: 'Auto-Configurar',
+    1901: 'Configurar automáticamente bitcoin.conf para las necesidades de otro servicio',
+    1902: 'Estos campos fueron proporcionados por una tarea y no se pueden editar',
+
     // Common
     1800: 'Configuración',
   } satisfies LangDict,
@@ -585,6 +590,11 @@ export default {
 
     // init/seedFiles.ts
     1861: 'Konfigurieren Sie, wie Ihr Knoten von Peers erreichbar ist. Sie können eingehende Verbindungen über eine öffentliche Adresse oder Tor zulassen oder sie vollständig deaktivieren.',
+
+    // actions/config/autoconfig.ts
+    1900: 'Auto-Konfiguration',
+    1901: 'bitcoin.conf automatisch für die Anforderungen eines anderen Dienstes konfigurieren',
+    1902: 'Diese Felder wurden von einer Aufgabe bereitgestellt und können nicht bearbeitet werden',
 
     // Common
     1800: 'Konfiguration',
@@ -880,6 +890,11 @@ export default {
     // init/seedFiles.ts
     1861: 'Skonfiguruj, w jaki sposób Twój węzeł jest dostępny dla innych węzłów. Możesz zezwolić na połączenia przychodzące przez adres publiczny lub Tor, albo całkowicie je wyłączyć.',
 
+    // actions/config/autoconfig.ts
+    1900: 'Auto-Konfiguracja',
+    1901: 'Automatycznie skonfiguruj bitcoin.conf dla potrzeb innej usługi',
+    1902: 'Te pola zostały dostarczone przez zadanie i nie mogą być edytowane',
+
     // Common
     1800: 'Konfiguracja',
   } satisfies LangDict,
@@ -1173,6 +1188,11 @@ export default {
 
     // init/seedFiles.ts
     1861: "Configurez comment votre nœud est accessible par les pairs. Vous pouvez autoriser les connexions entrantes via une adresse publique ou Tor, ou les désactiver entièrement.",
+
+    // actions/config/autoconfig.ts
+    1900: 'Auto-Configuration',
+    1901: 'Configurer automatiquement bitcoin.conf pour les besoins d\'un autre service',
+    1902: 'Ces champs ont été fournis par une tâche et ne peuvent pas être modifiés',
 
     // Common
     1800: 'Configuration',

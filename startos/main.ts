@@ -96,7 +96,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
             await access(`${bitcoindSub.rootfs}${rpcCookiePath}`)
             const res = await bitcoindSub.exec([
               'bitcoin-cli',
-              `-rpcconnect=${bitcoinConf.rpcbind}`,
+              `-rpcconnect=${bitcoinConf.raw?.rpcbind}`,
               'getrpcinfo',
             ])
             return res.exitCode === 0
@@ -127,7 +127,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
             'bitcoin-cli',
             `-conf=${rootDir}/bitcoin.conf`,
             `-rpccookiefile=${rootDir}${rpcCookiePath}`,
-            `-rpcconnect=${bitcoinConf.rpcbind}`,
+            `-rpcconnect=${bitcoinConf.raw?.rpcbind}`,
             'getblockchaininfo',
           ])
 
@@ -182,7 +182,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
 
   // ---- Conditional: I2P daemon (enabled when i2psam is configured) ----
   const withI2pd = await baseDaemons.addDaemon('i2pd', async () => {
-    if (!bitcoinConf.i2psam) return null
+    if (!bitcoinConf.raw?.i2psam) return null
     if (!i2pdConf) throw new Error('No i2pd.conf')
 
     const subcontainer = await sdk.SubContainer.of(

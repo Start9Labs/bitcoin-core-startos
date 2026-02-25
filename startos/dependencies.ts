@@ -18,7 +18,7 @@ const torDep = {
 export const setDependencies = sdk.setupDependencies(async ({ effects }) => {
   const { externalip, onlynet } =
     (await bitcoinConfFile
-      .read((b) => ({ externalip: b.externalip, onlynet: b.onlynet }))
+      .read((b) => ({ externalip: b.raw?.externalip, onlynet: b.onlynet }))
       .const(effects)) ?? {}
 
   const wantsOnion = await storeJson.read((s) => s.wantsOnion).const(effects)
@@ -44,7 +44,7 @@ export const setDependencies = sdk.setupDependencies(async ({ effects }) => {
       // Tor fulfilled the request — set externalip to the onion and clear wantsOnion
       await bitcoinConfFile.merge(
         effects,
-        { externalip: onionUrl },
+        { raw: { externalip: onionUrl } },
         { allowWriteAfterConst: true },
       )
       await storeJson.merge(
@@ -57,7 +57,7 @@ export const setDependencies = sdk.setupDependencies(async ({ effects }) => {
       if (externalip && !externalip.includes('.onion')) {
         await bitcoinConfFile.merge(
           effects,
-          { externalip: undefined },
+          { raw: { externalip: undefined } },
           { allowWriteAfterConst: true },
         )
       }

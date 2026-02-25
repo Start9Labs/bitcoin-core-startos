@@ -1,8 +1,8 @@
 import { bitcoinConfFile } from '../../fileModels/bitcoin.conf'
 import { storeJson } from '../../fileModels/store.json'
 import { sdk } from '../../sdk'
-import { peerInterfaceId } from '../../utils'
 import { i18n } from '../../i18n'
+import { peerInterfaceId } from '../../utils'
 
 const { Value, Variants, InputSpec } = sdk
 
@@ -76,7 +76,9 @@ export const inboundConnections = sdk.Action.withInput(
 
   // optionally pre-fill the input form
   async ({ effects }) => {
-    const externalip = await bitcoinConfFile.read((b) => b.externalip).once()
+    const externalip = await bitcoinConfFile
+      .read((b) => b.raw?.externalip)
+      .once()
 
     if (!externalip) {
       const wantsOnion = await storeJson.read((s) => s.wantsOnion).once()
@@ -111,7 +113,7 @@ export const inboundConnections = sdk.Action.withInput(
     }
 
     if (inbound.selection === 'disable') {
-      await bitcoinConfFile.merge(effects, { externalip: undefined })
+      await bitcoinConfFile.merge(effects, { raw: { externalip: undefined } })
       await storeJson.merge(effects, { wantsOnion: false })
       return
     }
@@ -121,7 +123,7 @@ export const inboundConnections = sdk.Action.withInput(
     if (externalip === 'create-tor') {
       await storeJson.merge(effects, { wantsOnion: true })
     } else {
-      await bitcoinConfFile.merge(effects, { externalip })
+      await bitcoinConfFile.merge(effects, { raw: { externalip } })
       await storeJson.merge(effects, { wantsOnion: false })
     }
   },

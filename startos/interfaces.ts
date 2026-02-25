@@ -64,7 +64,7 @@ export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
   receipts.push(peerReceipt)
 
   // ZMQ (conditional)
-  if (bitcoinConf.zmqpubhashblock) {
+  if (bitcoinConf.zmqEnabled) {
     const zmqMulti = sdk.MultiHost.of(effects, 'zmq')
     const zmqMultiOrigin = await zmqMulti.bindPort(zmqPortBlock, {
       preferredExternalPort: zmqPortBlock,
@@ -95,7 +95,7 @@ export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
     .read((c) => c.http.enabled)
     .const(effects)
 
-  if (bitcoinConf.i2psam && i2pConsoleEnabled) {
+  if (bitcoinConf.raw?.i2psam && i2pConsoleEnabled) {
     const i2pMulti = sdk.MultiHost.of(effects, 'i2p-console')
     const i2pConsoleOrigin = await i2pMulti.bindPort(7070, {
       protocol: 'http',

@@ -18,13 +18,13 @@ export const taskSetExternal = sdk.setupOnInit(async (effects, kind) => {
   const wantsOnion = await storeJson.read((s) => s.wantsOnion).const(effects)
 
   const externalIp = await bitcoinConfFile
-    .read((b) => b.externalip)
+    .read((b) => b.raw?.externalip)
     .const(effects)
 
   if (!wantsOnion && externalIp && !publicPeerUrls.includes(externalIp)) {
     await bitcoinConfFile.merge(
       effects,
-      { externalip: undefined },
+      { raw: { externalip: undefined } },
       { allowWriteAfterConst: true },
     )
 

@@ -289,6 +289,11 @@ const dict = {
   // init/seedFiles.ts
   'Configure how your node is reachable by peers. You can allow inbound connections via a public address or Tor, or disable them entirely.': 1861,
 
+  // actions/config/autoconfig.ts
+  'Auto-Configure': 1900,
+  'Automatically configure bitcoin.conf for the needs of a another service': 1901,
+  'These fields were provided by a task and cannot be edited': 1902,
+
   // Common
   'Configuration': 1800,
 } as const

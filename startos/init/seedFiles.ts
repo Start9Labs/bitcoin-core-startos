@@ -16,14 +16,16 @@ export const seedFiles = sdk.setupOnInit(async (effects, kind) => {
   await storeJson.merge(effects, {})
 
   await bitcoinConfFile.merge(effects, {
-    ...bitcoinConfDefaults,
-    ...((await diskUsage()).total < 900_000_000_000
-      ? {
-          prune: 550,
-          rpcbind: rpcbindPruned,
-          rpcallowip: rpcallowipPruned,
-        }
-      : {}),
+    raw: {
+      ...bitcoinConfDefaults,
+      ...((await diskUsage()).total < 900_000_000_000
+        ? {
+            prune: 550,
+            rpcbind: rpcbindPruned,
+            rpcallowip: rpcallowipPruned,
+          }
+        : {}),
+    },
   })
 
   await i2pdConfFile.merge(effects, {})
