@@ -10,6 +10,7 @@ import { deleteTxIndex } from './deleteTxIndex'
 import { generateRpcUser } from './generateRpcUser'
 import { generateRpcUserDependent } from './generateRpcUserDependent'
 import { otherConfig } from './config/other'
+import { inboundConnections } from './config/inboundConnections'
 import { reindexBlockchain } from './reindexBlockchain'
 import { reindexChainstate } from './reindexChainstate'
 import { runtimeInfo } from './runtimeInfo'
@@ -26,6 +27,7 @@ export const actions = sdk.Actions.of()
   .addAction(generateRpcUser)
   .addAction(generateRpcUserDependent)
   .addAction(otherConfig)
+  .addAction(inboundConnections)
   .addAction(reindexBlockchain)
   .addAction(reindexChainstate)
   .addAction(runtimeInfo)
