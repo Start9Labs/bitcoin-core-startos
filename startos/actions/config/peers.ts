@@ -28,6 +28,7 @@ export const peerConfig = sdk.Action.withInput(
       v2transport: true,
       i2psam: true,
       connectpeer: true,
+      maxconnections: true,
     })
     .add({
       i2psam: Value.union({

@@ -194,6 +194,8 @@ export default {
     1252: 'Agregar direcciones de nodos con los que Bitcoin se conectará además de los nodos predeterminados.',
     1253: 'Configuración de pares',
     1254: 'Editar la configuración de pares en bitcoin.conf',
+    1255: 'Conexiones máximas',
+    1256: 'Establecer el número máximo de conexiones a mantener con pares.',
 
     // actions/config/mempool.ts
     1500: 'Persistir Mempool',
@@ -478,6 +480,8 @@ export default {
     1252: 'Adressen von Knoten hinzufügen, mit denen Bitcoin zusätzlich zu den Standardknoten eine Verbindung herstellt.',
     1253: 'Peer-Einstellungen',
     1254: 'Peer-Einstellungen in bitcoin.conf bearbeiten',
+    1255: 'Maximale Verbindungen',
+    1256: 'Maximale Anzahl der Verbindungen zu Peers festlegen.',
 
     // actions/config/mempool.ts
     1500: 'Mempool behalten',
@@ -762,6 +766,8 @@ export default {
     1252: 'Dodaj adresy węzłów, z którymi Bitcoin będzie się łączył oprócz domyślnych węzłów.',
     1253: 'Ustawienia peerów',
     1254: 'Edytuj ustawienia peerów w bitcoin.conf',
+    1255: 'Maksymalna liczba połączeń',
+    1256: 'Ustaw maksymalną liczbę połączeń z peerami.',
 
     // actions/config/mempool.ts
     1500: 'Zachowaj Mempool',
@@ -1046,6 +1052,8 @@ export default {
     1252: 'Ajouter les adresses des nœuds auxquels Bitcoin se connectera en plus des nœuds par défaut.',
     1253: 'Paramètres des pairs',
     1254: 'Modifier les paramètres des pairs dans bitcoin.conf',
+    1255: 'Connexions maximales',
+    1256: 'Définir le nombre maximum de connexions à maintenir avec les pairs.',
 
     // actions/config/mempool.ts
     1500: 'Conserver le Mempool',

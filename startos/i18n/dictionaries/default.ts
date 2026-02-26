@@ -188,6 +188,8 @@ const dict = {
   'Add Node': 1250,
   'Add Nodes': 1251,
   'Add addresses of nodes for Bitcoin to connect with in addition to default nodes.': 1252,
+  'Maximum Connections': 1255,
+  'Set the maximum number of connections to maintain with peers.': 1256,
   'Peer Settings': 1253,
   'Edit the Peer settings in bitcoin.conf': 1254,
 

@@ -29,7 +29,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
   // get bitcoin.conf and watch for changes
   const bitcoinConf = await bitcoinConfFile.read().const(effects)
   if (!bitcoinConf) {
-    throw new Error('No bticoin.conf')
+    throw new Error('No bitcoin.conf')
   }
 
   // get i2pd.conf and watch for changes
@@ -230,6 +230,8 @@ export const main = sdk.setupMain(async ({ effects }) => {
               fullySynced: true,
               snapshotInUse: false,
             })
+            // Reduce dbcache after initial sync to free RAM
+            await bitcoinConfFile.merge(effects, { dbcache: 450 })
           }
 
           return null

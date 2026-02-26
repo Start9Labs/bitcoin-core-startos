@@ -93,6 +93,7 @@ export const shape = z.object({
   v2transport: iniBoolean,
   connect: iniStringArray,
   addnode: iniStringArray,
+  maxconnections: iniNumber,
   i2psam: z.literal(i2PSamAddress).optional().catch(undefined),
   i2pacceptincoming: iniBoolean,
 
@@ -424,6 +425,16 @@ export const fullConfigSpec = sdk.InputSpec.of({
       },
     }),
   }),
+  maxconnections: Value.number({
+    name: i18n('Maximum Connections'),
+    description: i18n(
+      'Set the maximum number of connections to maintain with peers.',
+    ),
+    default: d.maxconnections,
+    required: true,
+    min: 0,
+    integer: true,
+  }),
   rpcservertimeout: Value.number({
     name: i18n('Rpc Server Timeout'),
     description: i18n(
@@ -499,6 +510,7 @@ function fileToForm(
     v2transport,
     connect,
     addnode,
+    maxconnections,
     rpcservertimeout,
     rpcthreads,
     rpcworkqueue,
@@ -553,6 +565,7 @@ function fileToForm(
             : [addnode].flat().filter((x): x is string => x !== undefined),
       },
     },
+    maxconnections,
     rpcservertimeout,
     rpcthreads,
     rpcworkqueue,
@@ -582,6 +595,7 @@ function formToFile(
     v2transport,
     onlynet,
     connectpeer,
+    maxconnections,
     rpcservertimeout,
     rpcthreads,
     rpcworkqueue,
@@ -641,6 +655,7 @@ function formToFile(
       connectpeer?.selection === 'addnode'
         ? (connectpeer.value?.peers?.filter((a) => !!a) as string[] | undefined)
         : undefined,
+    maxconnections,
 
     // RPC
     rpcservertimeout: rpcservertimeout ?? undefined,
