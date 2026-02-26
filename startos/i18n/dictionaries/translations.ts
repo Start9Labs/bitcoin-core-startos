@@ -178,7 +178,6 @@ export default {
     1230: 'Límite de túneles de tránsito',
     1231: 'Sesiones de tránsito activas máximas (predeterminado: 10000). ¡Este valor se duplica si el modo floodfill está habilitado!',
 
-
     // actions/config/peers.ts - Peer settings
     1236: 'Onlynet',
     1237: 'Realizar conexiones salientes automáticas solo a las redes seleccionadas. Las conexiones entrantes y manuales no se ven afectadas por esta opción.',
@@ -462,7 +461,6 @@ export default {
     1229: 'Hinweis: Dieser Modus verwendet viel mehr Netzwerkverbindungen und CPU!',
     1230: 'Transit-Tunnel-Limit',
     1231: 'Maximale aktive Transit-Sitzungen (Standard: 10000). Dieser Wert verdoppelt sich, wenn der Floodfill-Modus aktiviert ist!',
-
 
     // actions/config/peers.ts - Peer settings
     1236: 'Onlynet',
@@ -748,7 +746,6 @@ export default {
     1230: 'Limit tuneli tranzytowych',
     1231: 'Maksymalna liczba aktywnych sesji tranzytowych (domyślnie: 10000). Ta wartość jest podwajana, jeśli tryb floodfill jest włączony!',
 
-
     // actions/config/peers.ts - Peer settings
     1236: 'Onlynet',
     1237: 'Nawiązuj automatyczne połączenia wychodzące tylko do wybranych sieci. Połączenia przychodzące i ręczne nie są tym wpływane.',
@@ -887,11 +884,11 @@ export default {
     206: "Erreur lors de la création de l'utilisateur d'authentification RPC",
     207: "L'entrée RPCAuth avec ce nom d'utilisateur existe déjà.",
     208: 'Utilisateur RPC créé avec succès',
-    209: 'Mot de passe RPC créé pour ${username}. Conservez ce mot de passe dans un endroit sûr. En cas de perte, un nouvel utilisateur RPC devra être créé car Bitcoin.conf ne stocke qu\'un hachage du mot de passe',
+    209: "Mot de passe RPC créé pour ${username}. Conservez ce mot de passe dans un endroit sûr. En cas de perte, un nouvel utilisateur RPC devra être créé car Bitcoin.conf ne stocke qu'un hachage du mot de passe",
     210: 'Mot de passe RPC',
     211: 'Mot de passe RPC de ${username}',
     212: "Échec de la création de l'utilisateur RPC",
-    213: 'rpcauth.py a échoué avec l\'erreur : ${error}',
+    213: "rpcauth.py a échoué avec l'erreur : ${error}",
 
     // actions/generateRpcUserDependent.ts
     300: 'Mot de passe',
@@ -912,18 +909,18 @@ export default {
 
     // actions/reindexBlockchain.ts
     500: 'Réindexer la blockchain',
-    501: 'Reconstruit les bases de données de blocs et de chainstate à partir de la genèse. Si les blocs existent déjà sur le disque, ceux-ci sont utilisés plutôt que d\'\u00eatre téléchargés à nouveau. Pour les n\u0153uds élagués, cela signifie télécharger à nouveau l\'ensemble de la blockchain.',
+    501: "Reconstruit les bases de données de blocs et de chainstate à partir de la genèse. Si les blocs existent déjà sur le disque, ceux-ci sont utilisés plutôt que d'\u00eatre téléchargés à nouveau. Pour les n\u0153uds élagués, cela signifie télécharger à nouveau l'ensemble de la blockchain.",
     502: 'Les blocs non stockés sur le disque seront téléchargés à nouveau pour reconstruire la base de données. Si votre n\u0153ud est élagué, cette action équivaut à synchroniser le n\u0153ud à partir de zéro, ce processus pourrait donc prendre des semaines sur du matériel bas de gamme.',
     503: 'Réindexer',
-    504: 'Redémarrage de bitcoind avec l\'argument -reindex',
-    505: 'La prochaine fois que bitcoind est démarré, il sera exécuté avec l\'argument -reindex',
+    504: "Redémarrage de bitcoind avec l'argument -reindex",
+    505: "La prochaine fois que bitcoind est démarré, il sera exécuté avec l'argument -reindex",
 
     // actions/reindexChainstate.ts
     600: 'Réindexer le chainstate',
     601: "Reconstruit la base de données chainstate en utilisant les données d'index de bloc existantes ; comme l'index de bloc n'est pas reconstruit, 'reindex_chainstate' devrait être strictement plus rapide que 'reindex'. Cette action ne doit être utilisée qu'en cas de corruption du chainstate ; si les blocs stockés sur le disque sont corrompus, l'action 'reindex' devra être exécutée à la place.",
     602: "Bien que plus rapide que 'Reindex', 'Reindex Chainstate' peut encore prendre plusieurs jours ou plus pour se terminer.",
-    603: 'Redémarrage de bitcoind avec l\'argument -reindex-chainstate',
-    604: 'La prochaine fois que bitcoind est démarré, il sera exécuté avec l\'argument -reindex-chainstate',
+    603: "Redémarrage de bitcoind avec l'argument -reindex-chainstate",
+    604: "La prochaine fois que bitcoind est démarré, il sera exécuté avec l'argument -reindex-chainstate",
 
     // actions/deletePeers.ts
     700: 'Supprimer la liste des pairs',
@@ -932,35 +929,35 @@ export default {
     703: 'peers.dat supprimé avec succès',
 
     // actions/deleteTxIndex.ts
-    800: 'Supprimer l\'index des transactions',
-    801: 'Supprime l\'index des transactions (txindex) au cas où il serait corrompu.',
+    800: "Supprimer l'index des transactions",
+    801: "Supprime l'index des transactions (txindex) au cas où il serait corrompu.",
     802: "L'index des transactions sera reconstruit une fois Bitcoin Core redémarré, sauf si 'Index Coinstats' est désactivé dans les paramètres de configuration. Veuillez ne pas faire cela à moins que vous ne compreniez parfaitement ce que vous faites.",
     803: 'txindex supprimé avec succès',
 
     // actions/deleteCoinstatsIndex.ts
-    900: 'Supprimer l\'index Coinstats',
-    901: 'Supprime l\'index Coinstats (coinstatsindex) au cas où il serait corrompu.',
+    900: "Supprimer l'index Coinstats",
+    901: "Supprime l'index Coinstats (coinstatsindex) au cas où il serait corrompu.",
     902: "L'index Coinstats sera reconstruit une fois Bitcoin Core redémarré, sauf si 'Index de transactions' est désactivé dans les paramètres de configuration. Veuillez ne pas faire cela à moins que vous ne compreniez parfaitement ce que vous faites.",
     903: 'Index coinstats supprimé avec succès',
 
     // actions/assumeutxo.ts
-    1000: 'URL de l\'instantané UTXO',
-    1001: 'URL de l\'instantané UTXO pour démarrer Bitcoin',
-    1002: 'Télécharger l\'instantané UTXO (assumeutxo)',
-    1003: 'assumeutxo est une fonctionnalité qui permet le démarrage rapide d\'une instance bitcoind de validation. Il peut prendre un certain temps supplémentaire pour télécharger et valider les blocs entre la hauteur de bloc de l\'instantané et le sommet. Pendant que l\'instantané est utilisé, l\'IBD continuera en arrière-plan jusqu\'\u00e0 ce qu\'il valide jusqu\'\u00e0 la hauteur de bloc de l\'instantané',
-    1004: 'Bien que tout instantané téléchargé soit vérifié par rapport à un hachage codé en dur dans le code source, cette action téléchargera n\'importe quoi à l\'URL fournie vers le serveur - Ne téléchargez que depuis des sources fiables !',
+    1000: "URL de l'instantané UTXO",
+    1001: "URL de l'instantané UTXO pour démarrer Bitcoin",
+    1002: "Télécharger l'instantané UTXO (assumeutxo)",
+    1003: "assumeutxo est une fonctionnalité qui permet le démarrage rapide d'une instance bitcoind de validation. Il peut prendre un certain temps supplémentaire pour télécharger et valider les blocs entre la hauteur de bloc de l'instantané et le sommet. Pendant que l'instantané est utilisé, l'IBD continuera en arrière-plan jusqu'\u00e0 ce qu'il valide jusqu'\u00e0 la hauteur de bloc de l'instantané",
+    1004: "Bien que tout instantané téléchargé soit vérifié par rapport à un hachage codé en dur dans le code source, cette action téléchargera n'importe quoi à l'URL fournie vers le serveur - Ne téléchargez que depuis des sources fiables !",
     1005: 'Téléchargement en cours...',
-    1006: 'Instantané en cours d\'utilisation',
-    1007: 'Téléchargement d\'instantané en cours. Après un téléchargement réussi, l\'instantané sera chargé en tant que chainstate actif et les blocs entre la hauteur de bloc de l\'instantané et le sommet seront téléchargés et vérifiés. Les blocs de la genèse à la hauteur de bloc de l\'instantané continueront d\'\u00eatre vérifiés en arrière-plan. Une fois que l\'IBD rattrape la hauteur de l\'instantané, la chaîne aura été entièrement validée',
+    1006: "Instantané en cours d'utilisation",
+    1007: "Téléchargement d'instantané en cours. Après un téléchargement réussi, l'instantané sera chargé en tant que chainstate actif et les blocs entre la hauteur de bloc de l'instantané et le sommet seront téléchargés et vérifiés. Les blocs de la genèse à la hauteur de bloc de l'instantané continueront d'\u00eatre vérifiés en arrière-plan. Une fois que l'IBD rattrape la hauteur de l'instantané, la chaîne aura été entièrement validée",
 
     // actions/runtimeInfo.ts
-    1100: 'Informations d\'exécution',
-    1101: 'Informations réseau et autres informations d\'exécution sur ce nœud Bitcoin',
-    1102: 'Informations d\'exécution du nœud',
+    1100: "Informations d'exécution",
+    1101: "Informations réseau et autres informations d'exécution sur ce nœud Bitcoin",
+    1102: "Informations d'exécution du nœud",
     1103: 'Connexions',
     1104: 'Le nombre de pairs connectés (entrants et sortants)',
     1105: 'Chemin du socket IPC',
-    1106: 'Chemin du socket Unix pour la communication IPC avec Bitcoin Core. D\'autres services peuvent se lier à ce socket dans leur configuration Docker.',
+    1106: "Chemin du socket Unix pour la communication IPC avec Bitcoin Core. D'autres services peuvent se lier à ce socket dans leur configuration Docker.",
     1107: 'Informations blockchain',
     1108: 'Hauteur de bloc',
     1109: 'La hauteur de bloc actuelle pour le réseau',
@@ -982,11 +979,11 @@ export default {
     1125: 'Bit',
     1126: 'Le bit (0-28) dans le champ de version du bloc utilisé pour signaler ce softfork (uniquement pour le statut "started")',
     1127: 'Heure de début',
-    1128: 'Le temps médian passé minimum d\'un bloc auquel le bit prend son sens',
-    1129: 'Délai d\'expiration',
-    1130: 'Le temps médian passé d\'un bloc auquel le déploiement est considéré comme échoué s\'il n\'est pas encore verrouillé',
+    1128: "Le temps médian passé minimum d'un bloc auquel le bit prend son sens",
+    1129: "Délai d'expiration",
+    1130: "Le temps médian passé d'un bloc auquel le déploiement est considéré comme échoué s'il n'est pas encore verrouillé",
     1131: 'Depuis',
-    1132: 'hauteur du premier bloc auquel le statut s\'applique',
+    1132: "hauteur du premier bloc auquel le statut s'applique",
     1133: 'Statistiques',
     1134: 'Période',
     1135: 'La longueur en blocs de la période de signalisation BIP9',
@@ -997,7 +994,7 @@ export default {
     1140: 'Nombre',
     1141: 'Le nombre de blocs avec le bit de version défini dans la période actuelle',
     1142: 'Possible',
-    1143: 'renvoie false s\'il ne reste pas assez de blocs dans cette période pour dépasser le seuil d\'activation',
+    1143: "renvoie false s'il ne reste pas assez de blocs dans cette période pour dépasser le seuil d'activation",
 
     // actions/config/peers.ts
     1198: 'Désactivé',
@@ -1026,20 +1023,19 @@ export default {
     1223: 'Partage (%)',
     1224: '% max. de la limite de bande passante pour le transit. 0-100 (par défaut : 100)',
     1225: 'Désactiver le transit',
-    1226: 'Le routeur n\'acceptera pas les tunnels de transit, désactivant complètement le trafic de transit.',
+    1226: "Le routeur n'acceptera pas les tunnels de transit, désactivant complètement le trafic de transit.",
     1227: 'Mode Floodfill',
     1228: 'Le routeur participera à la base de données réseau distribuée en tant que pair floodfill.',
     1229: 'Remarque : ce mode utilise beaucoup plus de connexions réseau et de CPU !',
     1230: 'Limite des tunnels de transit',
     1231: 'Sessions de transit actives maximales (par défaut : 10000). Cette valeur est doublée si le mode floodfill est activé !',
 
-
     // actions/config/peers.ts - Peer settings
     1236: 'Onlynet',
     1237: 'Effectuer automatiquement des connexions sortantes uniquement vers les réseaux sélectionnés. Les connexions entrantes et manuelles ne sont pas affectées.',
 
     1243: 'Utiliser le protocole de transport P2P V2',
-    1244: 'Activer ou désactiver l\'utilisation du protocole de transport P2P BIP324 V2.',
+    1244: "Activer ou désactiver l'utilisation du protocole de transport P2P BIP324 V2.",
     1245: 'Connecter un pair',
     1246: 'Connecter',
     1247: 'Connecter aux nœuds',
@@ -1053,7 +1049,7 @@ export default {
 
     // actions/config/mempool.ts
     1500: 'Conserver le Mempool',
-    1501: 'Enregistrer le mempool lors de l\'arrêt et le charger au redémarrage.',
+    1501: "Enregistrer le mempool lors de l'arrêt et le charger au redémarrage.",
     1502: 'Taille maximale du Mempool',
     1503: 'Maintenir le pool de transactions en mémoire en dessous de <n> mégaoctets.',
     1504: 'Expiration du Mempool',
@@ -1070,44 +1066,44 @@ export default {
     1515: 'Modifier les paramètres du Mempool dans bitcoin.conf',
 
     // actions/config/rpc.ts
-    1600: 'Délai d\'expiration du serveur RPC',
+    1600: "Délai d'expiration du serveur RPC",
     1601: 'Nombre de secondes après lesquelles un appel RPC non terminé expirera.',
     1602: 'secondes',
     1603: 'Threads',
-    1604: 'Définir le nombre de threads pour gérer les appels RPC. Vous voudrez peut-être augmenter cela si vous effectuez beaucoup d\'appels via une intégration.',
+    1604: "Définir le nombre de threads pour gérer les appels RPC. Vous voudrez peut-être augmenter cela si vous effectuez beaucoup d'appels via une intégration.",
     1605: 'File de travail',
-    1606: 'Définir la profondeur de la file de travail pour gérer les appels RPC. Détermine la longueur du retard des demandes RPC avant qu\'elles ne commencent à être rejetées.',
+    1606: "Définir la profondeur de la file de travail pour gérer les appels RPC. Détermine la longueur du retard des demandes RPC avant qu'elles ne commencent à être rejetées.",
     1607: 'demandes',
     1608: 'Paramètres RPC',
     1609: 'Modifier les paramètres RPC dans bitcoin.conf',
 
     // actions/config/other.ts
     1700: 'ZeroMQ activé',
-    1701: 'L\'interface ZeroMQ est utile pour certaines applications qui peuvent nécessiter des données relatives aux blocs et aux événements de transaction de Bitcoin Core. Par exemple, LND nécessite l\'activation de ZeroMQ pour que LND reçoive les dernières données de bloc',
+    1701: "L'interface ZeroMQ est utile pour certaines applications qui peuvent nécessiter des données relatives aux blocs et aux événements de transaction de Bitcoin Core. Par exemple, LND nécessite l'activation de ZeroMQ pour que LND reçoive les dernières données de bloc",
     1702: 'Index des transactions',
-    1703: 'En activant l\'index des transactions (txindex), Bitcoin Core construira un index complet des transactions. Cela permet à Bitcoin Core d\'accéder à n\'importe quelle transaction à l\'aide de commandes telles que `getrawtransaction`.',
+    1703: "En activant l'index des transactions (txindex), Bitcoin Core construira un index complet des transactions. Cela permet à Bitcoin Core d'accéder à n'importe quelle transaction à l'aide de commandes telles que `getrawtransaction`.",
     1704: 'Espace disque insuffisant',
     1705: 'Notification de bloc',
     1706: 'Exécuter une commande arbitraire lorsque le meilleur bloc change',
     1707: 'Index Coinstats',
-    1708: 'L\'activation de l\'index Coinstats accélère le RPC gettxoutsetinfo au prix de l\'utilisation d\'espace disque supplémentaire',
+    1708: "L'activation de l'index Coinstats accélère le RPC gettxoutsetinfo au prix de l'utilisation d'espace disque supplémentaire",
     1709: 'Portefeuille',
     1710: 'Paramètres du portefeuille',
     1711: 'Activer le portefeuille',
     1712: 'Charger le portefeuille et activer les appels RPC du portefeuille.',
     1713: 'Éviter les dépenses partielles',
     1714: 'Grouper les sorties par adresse, en sélectionnant tout ou rien, plutôt que de sélectionner sur une base par sortie. Améliore la confidentialité au prix de frais de transaction plus élevés.',
-    1715: 'Tolérance d\'abandon de monnaie',
-    1716: 'Taux de frais (en BTC/kB) indiquant votre tolérance pour abandonner la monnaie en l\'ajoutant aux frais.',
+    1715: "Tolérance d'abandon de monnaie",
+    1716: "Taux de frais (en BTC/kB) indiquant votre tolérance pour abandonner la monnaie en l'ajoutant aux frais.",
     1717: 'BTC/kB',
     1718: 'Élagage',
-    1719: 'Définir la taille maximale de blockchain que vous souhaitez stocker sur le disque. Si votre disque est supérieur à .9TB, cette valeur peut être définie à zéro (0) pour conserver un nœud d\'archive complet.',
-    1720: 'Si votre nœud est déjà élagué, augmenter cette valeur nécessitera une resynchronisation du nœud. Le passage d\'un nœud d\'archive complet à élagué désactivera txindex (s\'il est activé)',
+    1719: "Définir la taille maximale de blockchain que vous souhaitez stocker sur le disque. Si votre disque est supérieur à .9TB, cette valeur peut être définie à zéro (0) pour conserver un nœud d'archive complet.",
+    1720: "Si votre nœud est déjà élagué, augmenter cette valeur nécessitera une resynchronisation du nœud. Le passage d'un nœud d'archive complet à élagué désactivera txindex (s'il est activé)",
     1721: 'Entrer la taille maximale de blockchain',
     1722: 'Cache de base de données',
-    1723: 'Quantité de RAM à allouer pour la mise en cache de l\'ensemble TXO. Des valeurs plus élevées améliorent les performances de synchronisation mais peuvent entraîner un travail supplémentaire en cas d\'arrêt incorrect. 4-7 Go est suffisamment élevé pour obtenir la plupart des avantages de performances pendant l\'IBD. Envisagez de réduire ce paramètre pour les appareils à faibles ressources (ou les appareils avec moins de RAM disponible)',
+    1723: "Quantité de RAM à allouer pour la mise en cache de l'ensemble TXO. Des valeurs plus élevées améliorent les performances de synchronisation mais peuvent entraîner un travail supplémentaire en cas d'arrêt incorrect. 4-7 Go est suffisamment élevé pour obtenir la plupart des avantages de performances pendant l'IBD. Envisagez de réduire ce paramètre pour les appareils à faibles ressources (ou les appareils avec moins de RAM disponible)",
     1724: 'Batch de base de données',
-    1725: 'Taille maximale du batch d\'écriture de la base de données en octets. Des valeurs plus élevées accéléreront les sections critiques où l\'ensemble utxo est écrit sur le disque depuis la mémoire en gros batchs.',
+    1725: "Taille maximale du batch d'écriture de la base de données en octets. Des valeurs plus élevées accéléreront les sections critiques où l'ensemble utxo est écrit sur le disque depuis la mémoire en gros batchs.",
     1726: 'Octets',
     1727: 'Filtres de blocs',
     1728: 'Paramètres pour stocker et servir les filtres de blocs compacts',
@@ -1116,11 +1112,11 @@ export default {
     1731: 'Servir les filtres de blocs compacts aux pairs (BIP157)',
     1732: "Servir les filtres de blocs compacts en tant que service pair à d\'autres nœuds du réseau. Utile si vous souhaitez connecter un client SPV à votre nœud pour analyser efficacement les transactions sans télécharger toutes les données de bloc. Nécessite 'Calculer les filtres de blocs compacts (BIP158)'.",
     1733: 'Servir les filtres Bloom aux pairs',
-    1734: 'Les pairs ont la possibilité de définir des filtres sur chaque connexion qu\'ils établissent après la fin de la négociation de version. Les filtres Bloom sont destinés aux clients implémentant SPV (Simplified Payment Verification), qui veulent vérifier que les en-têtes de bloc se connectent correctement, sans avoir besoin de vérifier la totalité de la blockchain. Le client doit faire confiance au fait que les transactions de la chaîne sont en fait valides. Il est fortement recommandé de NE PAS utiliser pour autre chose que l\'intégration Bisq.',
-    1735: 'Ceci est UNIQUEMENT pour une utilisation avec l\'intégration Bisq, utilisez les filtres de blocs pour toutes les autres applications.',
+    1734: "Les pairs ont la possibilité de définir des filtres sur chaque connexion qu'ils établissent après la fin de la négociation de version. Les filtres Bloom sont destinés aux clients implémentant SPV (Simplified Payment Verification), qui veulent vérifier que les en-têtes de bloc se connectent correctement, sans avoir besoin de vérifier la totalité de la blockchain. Le client doit faire confiance au fait que les transactions de la chaîne sont en fait valides. Il est fortement recommandé de NE PAS utiliser pour autre chose que l'intégration Bisq.",
+    1735: "Ceci est UNIQUEMENT pour une utilisation avec l'intégration Bisq, utilisez les filtres de blocs pour toutes les autres applications.",
     1736: 'Activer IPC',
-    1737: 'Activer la communication inter-processus (IPC) via socket Unix. Cela permet à d\'autres services de communiquer avec Bitcoin Core en utilisant une connexion socket locale haute performance. Le chemin du socket sera affiché dans les informations d\'exécution.',
-    1738: 'IPC est une fonctionnalité expérimentale. N\'activez ceci que si vous savez ce que vous faites avec le socket IPC. Un exemple d\'utilisation serait les services de minage Stratum v2.',
+    1737: "Activer la communication inter-processus (IPC) via socket Unix. Cela permet à d'autres services de communiquer avec Bitcoin Core en utilisant une connexion socket locale haute performance. Le chemin du socket sera affiché dans les informations d'exécution.",
+    1738: "IPC est une fonctionnalité expérimentale. N'activez ceci que si vous savez ce que vous faites avec le socket IPC. Un exemple d'utilisation serait les services de minage Stratum v2.",
     1739: 'Autres paramètres',
     1740: 'Modifier plus de valeurs dans bitcoin.conf',
     1741: 'Laisser vide pour archive complète',
@@ -1135,7 +1131,7 @@ export default {
 
     // actions/config/autoconfig.ts
     1900: 'Auto-Configuration',
-    1901: 'Configurer automatiquement bitcoin.conf pour les besoins d\'un autre service',
+    1901: "Configurer automatiquement bitcoin.conf pour les besoins d'un autre service",
     1902: 'Ces champs ont été fournis par une tâche et ne peuvent pas être modifiés',
 
     // Common
