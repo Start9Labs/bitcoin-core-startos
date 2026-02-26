@@ -23,7 +23,10 @@ export const rpcallowipPruned = '127.0.0.1/32'
 export const rootDir = '/root/.bitcoin'
 export const rpccookiefile = '.cookie'
 
-export const i2PSamAddress = '127.0.0.1:7656'
+export const i2pSamPort = 7656
+export const i2pUiPort = 7070
+
+export const i2PSamAddress = `127.0.0.1:${i2pSamPort}`
 
 export const bitcoinMounts = sdk.Mounts.of().mountVolume({
   volumeId: 'main',

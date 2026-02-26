@@ -1,10 +1,8 @@
 import { FileHelper, z } from '@start9labs/start-sdk'
 import { sdk } from '../sdk'
+import { i2pUiPort } from '../utils'
 
-const iniNumber = z.union([
-  z.string().transform(Number),
-  z.number(),
-])
+const iniNumber = z.union([z.string().transform(Number), z.number()])
 
 const iniBoolean = z.union([
   z.string().transform((s) => !!Number(s)),
@@ -31,9 +29,9 @@ export const i2pdConfDefaults = {
     published: true,
   },
   http: {
-    enabled: true,
+    enabled: false,
     address: '0.0.0.0',
-    port: 7070,
+    port: i2pUiPort,
     strictheaders: false,
   },
   httpproxy: {

@@ -2,6 +2,7 @@ import { bitcoinConfFile } from './fileModels/bitcoin.conf'
 import { i2pdConfFile } from './fileModels/i2pd.conf'
 import { sdk } from './sdk'
 import {
+  i2pUiPort,
   peerInterfaceId,
   peerPortExternal,
   peerPortInternal,
@@ -97,7 +98,7 @@ export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
 
   if (bitcoinConf.raw?.i2psam && i2pConsoleEnabled) {
     const i2pMulti = sdk.MultiHost.of(effects, 'i2p-console')
-    const i2pConsoleOrigin = await i2pMulti.bindPort(7070, {
+    const i2pConsoleOrigin = await i2pMulti.bindPort(i2pUiPort, {
       protocol: 'http',
     })
 
