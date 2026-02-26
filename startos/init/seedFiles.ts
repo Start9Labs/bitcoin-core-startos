@@ -14,6 +14,8 @@ export const seedFiles = sdk.setupOnInit(async (effects, kind) => {
   await storeJson.merge(effects, {})
 
   await bitcoinConfFile.merge(effects, {
+    zmqEnabled: true,
+    blockfilters: { blockfilterindex: true },
     raw: {
       ...bitcoinConfDefaults,
       ...((await diskUsage()).total < 900_000_000_000

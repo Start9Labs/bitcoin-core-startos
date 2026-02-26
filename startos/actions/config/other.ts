@@ -64,9 +64,19 @@ export const otherConfig = sdk.Action.withInput(
 
   // the execution function
   async ({ effects, input }) => {
+    const oldPrune = await bitcoinConfFile.read((c) => c.prune).once()
+
     await bitcoinConfFile.merge(effects, input)
-    await storeJson.merge(effects, {
+
+    const storeUpdate: Record<string, unknown> = {
       enableIpc: input.enableIpc,
-    })
+    }
+
+    // Switching from pruned to archival requires a full reindex
+    if (oldPrune && !input.prune) {
+      storeUpdate.reindexBlockchain = true
+    }
+
+    await storeJson.merge(effects, storeUpdate)
   },
 )

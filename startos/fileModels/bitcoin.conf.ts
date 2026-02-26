@@ -623,7 +623,12 @@ function formToFile(
     blocknotify: blocknotify || undefined,
     prune: prune ?? undefined,
     dbcache: dbcache ?? undefined,
-    ...(zmqEnabled ? zmqBundle : {}),
+    // ZMQ: explicitly set all fields to handle both enable and disable
+    zmqpubrawblock: zmqEnabled ? zmqBundle.zmqpubrawblock : undefined,
+    zmqpubhashblock: zmqEnabled ? zmqBundle.zmqpubhashblock : undefined,
+    zmqpubrawtx: zmqEnabled ? zmqBundle.zmqpubrawtx : undefined,
+    zmqpubhashtx: zmqEnabled ? zmqBundle.zmqpubhashtx : undefined,
+    zmqpubsequence: zmqEnabled ? zmqBundle.zmqpubsequence : undefined,
 
     // Peer
     v2transport,
