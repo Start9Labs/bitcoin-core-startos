@@ -648,15 +648,12 @@ function formToFile(
   }
 }
 
-export const bitcoinConfFile = FileHelper.ini<
-  typeof fullConfigSpec._PARTIAL,
-  typeof fullConfigSpec._PARTIAL
->(
+export const bitcoinConfFile = FileHelper.ini(
   {
     base: sdk.volumes.main,
     subpath: '/bitcoin.conf',
   },
-  z.deepPartial(fullConfigSpec.validator) as any,
+  fullConfigSpec.partialValidator,
   { bracketedArray: false },
   {
     onRead: (a) => {
