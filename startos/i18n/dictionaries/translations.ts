@@ -181,12 +181,8 @@ export default {
 
     // actions/config/peers.ts - Peer settings
     1236: 'Onlynet',
-    1237: 'Realizar conexiones salientes automáticas solo a la red <net> (ipv4, ipv6, onion, i2p, cjdns). Las conexiones entrantes y manuales no se ven afectadas por esta opción',
-    1238: 'ipv4',
-    1239: 'ipv6',
-    1240: 'onion (Tor)',
-    1241: 'i2p',
-    1242: 'cjdns',
+    1237: 'Realizar conexiones salientes automáticas solo a las redes seleccionadas. Las conexiones entrantes y manuales no se ven afectadas por esta opción.',
+
     1243: 'Usar protocolo de transporte P2P V2',
     1244: 'Habilitar o deshabilitar el uso del protocolo de transporte P2P BIP324 V2.',
     1245: 'Conectar par',
@@ -274,23 +270,13 @@ export default {
     1740: 'Editar más valores en bitcoin.conf',
     1741: 'Dejar en blanco para archivo completo',
 
-    // actions/config/setExternalIp.ts
-    1851: 'Configurar si y cómo su nodo es accesible por pares en la red Bitcoin.',
-    1852: 'Conexiones entrantes',
-    1853: 'Elegir si permitir que otros nodos se conecten al suyo.',
-    1854: 'Habilitado (Recomendado)',
+    // actions/config/peers.ts (externalip)
     1855: 'Dirección pública',
     1856: 'Seleccione la dirección donde su nodo puede ser contactado por pares.',
     1858: 'Crear dirección Tor',
 
     // dependencies.ts
     1859: 'Bitcoin Core necesita una dirección onion de Tor para conexiones entrantes de pares.',
-
-    // init/taskSetExternal.ts
-    1860: 'Dirección externa eliminada. Su nodo solo puede hacer conexiones salientes. Seleccione una nueva dirección externa para volver a habilitar las conexiones entrantes.',
-
-    // init/seedFiles.ts
-    1861: 'Configure cómo su nodo es accesible por pares. Puede permitir conexiones entrantes a través de una dirección pública o Tor, o deshabilitarlas por completo.',
 
     // actions/config/autoconfig.ts
     1900: 'Auto-Configurar',
@@ -480,12 +466,8 @@ export default {
 
     // actions/config/peers.ts - Peer settings
     1236: 'Onlynet',
-    1237: 'Automatische ausgehende Verbindungen nur zum Netzwerk <net> herstellen (ipv4, ipv6, onion, i2p, cjdns). Eingehende und manuelle Verbindungen sind von dieser Option nicht betroffen',
-    1238: 'ipv4',
-    1239: 'ipv6',
-    1240: 'onion (Tor)',
-    1241: 'i2p',
-    1242: 'cjdns',
+    1237: 'Automatische ausgehende Verbindungen nur zu den ausgewählten Netzwerken herstellen. Eingehende und manuelle Verbindungen sind von dieser Option nicht betroffen.',
+
     1243: 'V2 P2P-Transportprotokoll verwenden',
     1244: 'Aktivieren oder deaktivieren Sie die Verwendung des BIP324 V2 P2P-Transportprotokolls.',
     1245: 'Peer verbinden',
@@ -573,23 +555,13 @@ export default {
     1740: 'Weitere Werte in bitcoin.conf bearbeiten',
     1741: 'Leer lassen für vollständiges Archiv',
 
-    // actions/config/setExternalIp.ts
-    1851: 'Konfigurieren Sie, ob und wie Ihr Knoten von Peers im Bitcoin-Netzwerk erreichbar ist.',
-    1852: 'Eingehende Verbindungen',
-    1853: 'Wählen Sie, ob andere Knoten sich mit Ihrem verbinden können.',
-    1854: 'Aktiviert (Empfohlen)',
+    // actions/config/peers.ts (externalip)
     1855: 'Öffentliche Adresse',
     1856: 'Wählen Sie die Adresse, unter der Ihr Knoten von Peers erreicht werden kann.',
     1858: 'Tor-Adresse erstellen',
 
     // dependencies.ts
     1859: 'Bitcoin Core benötigt eine Tor-Onion-Adresse für eingehende Peer-Verbindungen.',
-
-    // init/taskSetExternal.ts
-    1860: 'Externe Adresse entfernt. Ihr Knoten kann nur ausgehende Verbindungen herstellen. Wählen Sie eine neue externe Adresse, um eingehende Verbindungen wieder zu aktivieren.',
-
-    // init/seedFiles.ts
-    1861: 'Konfigurieren Sie, wie Ihr Knoten von Peers erreichbar ist. Sie können eingehende Verbindungen über eine öffentliche Adresse oder Tor zulassen oder sie vollständig deaktivieren.',
 
     // actions/config/autoconfig.ts
     1900: 'Auto-Konfiguration',
@@ -779,12 +751,8 @@ export default {
 
     // actions/config/peers.ts - Peer settings
     1236: 'Onlynet',
-    1237: 'Nawiązuj automatyczne połączenia wychodzące tylko do sieci <net> (ipv4, ipv6, onion, i2p, cjdns). Połączenia przychodzące i ręczne nie są tym wpływane',
-    1238: 'ipv4',
-    1239: 'ipv6',
-    1240: 'onion (Tor)',
-    1241: 'i2p',
-    1242: 'cjdns',
+    1237: 'Nawiązuj automatyczne połączenia wychodzące tylko do wybranych sieci. Połączenia przychodzące i ręczne nie są tym wpływane.',
+
     1243: 'Użyj protokołu transportowego P2P V2',
     1244: 'Włącz lub wyłącz użycie protokołu transportowego P2P BIP324 V2.',
     1245: 'Połącz peera',
@@ -872,23 +840,13 @@ export default {
     1740: 'Edytuj więcej wartości w bitcoin.conf',
     1741: 'Pozostaw puste dla pełnego archiwum',
 
-    // actions/config/setExternalIp.ts
-    1851: 'Skonfiguruj, czy i jak Twój węzeł jest osiągalny przez peerów w sieci Bitcoin.',
-    1852: 'Połączenia przychodzące',
-    1853: 'Wybierz, czy zezwolić innym węzłom na łączenie się z Twoim.',
-    1854: 'Włączone (Zalecane)',
+    // actions/config/peers.ts (externalip)
     1855: 'Adres publiczny',
     1856: 'Wybierz adres, pod którym Twój węzeł może być osiągalny przez peerów.',
     1858: 'Utwórz adres Tor',
 
     // dependencies.ts
     1859: 'Bitcoin Core potrzebuje adresu onion Tor dla przychodzących połączeń peerów.',
-
-    // init/taskSetExternal.ts
-    1860: 'Adres zewnętrzny usunięty. Twój węzeł może nawiązywać tylko połączenia wychodzące. Wybierz nowy adres zewnętrzny, aby ponownie włączyć połączenia przychodzące.',
-
-    // init/seedFiles.ts
-    1861: 'Skonfiguruj, w jaki sposób Twój węzeł jest dostępny dla innych węzłów. Możesz zezwolić na połączenia przychodzące przez adres publiczny lub Tor, albo całkowicie je wyłączyć.',
 
     // actions/config/autoconfig.ts
     1900: 'Auto-Konfiguracja',
@@ -1078,12 +1036,8 @@ export default {
 
     // actions/config/peers.ts - Peer settings
     1236: 'Onlynet',
-    1237: 'Effectuer automatiquement des connexions sortantes uniquement vers le réseau <net> (ipv4, ipv6, onion, i2p, cjdns). Les connexions entrantes et manuelles ne sont pas affectées',
-    1238: 'ipv4',
-    1239: 'ipv6',
-    1240: 'onion (Tor)',
-    1241: 'i2p',
-    1242: 'cjdns',
+    1237: 'Effectuer automatiquement des connexions sortantes uniquement vers les réseaux sélectionnés. Les connexions entrantes et manuelles ne sont pas affectées.',
+
     1243: 'Utiliser le protocole de transport P2P V2',
     1244: 'Activer ou désactiver l\'utilisation du protocole de transport P2P BIP324 V2.',
     1245: 'Connecter un pair',
@@ -1171,23 +1125,13 @@ export default {
     1740: 'Modifier plus de valeurs dans bitcoin.conf',
     1741: 'Laisser vide pour archive complète',
 
-    // actions/config/setExternalIp.ts
-    1851: 'Configurer si et comment votre nœud est accessible par les pairs sur le réseau Bitcoin.',
-    1852: 'Connexions entrantes',
-    1853: "Choisir d'autoriser ou non d'autres nœuds à se connecter au vôtre.",
-    1854: 'Activé (Recommandé)',
+    // actions/config/peers.ts (externalip)
     1855: 'Adresse publique',
     1856: "Sélectionnez l'adresse à laquelle votre nœud peut être contacté par les pairs.",
     1858: 'Créer une adresse Tor',
 
     // dependencies.ts
     1859: "Bitcoin Core a besoin d'une adresse onion Tor pour les connexions entrantes des pairs.",
-
-    // init/taskSetExternal.ts
-    1860: "Adresse externe supprimée. Votre nœud ne peut établir que des connexions sortantes. Sélectionnez une nouvelle adresse externe pour réactiver les connexions entrantes.",
-
-    // init/seedFiles.ts
-    1861: "Configurez comment votre nœud est accessible par les pairs. Vous pouvez autoriser les connexions entrantes via une adresse publique ou Tor, ou les désactiver entièrement.",
 
     // actions/config/autoconfig.ts
     1900: 'Auto-Configuration',

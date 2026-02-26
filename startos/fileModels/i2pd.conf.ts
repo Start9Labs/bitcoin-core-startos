@@ -31,7 +31,7 @@ export const i2pdConfDefaults = {
     published: true,
   },
   http: {
-    enabled: false,
+    enabled: true,
     address: '0.0.0.0',
     port: 7070,
     strictheaders: false,

@@ -177,12 +177,7 @@ const dict = {
   'Transit Tunnels Limit': 1230,
   'Maximum active transit sessions (default: 10000). This value is doubled if floodfill mode is enabled!': 1231,
   'Onlynet': 1236,
-  'Make automatic outbound connections only to network <net> (ipv4, ipv6, onion, i2p, cjdns). Inbound and manual connections are not affected by this option': 1237,
-  'ipv4': 1238,
-  'ipv6': 1239,
-  'onion (Tor)': 1240,
-  'i2p': 1241,
-  'cjdns': 1242,
+  'Make automatic outbound connections only to the selected networks. Inbound and manual connections are not affected by this option.': 1237,
   'Use V2 P2P Transport Protocol': 1243,
   'Enable or disable the use of BIP324 V2 P2P transport protocol.': 1244,
   'Connect Peer': 1245,
@@ -271,23 +266,13 @@ const dict = {
 
   'Leave blank for full archival': 1741,
 
-  // actions/config/inboundConnections.ts
-  'Configure whether and how your node is reachable by peers on the Bitcoin network.': 1851,
-  'Inbound Connections': 1852,
-  'Choose whether to allow other nodes to connect to yours.': 1853,
-  'Enabled (Recommended)': 1854,
+  // actions/config/peers.ts (externalip)
   'Public Address': 1855,
   'Select the address at which your node can be reached by peers.': 1856,
   'Create Tor Address': 1858,
 
   // dependencies.ts
   'Bitcoin Core needs a Tor onion address for inbound peer connections.': 1859,
-
-  // init/taskSetExternal.ts
-  'External address removed. Your node can only make outbound connections. Select a new external address to re-enable inbound connections.': 1860,
-
-  // init/seedFiles.ts
-  'Configure how your node is reachable by peers. You can allow inbound connections via a public address or Tor, or disable them entirely.': 1861,
 
   // actions/config/autoconfig.ts
   'Auto-Configure': 1900,

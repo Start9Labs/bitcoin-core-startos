@@ -5,8 +5,6 @@ import { bitcoinConfDefaults, rpcallowipPruned, rpcbindPruned } from '../utils'
 import * as diskusage from 'diskusage'
 import { utils } from '@start9labs/start-sdk'
 import { i2pdConfFile } from '../fileModels/i2pd.conf'
-import { inboundConnections } from '../actions/config/inboundConnections'
-import { i18n } from '../i18n'
 
 const diskUsage = utils.once(() => diskusage.check('/'))
 
@@ -29,10 +27,4 @@ export const seedFiles = sdk.setupOnInit(async (effects, kind) => {
   })
 
   await i2pdConfFile.merge(effects, {})
-
-  await sdk.action.createOwnTask(effects, inboundConnections, 'critical', {
-    reason: i18n(
-      'Configure how your node is reachable by peers. You can allow inbound connections via a public address or Tor, or disable them entirely.',
-    ),
-  })
 })

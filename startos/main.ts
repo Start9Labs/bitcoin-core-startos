@@ -18,6 +18,8 @@ export const main = sdk.setupMain(async ({ effects }) => {
   /**
    * ======================== Setup (optional) ========================
    */
+  console.log('Starting Bitcoin!')
+
   // get store.json but don't watch for changes
   const store = await storeJson.read().once()
   if (!store) {
@@ -34,7 +36,8 @@ export const main = sdk.setupMain(async ({ effects }) => {
 
   const { reindexBlockchain, reindexChainstate, enableIpc } = store
 
-  const bitcoinArgs: string[] = ['-onion=tor.startos:9050']
+  const torIp = await sdk.getContainerIp(effects, { packageId: 'tor' }).const()
+  const bitcoinArgs: string[] = torIp ? [`-onion=${torIp}:9050`] : []
 
   if (enableIpc) {
     bitcoinArgs.push(`-ipcbind=${ipcSocketPath}`)
@@ -238,7 +241,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
         bind_address: '0.0.0.0',
         bind_port: rpcPort,
         cookie_file: rpcCookiePath,
-        tor_proxy: 'tor.startos:9050',
+        tor_proxy: torIp ? `${torIp}:9050` : '',
         tor_only: bitcoinConf.onlynet
           ? bitcoinConf.onlynet.includes('onion')
           : false,

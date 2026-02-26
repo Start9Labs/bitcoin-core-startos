@@ -47,7 +47,7 @@ const iniBoolean = z
   .optional()
   .catch(undefined)
 
-const validNets = ['ipv4', 'ipv6', 'onion', 'i2p', 'cjdns'] as const
+const validNets = ['ipv4', 'ipv6', 'onion', 'i2p'] as const
 const onlyNetOption = z.enum(validNets)
 type ValidNets = z.infer<typeof onlyNetOption>
 
@@ -350,15 +350,11 @@ export const fullConfigSpec = sdk.InputSpec.of({
   onlynet: Value.multiselect({
     name: i18n('Onlynet'),
     description: i18n(
-      'Make automatic outbound connections only to network <net> (ipv4, ipv6, onion, i2p, cjdns). Inbound and manual connections are not affected by this option',
+      'Make automatic outbound connections only to the selected networks. Inbound and manual connections are not affected by this option.',
     ),
-    values: {
-      ipv4: i18n('ipv4'),
-      ipv6: i18n('ipv6'),
-      onion: i18n('onion (Tor)'),
-      i2p: i18n('i2p'),
-      cjdns: i18n('cjdns'),
-    },
+    values: Object.fromEntries(
+      validNets.map((n) => [n, n === 'onion' ? 'onion (Tor)' : n]),
+    ) as Record<ValidNets, string>,
     default: [],
   }),
   v2transport: Value.toggle({
