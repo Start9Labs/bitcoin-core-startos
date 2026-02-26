@@ -1,7 +1,6 @@
-import { mainMounts } from '../main'
 import { sdk } from '../sdk'
 import * as fs from 'fs/promises'
-import { rootDir } from '../utils'
+import { rootDir, bitcoinMounts } from '../utils'
 import { i18n } from '../i18n'
 
 export const deleteTxIndex = sdk.Action.withoutInput(
@@ -27,7 +26,7 @@ export const deleteTxIndex = sdk.Action.withoutInput(
     await sdk.SubContainer.withTemp(
       effects,
       { imageId: 'bitcoind' },
-      mainMounts,
+      bitcoinMounts,
       'delete-txindex',
       async (subc) => {
         await fs.rmdir(`${subc.rootfs}/${rootDir}/indexes/txindex`, {

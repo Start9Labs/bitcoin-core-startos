@@ -4,17 +4,17 @@ import { setInterfaces } from '../interfaces'
 import { versionGraph } from '../install/versionGraph'
 import { actions } from '../actions'
 import { restoreInit } from '../backups'
-import { taskSetExternal } from './taskSelectExternal'
-import { setDefaults } from './setDefaults'
+import { taskSetExternal } from './taskSetExternal'
+import { seedFiles } from './seedFiles'
 import { watchPrune } from './watchPrune'
 
 export const init = sdk.setupInit(
+  seedFiles,
   restoreInit,
   versionGraph,
   setInterfaces,
   setDependencies,
   actions,
-  setDefaults,
   taskSetExternal,
   watchPrune,
 )

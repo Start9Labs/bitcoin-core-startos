@@ -1,9 +1,14 @@
-import { FileHelper, matches } from '@start9labs/start-sdk'
+import { FileHelper, z } from '@start9labs/start-sdk'
 import { sdk } from '../sdk'
+import { i2pUiPort } from '../utils'
 
-const { object, string, boolean, literal, literals } = matches
+const iniNumber = z.union([z.string().transform(Number), z.number()])
 
-const number = string.map((a) => Number(a)).orParser(matches.number)
+const iniBoolean = z.union([
+  z.string().transform((s) => !!Number(s)),
+  z.number().transform((n) => !!n),
+  z.boolean(),
+])
 
 export const i2pdConfDefaults = {
   log: 'stdout' as const,
@@ -26,7 +31,7 @@ export const i2pdConfDefaults = {
   http: {
     enabled: false,
     address: '0.0.0.0',
-    port: 7070,
+    port: i2pUiPort,
     strictheaders: false,
   },
   httpproxy: {
@@ -49,101 +54,69 @@ export const i2pdConfDefaults = {
   },
 }
 
-const defaults = i2pdConfDefaults
-export const shape = object({
-  log: literal(defaults.log).onMismatch(defaults.log).defaultTo(defaults.log),
-  loglevel: literals('none', 'critical', 'error', 'warn', 'info', 'debug')
-    .onMismatch(defaults.loglevel)
-    .defaultTo(defaults.loglevel),
-  port: number.onMismatch(defaults.port).defaultTo(defaults.port),
-  ipv4: boolean.onMismatch(defaults.ipv4).defaultTo(defaults.ipv4),
-  ipv6: boolean.onMismatch(defaults.ipv6).defaultTo(defaults.ipv6),
-  bandwidth: literals('L', 'O', 'P')
-    .onMismatch(defaults.bandwidth)
-    .defaultTo(defaults.bandwidth),
-  share: number.onMismatch(defaults.share).defaultTo(defaults.share),
-  notransit: boolean
-    .onMismatch(defaults.notransit)
-    .defaultTo(defaults.notransit),
-  floodfill: boolean
-    .onMismatch(defaults.floodfill)
-    .defaultTo(defaults.floodfill),
-  ntcp2: object({
-    enabled: boolean
-      .onMismatch(defaults.ntcp2.enabled)
-      .defaultTo(defaults.ntcp2.enabled),
-    published: boolean
-      .onMismatch(defaults.ntcp2.published)
-      .defaultTo(defaults.ntcp2.published),
-  })
-    .onMismatch(defaults.ntcp2)
-    .defaultTo(defaults.ntcp2),
-  ssu2: object({
-    enabled: boolean
-      .onMismatch(defaults.ssu2.enabled)
-      .defaultTo(defaults.ssu2.enabled),
-    published: boolean
-      .onMismatch(defaults.ssu2.published)
-      .defaultTo(defaults.ssu2.published),
-  })
-    .onMismatch(defaults.ssu2)
-    .defaultTo(defaults.ssu2),
-  http: object({
-    enabled: boolean
-      .onMismatch(defaults.http.enabled)
-      .defaultTo(defaults.http.enabled),
-    address: string
-      .onMismatch(defaults.http.address)
-      .defaultTo(defaults.http.address),
-    port: number.onMismatch(defaults.http.port).defaultTo(defaults.http.port),
-    strictheaders: boolean
-      .onMismatch(defaults.http.strictheaders)
-      .defaultTo(defaults.http.strictheaders),
-  })
-    .onMismatch(defaults.http)
-    .defaultTo(defaults.http),
-  httpproxy: object({
-    enabled: boolean
-      .onMismatch(defaults.httpproxy.enabled)
-      .defaultTo(defaults.httpproxy.enabled),
-  })
-    .onMismatch(defaults.httpproxy)
-    .defaultTo(defaults.httpproxy),
-  socksproxy: object({
-    enabled: boolean
-      .onMismatch(defaults.socksproxy.enabled)
-      .defaultTo(defaults.socksproxy.enabled),
-  })
-    .onMismatch(defaults.socksproxy)
-    .defaultTo(defaults.socksproxy),
-  sam: object({
-    enabled: boolean
-      .onMismatch(defaults.sam.enabled)
-      .defaultTo(defaults.sam.enabled),
-  })
-    .onMismatch(defaults.sam)
-    .defaultTo(defaults.sam),
-  upnp: object({
-    enabled: boolean
-      .onMismatch(defaults.upnp.enabled)
-      .defaultTo(defaults.upnp.enabled),
-  })
-    .onMismatch(defaults.upnp)
-    .defaultTo(defaults.upnp),
-  reseed: object({
-    verify: boolean
-      .onMismatch(defaults.reseed.verify)
-      .defaultTo(defaults.reseed.verify),
-  })
-    .onMismatch(defaults.reseed)
-    .defaultTo(defaults.reseed),
-  limits: object({
-    transittunnels: number
-      .onMismatch(defaults.limits.transittunnels)
-      .defaultTo(defaults.limits.transittunnels),
-  })
-    .onMismatch(defaults.limits)
-    .defaultTo(defaults.limits),
+const d = i2pdConfDefaults
+export const shape = z.object({
+  log: z.literal(d.log).catch(d.log),
+  loglevel: z
+    .enum(['none', 'critical', 'error', 'warn', 'info', 'debug'])
+    .catch(d.loglevel),
+  port: iniNumber.catch(d.port),
+  ipv4: iniBoolean.catch(d.ipv4),
+  ipv6: iniBoolean.catch(d.ipv6),
+  bandwidth: z.enum(['L', 'O', 'P']).catch(d.bandwidth),
+  share: iniNumber.catch(d.share),
+  notransit: iniBoolean.catch(d.notransit),
+  floodfill: iniBoolean.catch(d.floodfill),
+  ntcp2: z
+    .object({
+      enabled: iniBoolean.catch(d.ntcp2.enabled),
+      published: iniBoolean.catch(d.ntcp2.published),
+    })
+    .catch(d.ntcp2),
+  ssu2: z
+    .object({
+      enabled: iniBoolean.catch(d.ssu2.enabled),
+      published: iniBoolean.catch(d.ssu2.published),
+    })
+    .catch(d.ssu2),
+  http: z
+    .object({
+      enabled: iniBoolean.catch(d.http.enabled),
+      address: z.string().catch(d.http.address),
+      port: iniNumber.catch(d.http.port),
+      strictheaders: iniBoolean.catch(d.http.strictheaders),
+    })
+    .catch(d.http),
+  httpproxy: z
+    .object({
+      enabled: iniBoolean.catch(d.httpproxy.enabled),
+    })
+    .catch(d.httpproxy),
+  socksproxy: z
+    .object({
+      enabled: iniBoolean.catch(d.socksproxy.enabled),
+    })
+    .catch(d.socksproxy),
+  sam: z
+    .object({
+      enabled: iniBoolean.catch(d.sam.enabled),
+    })
+    .catch(d.sam),
+  upnp: z
+    .object({
+      enabled: iniBoolean.catch(d.upnp.enabled),
+    })
+    .catch(d.upnp),
+  reseed: z
+    .object({
+      verify: iniBoolean.catch(d.reseed.verify),
+    })
+    .catch(d.reseed),
+  limits: z
+    .object({
+      transittunnels: iniNumber.catch(d.limits.transittunnels),
+    })
+    .catch(d.limits),
 })
 
 export const i2pdConfFile = FileHelper.ini(

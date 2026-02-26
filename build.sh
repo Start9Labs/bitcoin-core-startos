@@ -21,6 +21,8 @@ case "$TARGETARCH" in
     riscv64)
         CLANG_TARGET="riscv64-alpine-linux-musl"
         CMAKE_SYSTEM_PROCESSOR="riscv64"
+        # Enable RVA23 profile: RV64GCV with all mandatory extensions
+        RISCV_ARCH_FLAGS="-march=rva23u64"
         ;;
     *)
         echo "Unsupported TARGETARCH: $TARGETARCH" >&2
@@ -36,6 +38,8 @@ set(CMAKE_C_COMPILER clang)
 set(CMAKE_CXX_COMPILER clang++)
 set(CMAKE_C_COMPILER_TARGET ${CLANG_TARGET})
 set(CMAKE_CXX_COMPILER_TARGET ${CLANG_TARGET})
+set(CMAKE_C_FLAGS_INIT "${RISCV_ARCH_FLAGS:-}")
+set(CMAKE_CXX_FLAGS_INIT "${RISCV_ARCH_FLAGS:-}")
 set(CMAKE_EXE_LINKER_FLAGS_INIT "-fuse-ld=lld -L/sysroot/usr/lib")
 set(CMAKE_SHARED_LINKER_FLAGS_INIT "-fuse-ld=lld -L/sysroot/usr/lib")
 set(CMAKE_FIND_ROOT_PATH /sysroot)

@@ -4,15 +4,14 @@ import { sdk } from '../sdk'
 import { i18n } from '../i18n'
 const { InputSpec, Value } = sdk
 
-
 export async function getRpcUsers(effects: Effects) {
   const rpcauth = await getRpcAuth(effects)
   if (!rpcauth) return
-  return [rpcauth].flat().map((e) => e.split(':', 2)[0])
+  return [rpcauth].flat().filter((e): e is string => !!e).map((e) => e.split(':', 2)[0])
 }
 
 export async function getRpcAuth(effects: Effects) {
-  return (await bitcoinConfFile.read().const(effects))?.rpcauth
+  return (await bitcoinConfFile.read().const(effects))?.raw?.rpcauth
 }
 
 export const inputSpec = InputSpec.of({
@@ -63,7 +62,7 @@ export const deleteRpcAuth = sdk.Action.withInput(
     const rpcauth = (await getRpcAuth(effects))!
     const filtered = [rpcauth]
       .flat()
-      .filter((auth) => !input.deletedRpcUsers.includes(auth.split(':', 2)[0]))
-    await bitcoinConfFile.merge(effects, { rpcauth: filtered })
+      .filter((auth): auth is string => !!auth && !input.deletedRpcUsers.includes(auth.split(':', 2)[0]))
+    await bitcoinConfFile.merge(effects, { raw: { rpcauth: filtered } })
   },
 )

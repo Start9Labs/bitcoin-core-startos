@@ -1,7 +1,6 @@
-import { mainMounts } from '../main'
 import { sdk } from '../sdk'
 import * as fs from 'fs/promises'
-import { rootDir } from '../utils'
+import { rootDir, bitcoinMounts } from '../utils'
 import { i18n } from '../i18n'
 
 export const deletePeers = sdk.Action.withoutInput(
@@ -11,7 +10,9 @@ export const deletePeers = sdk.Action.withoutInput(
   // metadata
   async ({ effects }) => ({
     name: i18n('Delete Peer List'),
-    description: i18n('Deletes the Peer List (peers.dat) in case it gets corrupted.'),
+    description: i18n(
+      'Deletes the Peer List (peers.dat) in case it gets corrupted.',
+    ),
     warning: null,
     allowedStatuses: 'only-stopped',
     group: i18n('Delete Corrupted Files'),
@@ -23,10 +24,10 @@ export const deletePeers = sdk.Action.withoutInput(
     await sdk.SubContainer.withTemp(
       effects,
       { imageId: 'bitcoind' },
-      mainMounts,
+      bitcoinMounts,
       'delete-peers',
       async (subc) => {
-        await fs.rm(`${subc.rootfs}/${rootDir}/peers.dat`, {force: true})
+        await fs.rm(`${subc.rootfs}/${rootDir}/peers.dat`, { force: true })
       },
     )
 

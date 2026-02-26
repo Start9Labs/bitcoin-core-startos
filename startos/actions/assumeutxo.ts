@@ -1,8 +1,7 @@
 import { sdk } from '../sdk'
 import { rootDir } from '../utils'
-import { mainMounts } from '../main'
 import { bitcoinConfFile } from '../fileModels/bitcoin.conf'
-import { rpcPort } from '../utils'
+import { rpcPort, bitcoinMounts } from '../utils'
 import { Value } from '@start9labs/start-sdk/base/lib/actions/input/builder'
 import * as fs from 'fs/promises'
 import { SubContainer } from '@start9labs/start-sdk'
@@ -73,7 +72,7 @@ export const assumeutxo = sdk.Action.withInput(
     assumeutxoSubc = await sdk.SubContainer.of(
       effects,
       { imageId: 'bitcoind' },
-      mainMounts.mountVolume({
+      bitcoinMounts.mountVolume({
         volumeId: 'main',
         subpath: 'tmp',
         mountpoint: '/tmp',

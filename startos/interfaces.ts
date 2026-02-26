@@ -2,20 +2,21 @@ import { bitcoinConfFile } from './fileModels/bitcoin.conf'
 import { i2pdConfFile } from './fileModels/i2pd.conf'
 import { sdk } from './sdk'
 import {
-  embeddedI2PSamAddress,
+  i2pUiPort,
   peerInterfaceId,
-  peerPort,
+  peerPortExternal,
+  peerPortInternal,
   rpcInterfaceId,
   rpcPort,
   zmqInterfaceId,
-  zmqPort,
+  zmqPortBlock,
 } from './utils'
 import { i18n } from './i18n'
 
 export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
-  let config = await bitcoinConfFile.read().const(effects)
+  let bitcoinConf = await bitcoinConfFile.read().const(effects)
 
-  if (!config) return []
+  if (!bitcoinConf) return []
 
   // RPC
   const rpcMulti = sdk.MultiHost.of(effects, 'rpc')
@@ -38,11 +39,11 @@ export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
 
   const receipts = [rpcReceipt]
 
-  // PEER
+  // Peer
   const peerMulti = sdk.MultiHost.of(effects, 'peer')
-  const peerMultiOrigin = await peerMulti.bindPort(peerPort, {
+  const peerMultiOrigin = await peerMulti.bindPort(peerPortInternal, {
     protocol: null,
-    preferredExternalPort: peerPort,
+    preferredExternalPort: peerPortExternal,
     addSsl: null,
     secure: { ssl: false },
   })
@@ -64,10 +65,10 @@ export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
   receipts.push(peerReceipt)
 
   // ZMQ (conditional)
-  if (config.zmqpubhashblock) {
+  if (bitcoinConf.zmqEnabled) {
     const zmqMulti = sdk.MultiHost.of(effects, 'zmq')
-    const zmqMultiOrigin = await zmqMulti.bindPort(zmqPort, {
-      preferredExternalPort: zmqPort,
+    const zmqMultiOrigin = await zmqMulti.bindPort(zmqPortBlock, {
+      preferredExternalPort: zmqPortBlock,
       addSsl: null,
       secure: { ssl: false },
       protocol: null,
@@ -90,10 +91,14 @@ export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
     receipts.push(zmqReceipt)
   }
 
-  const i2pConsoleEnabled = await i2pdConfFile.read((x) => x.http.enabled).const(effects) ?? false
-  if (config.i2psam === embeddedI2PSamAddress && i2pConsoleEnabled) {
+  // I2P (conditional)
+  const i2pConsoleEnabled = await i2pdConfFile
+    .read((c) => c.http.enabled)
+    .const(effects)
+
+  if (bitcoinConf.raw?.i2psam && i2pConsoleEnabled) {
     const i2pMulti = sdk.MultiHost.of(effects, 'i2p-console')
-    const i2pConsoleOrigin = await i2pMulti.bindPort(7070, {
+    const i2pConsoleOrigin = await i2pMulti.bindPort(i2pUiPort, {
       protocol: 'http',
     })
 
