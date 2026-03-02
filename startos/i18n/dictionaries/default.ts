@@ -189,6 +189,7 @@ const dict = {
   'Add addresses of nodes for Bitcoin to connect with in addition to default nodes.': 1252,
   'Maximum Connections': 1255,
   'Set the maximum number of connections to maintain with peers.': 1256,
+  unlimited: 1257,
   'Peer Settings': 1253,
   'Edit the Peer settings in bitcoin.conf': 1254,
 
@@ -279,6 +280,10 @@ const dict = {
   'Auto-Configure': 1900,
   'Automatically configure bitcoin.conf for the needs of a another service': 1901,
   'These fields were provided by a task and cannot be edited': 1902,
+
+  // main.ts (reachability)
+  'Node Reachability': 1950,
+  'Your node can peer with other nodes, but other nodes cannot peer with you. Optionally add a Tor domain, public domain, or public IP address to change this behavior.': 1951,
 
   // Common
   Configuration: 1800,

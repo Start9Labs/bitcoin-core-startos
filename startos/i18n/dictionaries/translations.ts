@@ -195,6 +195,7 @@ export default {
     1254: 'Editar la configuración de pares en bitcoin.conf',
     1255: 'Conexiones máximas',
     1256: 'Establecer el número máximo de conexiones a mantener con pares.',
+    1257: 'ilimitado',
 
     // actions/config/mempool.ts
     1500: 'Persistir Mempool',
@@ -282,6 +283,10 @@ export default {
     1900: 'Auto-Configurar',
     1901: 'Configurar automáticamente bitcoin.conf para las necesidades de otro servicio',
     1902: 'Estos campos fueron proporcionados por una tarea y no se pueden editar',
+
+    // main.ts (reachability)
+    1950: 'Accesibilidad del nodo',
+    1951: 'Su nodo puede conectarse con otros nodos, pero otros nodos no pueden conectarse con usted. Opcionalmente agregue un dominio Tor, dominio público o dirección IP pública para cambiar este comportamiento.',
 
     // Common
     1800: 'Configuración',
@@ -480,6 +485,7 @@ export default {
     1254: 'Peer-Einstellungen in bitcoin.conf bearbeiten',
     1255: 'Maximale Verbindungen',
     1256: 'Maximale Anzahl der Verbindungen zu Peers festlegen.',
+    1257: 'unbegrenzt',
 
     // actions/config/mempool.ts
     1500: 'Mempool behalten',
@@ -567,6 +573,10 @@ export default {
     1900: 'Auto-Konfiguration',
     1901: 'bitcoin.conf automatisch für die Anforderungen eines anderen Dienstes konfigurieren',
     1902: 'Diese Felder wurden von einer Aufgabe bereitgestellt und können nicht bearbeitet werden',
+
+    // main.ts (reachability)
+    1950: 'Knoten-Erreichbarkeit',
+    1951: 'Ihr Knoten kann sich mit anderen Knoten verbinden, aber andere Knoten können sich nicht mit Ihnen verbinden. Fügen Sie optional eine Tor-Domain, öffentliche Domain oder öffentliche IP-Adresse hinzu, um dieses Verhalten zu ändern.',
 
     // Common
     1800: 'Konfiguration',
@@ -765,6 +775,7 @@ export default {
     1254: 'Edytuj ustawienia peerów w bitcoin.conf',
     1255: 'Maksymalna liczba połączeń',
     1256: 'Ustaw maksymalną liczbę połączeń z peerami.',
+    1257: 'nieograniczony',
 
     // actions/config/mempool.ts
     1500: 'Zachowaj Mempool',
@@ -852,6 +863,10 @@ export default {
     1900: 'Auto-Konfiguracja',
     1901: 'Automatycznie skonfiguruj bitcoin.conf dla potrzeb innej usługi',
     1902: 'Te pola zostały dostarczone przez zadanie i nie mogą być edytowane',
+
+    // main.ts (reachability)
+    1950: 'Osiągalność węzła',
+    1951: 'Twój węzeł może łączyć się z innymi węzłami, ale inne węzły nie mogą się z Tobą połączyć. Opcjonalnie dodaj domenę Tor, domenę publiczną lub publiczny adres IP, aby zmienić to zachowanie.',
 
     // Common
     1800: 'Konfiguracja',
@@ -1050,6 +1065,7 @@ export default {
     1254: 'Modifier les paramètres des pairs dans bitcoin.conf',
     1255: 'Connexions maximales',
     1256: 'Définir le nombre maximum de connexions à maintenir avec les pairs.',
+    1257: 'illimité',
 
     // actions/config/mempool.ts
     1500: 'Conserver le Mempool',
@@ -1137,6 +1153,10 @@ export default {
     1900: 'Auto-Configuration',
     1901: "Configurer automatiquement bitcoin.conf pour les besoins d'un autre service",
     1902: 'Ces champs ont été fournis par une tâche et ne peuvent pas être modifiés',
+
+    // main.ts (reachability)
+    1950: 'Accessibilité du nœud',
+    1951: "Votre nœud peut se connecter à d'autres nœuds, mais les autres nœuds ne peuvent pas se connecter à vous. Ajoutez éventuellement un domaine Tor, un domaine public ou une adresse IP publique pour modifier ce comportement.",
 
     // Common
     1800: 'Configuration',

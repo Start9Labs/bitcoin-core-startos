@@ -26,6 +26,7 @@ The reference implementation of the Bitcoin protocol. See the [upstream repo](ht
 - [Backups and Restore](#backups-and-restore)
 - [Health Checks](#health-checks)
 - [Dependencies](#dependencies)
+- [Default Overrides](#default-overrides)
 - [Limitations and Differences](#limitations-and-differences)
 - [What Is Unchanged from Upstream](#what-is-unchanged-from-upstream)
 - [Contributing](#contributing)
@@ -69,7 +70,7 @@ Blockchain data directories (`blocks/`, `chainstate/`, `indexes/`) reside on the
 ## Installation and First-Run Flow
 
 1. On install, StartOS sets the `nocow` attribute on the data directory (btrfs optimization via `chattr -R +C`)
-2. Default `bitcoin.conf` and `store.json` are written with defaults mostly aligned with upstream, plus some optimizations for typical StartOS hardware and ecosystem needs (e.g. larger `dbcache`, ZMQ and block filter index pre-enabled for dependent services)
+2. Default `bitcoin.conf` and `store.json` are seeded. Only values that **diverge** from upstream Bitcoin Core defaults are written (see [Default Overrides](#default-overrides)); all other settings are left unset so bitcoind uses its built-in defaults
 3. **Disk-aware defaults**: on disks smaller than 900 GB, pruning is automatically enabled (550 MiB target) and `txindex` is disabled; on larger disks, a full archival node is configured by default
 4. **I2P enabled by default**: the embedded I2P daemon starts automatically with `i2pacceptincoming=true`, so the node accepts inbound peer connections over I2P out of the box — no user configuration required
 5. **Tor proxy always configured**: the `-onion` flag is set to the StartOS Tor proxy on every start, enabling outbound connections over Tor. To additionally advertise a public address (clearnet IP or Tor onion), use the **Peer Settings** action
@@ -101,7 +102,7 @@ Bitcoin Core is configured through **StartOS actions** that write to `bitcoin.co
 | **Mempool Settings** | persistmempool, maxmempool, mempoolexpiry, permitbaremultisig, OP_RETURN (datacarrier/datacarriersize)                                                                                           |
 | **Peer Settings**    | onlynet (ipv4/ipv6/onion/i2p/cjdns), BIP324 v2transport, I2P SAM proxy (enabled/disabled), externalip (public address / Tor onion / none), connect/addnode peers                                 |
 | **RPC Settings**     | rpcservertimeout, rpcthreads, rpcworkqueue                                                                                                                                                       |
-| **Other Settings**   | ZMQ, txindex, blocknotify, coinstatsindex, wallet settings (enable/avoidpartialspends/discardfee), pruning, dbcache, dbbatchsize, BIP158/BIP157 block filters, bloom filters, IPC (experimental) |
+| **Other Settings**   | ZMQ, txindex, blocknotify, coinstatsindex, wallet settings (enable/avoidpartialspends/discardfee), pruning, dbcache, dbbatchsize, BIP158/BIP157 block filters, bloom filters |
 
 Settings **not** managed by StartOS (hardcoded):
 
@@ -141,7 +142,8 @@ This is transparent to dependent services — port 8332 always serves RPC.
 | **Mempool Settings** | Configure mempool behavior                                               | Any          |
 | **Peer Settings**    | Configure networking, I2P, public address (externalip), peer connections | Any          |
 | **RPC Settings**     | Configure RPC server parameters                                          | Any          |
-| **Other Settings**   | Configure ZMQ, indexes, wallets, pruning, IPC                            | Any          |
+| **Other Settings**   | Configure ZMQ, indexes, wallets, pruning, performance tuning             | Any          |
+| **Enable IPC**       | Toggle inter-process communication via Unix socket (experimental)        | Any          |
 
 ### RPC Users
 
@@ -179,10 +181,11 @@ This is transparent to dependent services — port 8332 always serves RPC.
 
 ## Health Checks
 
-| Check             | Method                                                  | Messages                                                             |
-| ----------------- | ------------------------------------------------------- | -------------------------------------------------------------------- |
-| **RPC**           | Waits for `.cookie` file, then `bitcoin-cli getrpcinfo` | Ready: "The Bitcoin RPC Interface is ready"                          |
-| **Sync Progress** | `bitcoin-cli getblockchaininfo`                         | Shows percentage during IBD; "Bitcoin is fully synced" when complete |
+| Check              | Method                                                  | Messages                                                                            |
+| ------------------ | ------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| **RPC**            | Waits for `.cookie` file, then `bitcoin-cli getrpcinfo` | Ready: "The Bitcoin RPC Interface is ready"                                         |
+| **Sync Progress**  | `bitcoin-cli getblockchaininfo`                         | Shows percentage during IBD; "Bitcoin is fully synced" when complete                |
+| **Reachability**   | Checks `externalip` and I2P incoming config             | Disabled: "Your node can peer with other nodes, but other nodes cannot peer with you" (hidden when node is reachable via public IP, Tor, or I2P incoming) |
 
 ## Dependencies
 
@@ -191,6 +194,35 @@ This is transparent to dependent services — port 8332 always serves RPC.
 | **Tor**    | When `wantsOnion` is true, `externalip` contains `.onion`, or `onlynet` includes `onion` | Running (>= 0.4.8:0-beta.0) |
 
 When a Tor onion address is requested via the **Peer Settings** action, a task is created asking Tor to provision an onion service. Once fulfilled, the onion address is set as `externalip` automatically. Other StartOS services (LND, Core Lightning, Electrs, etc.) depend on Bitcoin Core.
+
+## Default Overrides
+
+Only settings that **diverge from upstream Bitcoin Core defaults** are seeded into `bitcoin.conf` on install. All other settings are left unset, allowing bitcoind to use its built-in defaults. This keeps `bitcoin.conf` minimal and avoids drift when upstream defaults change between versions.
+
+### Seeded overrides (written to `bitcoin.conf` on install)
+
+| Setting | Upstream Default | Our Default | Reason |
+| --- | --- | --- | --- |
+| `dbcache` | 450 MiB | 5000 MiB | Faster IBD; reduced to 450 automatically after initial sync completes |
+| `dbbatchsize` | 16777216 (16 MiB) | 33554432 (32 MiB) | Faster UTXO writes during sync |
+| `rpcthreads` | 4 | 16 | Better RPC concurrency for dependent services |
+| `rpcworkqueue` | 16 | 64 | Deeper RPC backlog for dependent services |
+| `blockfilterindex` | off | `basic` | Required by dependent services (Electrs, etc.) for BIP158 filters |
+| `zmqpubrawblock`, `zmqpubhashblock` | off | `tcp://0.0.0.0:28332` | Required by dependent services (LND, etc.) |
+| `zmqpubrawtx`, `zmqpubhashtx`, `zmqpubsequence` | off | `tcp://0.0.0.0:28333` | Required by dependent services (LND, etc.) |
+| `i2psam` | off | `127.0.0.1:7656` | Embedded I2P daemon for peer-to-peer privacy |
+| `assumevalid` | built-in block hash | custom block hash | Performance optimization for IBD |
+| `prune` (disk < 900 GB only) | 0 (off) | 550 MiB | Automatic pruning on smaller disks |
+
+### Form defaults vs placeholders
+
+Configuration actions use a consistent pattern for number fields:
+
+- **`default: null`** — the field is empty; if the user saves without setting a value, the key is omitted from `bitcoin.conf` and bitcoind uses its upstream default
+- **`placeholder`** — shows the upstream bitcoind default, so the user knows what value applies when the field is left empty
+- **`default: <value>`** — used only when we intentionally override the upstream default (e.g. `dbcache: 5000`); "reset defaults" restores our override, not the upstream value
+
+Override defaults (`defaultDbcache`, `defaultDbbatchsize`, `defaultPrune`, `defaultRpcthreads`, `defaultRpcworkqueue`) are defined once in `bitcoin.conf.ts` and imported by `seedFiles.ts`, ensuring the form defaults and seed values cannot drift apart.
 
 ## Limitations and Differences
 
@@ -249,6 +281,7 @@ actions:
   - peers-config
   - rpc-config
   - other-config
+  - ipc
   - generate-rpcuser
   - delete-rpcauth
   - reindex-blockchain
@@ -261,6 +294,7 @@ actions:
 health_checks:
   - bitcoin-cli_getrpcinfo: rpc_ready
   - bitcoin-cli_getblockchaininfo: sync_progress
+  - reachability: disabled_when_unreachable
 backup_volumes:
   - main (excluding blocks/, chainstate/, indexes/)
   - i2pd (excluding ephemeral data)

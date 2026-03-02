@@ -1,4 +1,7 @@
-import { FileHelper, T, z } from '@start9labs/start-sdk'
+import { FileHelper, T, utils, z } from '@start9labs/start-sdk'
+import * as diskusage from 'diskusage'
+import { i18n } from '../i18n'
+import { sdk } from '../sdk'
 import {
   i2PSamAddress,
   peerPortExternal,
@@ -10,11 +13,6 @@ import {
   rpccookiefile,
   zmqBundle,
 } from '../utils'
-import { sdk } from '../sdk'
-import { utils } from '@start9labs/start-sdk'
-import * as diskusage from 'diskusage'
-import { bitcoinConfDefaults as d } from '../utils'
-import { i18n } from '../i18n'
 
 // INI coercion helpers: INI parsing returns strings, with duplicate keys producing arrays.
 // Each uses .catch(undefined) to match the old optional(t) = t.optional().onMismatch(undefined)
@@ -153,14 +151,21 @@ function stringifyPrimitives(a: unknown): any {
 const { InputSpec, Value, Variants, List } = sdk
 
 const diskUsage = utils.once(() => diskusage.check('/'))
-const archivalMin = 900_000_000_000
+export const archivalMin = 900_000_000_000
+
+// Override defaults (diverging from upstream bitcoind)
+export const defaultDbcache = 5_000
+export const defaultDbbatchsize = 33_554_432
+export const defaultPrune = 550
+export const defaultRpcthreads = 16
+export const defaultRpcworkqueue = 64
 
 export const fullConfigSpec = sdk.InputSpec.of({
   raw: Value.hidden(shape),
   persistmempool: Value.toggle({
     name: i18n('Persist Mempool'),
     description: i18n('Save the mempool on shutdown and load on restart.'),
-    default: d.persistmempool,
+    default: true,
   }),
   maxmempool: Value.number({
     name: i18n('Max Mempool Size'),
@@ -170,7 +175,7 @@ export const fullConfigSpec = sdk.InputSpec.of({
     min: 1,
     integer: true,
     units: 'MiB',
-    placeholder: String(d.maxmempool),
+    placeholder: '300',
   }),
   mempoolexpiry: Value.number({
     name: i18n('Mempool Expiration'),
@@ -178,21 +183,21 @@ export const fullConfigSpec = sdk.InputSpec.of({
       'Do not keep transactions in the mempool longer than <n> hours.',
     ),
     required: false,
-    default: d.mempoolexpiry,
+    default: null,
     min: 1,
     integer: true,
     units: i18n('Hr'),
-    placeholder: String(d.mempoolexpiry),
+    placeholder: '336',
   }),
   permitbaremultisig: Value.toggle({
     name: i18n('Permit Bare Multisig'),
     description: i18n('Relay non-P2SH multisig transactions'),
-    default: d.permitbaremultisig,
+    default: true,
   }),
   datacarrier: Value.toggle({
     name: i18n('Relay OP_RETURN Transactions'),
     description: i18n('Relay transactions with OP_RETURN outputs'),
-    default: d.datacarrier,
+    default: true,
   }),
   datacarriersize: Value.number({
     name: i18n('Max OP_RETURN Size'),
@@ -200,10 +205,10 @@ export const fullConfigSpec = sdk.InputSpec.of({
     required: false,
     default: null,
     min: 0,
-    max: 10_000,
+    max: 100_000,
     integer: true,
     units: i18n('bytes'),
-    placeholder: String(d.datacarriersize),
+    placeholder: '100000',
   }),
   zmqEnabled: Value.toggle({
     name: i18n('ZeroMQ Enabled'),
@@ -237,7 +242,7 @@ export const fullConfigSpec = sdk.InputSpec.of({
     description: i18n(
       'Enabling Coinstats Index reduces the time for the gettxoutsetinfo RPC to complete at the cost of using additional disk space',
     ),
-    default: d.coinstatsindex,
+    default: false,
   }),
   wallet: Value.object(
     { name: i18n('Wallet'), description: i18n('Wallet Settings') },
@@ -245,14 +250,14 @@ export const fullConfigSpec = sdk.InputSpec.of({
       enable: Value.toggle({
         name: i18n('Enable Wallet'),
         description: i18n('Load the wallet and enable wallet RPC calls.'),
-        default: !d.disablewallet,
+        default: true,
       }),
       avoidpartialspends: Value.toggle({
         name: i18n('Avoid Partial Spends'),
         description: i18n(
           'Group outputs by address, selecting all or none, instead of selecting on a per-output basis. This improves privacy at the expense of higher transaction fees.',
         ),
-        default: d.avoidpartialspends,
+        default: false,
       }),
       discardfee: Value.number({
         name: i18n('Discard Change Tolerance'),
@@ -265,7 +270,7 @@ export const fullConfigSpec = sdk.InputSpec.of({
         max: 0.01,
         integer: false,
         units: i18n('BTC/kB'),
-        placeholder: String(d.discardfee),
+        placeholder: '0.0001',
       }),
     }),
   ),
@@ -285,7 +290,7 @@ export const fullConfigSpec = sdk.InputSpec.of({
           ? i18n('Leave blank for full archival')
           : i18n('Enter max blockchain size'),
       required: disk.total < archivalMin,
-      default: disk.total < archivalMin ? 550 : null,
+      default: disk.total < archivalMin ? defaultPrune : null,
       integer: true,
       units: 'MiB',
       min: 0,
@@ -298,11 +303,11 @@ export const fullConfigSpec = sdk.InputSpec.of({
       'How much RAM to allocate for caching the TXO set. Higher values improve syncing performance, but may result in some re-work in the event of an ungraceful shutdown. 4-7GB is high enough to get most of the peformance benefit during IBD. Consider reducing this setting for lower resource devices (or a device with less available RAM)',
     ),
     required: false,
-    default: null,
+    default: defaultDbcache,
     min: 0,
     integer: true,
     units: 'MiB',
-    placeholder: String(d.dbcache),
+    placeholder: '450',
   }),
   dbbatchsize: Value.number({
     name: i18n('Database Batch'),
@@ -310,11 +315,11 @@ export const fullConfigSpec = sdk.InputSpec.of({
       'Maximum database write batch size in bytes. Higher values will speed up the critical sections when the utxo set is written to disk from memory in big batches.',
     ),
     required: false,
-    default: null,
+    default: defaultDbbatchsize,
     min: 0,
     integer: true,
     units: i18n('Bytes'),
-    placeholder: String(d.dbbatchsize),
+    placeholder: '16777216',
   }),
   blockfilters: Value.object(
     {
@@ -329,14 +334,14 @@ export const fullConfigSpec = sdk.InputSpec.of({
         description: i18n(
           "Generate Compact Block Filters during initial sync (IBD) to enable 'getblockfilter' RPC. This is useful if dependent services need block filters to efficiently scan for addresses/transactions etc.",
         ),
-        default: !!d.blockfilterindex,
+        default: true,
       }),
       peerblockfilters: Value.toggle({
         name: i18n('Serve Compact Block Filters to Peers (BIP157)'),
         description: i18n(
           "Serve Compact Block Filters as a peer service to other nodes on the network. This is useful if you wish to connect an SPV client to your node to make it efficient to scan transactions without having to download all block data.  'Compute Compact Block Filters (BIP158)' is required.",
         ),
-        default: d.peerblockfilters,
+        default: false,
       }),
     }),
   ),
@@ -348,7 +353,7 @@ export const fullConfigSpec = sdk.InputSpec.of({
     warning: i18n(
       'This is ONLY for use with Bisq integration, please use Block Filters for all other applications.',
     ),
-    default: d.peerbloomfilters,
+    default: false,
   }),
   onlynet: Value.multiselect({
     name: i18n('Onlynet'),
@@ -365,7 +370,7 @@ export const fullConfigSpec = sdk.InputSpec.of({
     description: i18n(
       'Enable or disable the use of BIP324 V2 P2P transport protocol.',
     ),
-    default: d.v2transport,
+    default: true,
   }),
   connectpeer: Value.union({
     name: i18n('Connect Peer'),
@@ -432,10 +437,11 @@ export const fullConfigSpec = sdk.InputSpec.of({
     description: i18n(
       'Set the maximum number of connections to maintain with peers.',
     ),
-    default: d.maxconnections,
-    required: true,
+    default: 125,
+    required: false,
     min: 0,
     integer: true,
+    placeholder: i18n('unlimited'),
   }),
   rpcservertimeout: Value.number({
     name: i18n('Rpc Server Timeout'),
@@ -448,37 +454,33 @@ export const fullConfigSpec = sdk.InputSpec.of({
     max: 300,
     integer: true,
     units: i18n('seconds'),
-    placeholder: d.rpcservertimeout.toString(),
+    placeholder: '30',
   }),
   rpcthreads: Value.number({
     name: i18n('Threads'),
     description: i18n(
       'Set the number of threads for handling RPC calls. You may wish to increase this if you are making lots of calls via an integration.',
     ),
-
     required: false,
-    default: null,
+    default: defaultRpcthreads,
     min: 4,
     max: 64,
-    step: null,
     integer: true,
-    units: null,
-    placeholder: d.rpcthreads.toString(),
+    units: i18n('Threads').toLocaleLowerCase(),
+    placeholder: '4',
   }),
   rpcworkqueue: Value.number({
     name: i18n('Work Queue'),
     description: i18n(
       'Set the depth of the work queue to service RPC calls. Determines how long the backlog of RPC requests can get before it just rejects new ones.',
     ),
-
     required: false,
-    default: null,
+    default: defaultRpcworkqueue,
     min: 8,
     max: 256,
-    step: null,
     integer: true,
     units: i18n('requests'),
-    placeholder: d.rpcworkqueue.toString(),
+    placeholder: '16',
   }),
 })
 
@@ -639,12 +641,14 @@ function formToFile(
     blocknotify: blocknotify || undefined,
     prune: prune ?? undefined,
     dbcache: dbcache ?? undefined,
-    // ZMQ: explicitly set all fields to handle both enable and disable
-    zmqpubrawblock: zmqEnabled ? zmqBundle.zmqpubrawblock : undefined,
-    zmqpubhashblock: zmqEnabled ? zmqBundle.zmqpubhashblock : undefined,
-    zmqpubrawtx: zmqEnabled ? zmqBundle.zmqpubrawtx : undefined,
-    zmqpubhashtx: zmqEnabled ? zmqBundle.zmqpubhashtx : undefined,
-    zmqpubsequence: zmqEnabled ? zmqBundle.zmqpubsequence : undefined,
+    // ZMQ
+    ...(zmqEnabled ? zmqBundle : {
+      zmqpubrawblock: undefined,
+      zmqpubhashblock: undefined,
+      zmqpubrawtx: undefined,
+      zmqpubhashtx: undefined,
+      zmqpubsequence: undefined,
+    }),
 
     // Peer
     v2transport,
@@ -657,7 +661,7 @@ function formToFile(
       connectpeer?.selection === 'addnode'
         ? (connectpeer.value?.peers?.filter((a) => !!a) as string[] | undefined)
         : undefined,
-    maxconnections,
+    maxconnections: maxconnections ?? undefined,
 
     // RPC
     rpcservertimeout: rpcservertimeout ?? undefined,

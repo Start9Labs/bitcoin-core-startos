@@ -1,6 +1,5 @@
 import { bitcoinConfFile, fullConfigSpec } from '../../fileModels/bitcoin.conf'
 import { sdk } from '../../sdk'
-import { bitcoinConfDefaults as d, nullToUndefined } from '../../utils'
 import { i18n } from '../../i18n'
 
 export const mempoolConfig = sdk.Action.withInput(

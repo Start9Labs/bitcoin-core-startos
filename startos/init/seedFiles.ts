@@ -1,7 +1,15 @@
-import { bitcoinConfFile } from '../fileModels/bitcoin.conf'
+import {
+  archivalMin,
+  bitcoinConfFile,
+  defaultDbcache,
+  defaultDbbatchsize,
+  defaultPrune,
+  defaultRpcthreads,
+  defaultRpcworkqueue,
+} from '../fileModels/bitcoin.conf'
 import { storeJson } from '../fileModels/store.json'
 import { sdk } from '../sdk'
-import { bitcoinConfDefaults, rpcallowipPruned, rpcbindPruned } from '../utils'
+import { i2PSamAddress } from '../utils'
 import * as diskusage from 'diskusage'
 import { utils } from '@start9labs/start-sdk'
 import { i2pdConfFile } from '../fileModels/i2pd.conf'
@@ -16,15 +24,17 @@ export const seedFiles = sdk.setupOnInit(async (effects, kind) => {
   await bitcoinConfFile.merge(effects, {
     zmqEnabled: true,
     blockfilters: { blockfilterindex: true },
+    dbcache: defaultDbcache,
+    dbbatchsize: defaultDbbatchsize,
+    rpcthreads: defaultRpcthreads,
+    rpcworkqueue: defaultRpcworkqueue,
+    ...((await diskUsage()).total < archivalMin
+      ? { prune: defaultPrune }
+      : {}),
     raw: {
-      ...bitcoinConfDefaults,
-      ...((await diskUsage()).total < 900_000_000_000
-        ? {
-            prune: 550,
-            rpcbind: rpcbindPruned,
-            rpcallowip: rpcallowipPruned,
-          }
-        : {}),
+      i2psam: i2PSamAddress,
+      assumevalid:
+        '00000000000000000000611fd22f2df7c8fbd0688745c3a6c3bb5109cc2a12cb',
     },
   })
 

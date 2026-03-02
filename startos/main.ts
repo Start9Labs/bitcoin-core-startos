@@ -240,8 +240,29 @@ export const main = sdk.setupMain(async ({ effects }) => {
       requires: ['sync-progress'],
     })
 
+  const withReachability = withBitcoind.addHealthCheck('reachability', () => {
+    const hasExternalIp = !!bitcoinConf.raw?.externalip
+    const hasI2pIncoming =
+      !!bitcoinConf.raw?.i2psam && bitcoinConf.raw?.i2pacceptincoming !== false
+
+    if (hasExternalIp || hasI2pIncoming) return null
+
+    return {
+      ready: {
+        display: i18n('Node Reachability'),
+        fn: () => ({
+          result: 'disabled' as const,
+          message: i18n(
+            'Your node can peer with other nodes, but other nodes cannot peer with you. Optionally add a Tor domain, public domain, or public IP address to change this behavior.',
+          ),
+        }),
+      },
+      requires: ['bitcoind'],
+    }
+  })
+
   // RPC proxy (conditional, enabled when pruning)
-  return withBitcoind.addDaemon('proxy', async () => {
+  return withReachability.addDaemon('proxy', async () => {
     if (!bitcoinConf.prune) return null
 
     const subcontainer = await sdk.SubContainer.of(
