@@ -1,0 +1,51 @@
+import { storeJson } from '../fileModels/store.json'
+import { i18n } from '../i18n'
+import { sdk } from '../sdk'
+
+const { Value } = sdk
+
+export const ipc = sdk.Action.withInput(
+  // id
+  'ipc',
+
+  // metadata
+  async ({ effects }) => ({
+    name: i18n('Enable IPC'),
+    description: i18n(
+      'Enable inter-process communication (IPC) via Unix socket. This allows other services to communicate with Bitcoin Core using a high-performance local socket connection. The socket path will be displayed in Runtime Information.',
+    ),
+    warning: null,
+    allowedStatuses: 'any',
+    group: null,
+    visibility: 'enabled',
+  }),
+
+  // form input specification
+  sdk.InputSpec.of({
+    enableIpc: Value.dynamicToggle(async ({ effects }) => {
+      const ipcEnabled = await storeJson.read((s) => s.enableIpc).once()
+      return {
+        name: i18n('Enable IPC'),
+        description: i18n(
+          'Enable inter-process communication (IPC) via Unix socket. This allows other services to communicate with Bitcoin Core using a high-performance local socket connection. The socket path will be displayed in Runtime Information.',
+        ),
+        warning: ipcEnabled
+          ? null
+          : i18n(
+              'IPC is an experimental feature. Only enable this if you know what you are doing with the IPC socket. An example use case would be Stratum v2 mining services.',
+            ),
+        default: false,
+      }
+    }),
+  }),
+
+  // optionally pre-fill the input form
+  async ({ effects }) => ({
+    enableIpc: (await storeJson.read((s) => s.enableIpc).once()) ?? false,
+  }),
+
+  // the execution function
+  async ({ effects, input }) => {
+    await storeJson.merge(effects, { enableIpc: input.enableIpc })
+  },
+)

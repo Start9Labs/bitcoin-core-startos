@@ -104,7 +104,7 @@ export const peerConfig = sdk.Action.withInput(
 
   // the execution function
   async ({ effects, input }) => {
-    const { i2psam, externalip } = input
+    const { i2psam, externalip, ...confInput } = input
 
     if (externalip === 'create-tor') {
       await storeJson.merge(effects, { wantsOnion: true })
@@ -122,7 +122,7 @@ export const peerConfig = sdk.Action.withInput(
             ? undefined
             : externalip,
       },
-      ...input,
+      ...confInput,
     })
   },
 )
