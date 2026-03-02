@@ -1,14 +1,16 @@
 import { FileHelper, z } from '@start9labs/start-sdk'
 import { sdk } from '../sdk'
 
-export const shape = z.object({
-  reindexBlockchain: z.boolean().catch(false),
-  reindexChainstate: z.boolean().catch(false),
-  fullySynced: z.boolean().catch(false),
-  snapshotInUse: z.boolean().catch(false),
-  enableIpc: z.boolean().catch(false),
-  wantsOnion: z.boolean().nullable().catch(null),
-})
+export const shape = z
+  .object({
+    reindexBlockchain: z.boolean().catch(false),
+    reindexChainstate: z.boolean().catch(false),
+    fullySynced: z.boolean().catch(false),
+    snapshotInUse: z.boolean().catch(false),
+    enableIpc: z.boolean().catch(false),
+    wantsOnion: z.boolean().nullable().catch(null),
+  })
+  .strip()
 
 export const storeJson = FileHelper.json(
   {

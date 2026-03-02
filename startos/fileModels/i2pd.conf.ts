@@ -10,113 +10,68 @@ const iniBoolean = z.union([
   z.boolean(),
 ])
 
-export const i2pdConfDefaults = {
-  log: 'stdout' as const,
-  loglevel: 'critical' as const,
-  port: 14096,
-  ipv4: true,
-  ipv6: false,
-  bandwidth: 'L' as const,
-  share: 100,
-  notransit: false,
-  floodfill: false,
-  ntcp2: {
-    enabled: true,
-    published: true,
-  },
-  ssu2: {
-    enabled: true,
-    published: true,
-  },
-  http: {
-    enabled: false,
-    address: '0.0.0.0',
-    port: i2pUiPort,
-    strictheaders: false,
-  },
-  httpproxy: {
-    enabled: false,
-  },
-  socksproxy: {
-    enabled: false,
-  },
-  sam: {
-    enabled: true,
-  },
-  upnp: {
-    enabled: false,
-  },
-  reseed: {
-    verify: true,
-  },
-  limits: {
-    transittunnels: 10000,
-  },
-}
-
-const d = i2pdConfDefaults
 export const shape = z.object({
-  log: z.literal(d.log).catch(d.log),
+  log: z.literal('stdout').catch('stdout'),
   loglevel: z
     .enum(['none', 'critical', 'error', 'warn', 'info', 'debug'])
-    .catch(d.loglevel),
-  port: iniNumber.catch(d.port),
-  ipv4: iniBoolean.catch(d.ipv4),
-  ipv6: iniBoolean.catch(d.ipv6),
-  bandwidth: z.enum(['L', 'O', 'P']).catch(d.bandwidth),
-  share: iniNumber.catch(d.share),
-  notransit: iniBoolean.catch(d.notransit),
-  floodfill: iniBoolean.catch(d.floodfill),
+    .catch('critical'),
+  port: iniNumber.catch(14096),
+  ipv4: iniBoolean.catch(true),
+  ipv6: iniBoolean.catch(false),
+  bandwidth: z.enum(['L', 'O', 'P']).catch('L'),
+  share: iniNumber.catch(100),
+  notransit: iniBoolean.catch(false),
+  floodfill: iniBoolean.catch(false),
   ntcp2: z
     .object({
-      enabled: iniBoolean.catch(d.ntcp2.enabled),
-      published: iniBoolean.catch(d.ntcp2.published),
+      enabled: iniBoolean.catch(true),
+      published: iniBoolean.catch(true),
     })
-    .catch(d.ntcp2),
+    .catch({ enabled: true, published: true }),
   ssu2: z
     .object({
-      enabled: iniBoolean.catch(d.ssu2.enabled),
-      published: iniBoolean.catch(d.ssu2.published),
+      enabled: iniBoolean.catch(true),
+      published: iniBoolean.catch(true),
     })
-    .catch(d.ssu2),
+    .catch({ enabled: true, published: true }),
   http: z
     .object({
-      enabled: iniBoolean.catch(d.http.enabled),
-      address: z.string().catch(d.http.address),
-      port: iniNumber.catch(d.http.port),
-      strictheaders: iniBoolean.catch(d.http.strictheaders),
+      enabled: iniBoolean.catch(false),
+      address: z.string().catch('0.0.0.0'),
+      port: iniNumber.catch(i2pUiPort),
+      strictheaders: iniBoolean.catch(false),
     })
-    .catch(d.http),
+    .catch({ enabled: false, address: '0.0.0.0', port: i2pUiPort, strictheaders: false }),
   httpproxy: z
     .object({
-      enabled: iniBoolean.catch(d.httpproxy.enabled),
+      enabled: iniBoolean.catch(false),
     })
-    .catch(d.httpproxy),
+    .catch({ enabled: false }),
   socksproxy: z
     .object({
-      enabled: iniBoolean.catch(d.socksproxy.enabled),
+      enabled: iniBoolean.catch(false),
     })
-    .catch(d.socksproxy),
+    .catch({ enabled: false }),
   sam: z
     .object({
-      enabled: iniBoolean.catch(d.sam.enabled),
+      enabled: iniBoolean.catch(true),
     })
-    .catch(d.sam),
+    .catch({ enabled: true }),
   upnp: z
     .object({
-      enabled: iniBoolean.catch(d.upnp.enabled),
+      enabled: iniBoolean.catch(false),
     })
-    .catch(d.upnp),
+    .catch({ enabled: false }),
   reseed: z
     .object({
-      verify: iniBoolean.catch(d.reseed.verify),
+      verify: iniBoolean.catch(true),
     })
-    .catch(d.reseed),
+    .catch({ verify: true }),
   limits: z
     .object({
-      transittunnels: iniNumber.catch(d.limits.transittunnels),
+      transittunnels: iniNumber.catch(10000),
     })
-    .catch(d.limits),
+    .catch({ transittunnels: 10000 }),
 })
 
 export const i2pdConfFile = FileHelper.ini(
