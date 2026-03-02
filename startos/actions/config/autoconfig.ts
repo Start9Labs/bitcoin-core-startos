@@ -1,6 +1,6 @@
 import { bitcoinConfFile, fullConfigSpec } from '../../fileModels/bitcoin.conf'
-import { sdk } from '../../sdk'
 import { i18n } from '../../i18n'
+import { sdk } from '../../sdk'
 
 export const autoconfig = sdk.Action.withInput(
   // id
@@ -31,7 +31,7 @@ export const autoconfig = sdk.Action.withInput(
   },
 
   // optionally pre-fill form
-  async ({ effects }) => {},
+  async ({ effects }) => bitcoinConfFile.read().once(),
 
   // execution function
   ({ effects, input }) => bitcoinConfFile.merge(effects, input),
