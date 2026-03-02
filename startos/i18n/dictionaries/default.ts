@@ -33,7 +33,6 @@ const dict = {
   'RPC user successfully created': 208,
   'RPC password created for ${username}. Store this password in a secure place. If lost, a new RPC user will need to be created as Bitcoin.conf only stores a hash of the password': 209,
   'RPC Password': 210,
-  '${username} RPC Password': 211,
   'Failed to create RPC user': 212,
   'rpcauth.py failed with error: ${error}': 213,
 

@@ -34,7 +34,6 @@ export default {
     208: 'Usuario RPC creado exitosamente',
     209: 'Contraseña RPC creada para ${username}. Guarde esta contraseña en un lugar seguro. Si la pierde, será necesario crear un nuevo usuario RPC ya que Bitcoin.conf solo almacena un hash de la contraseña',
     210: 'Contraseña RPC',
-    211: 'Contraseña RPC de ${username}',
     212: 'Error al crear usuario RPC',
     213: 'rpcauth.py falló con error: ${error}',
 
@@ -320,7 +319,6 @@ export default {
     208: 'RPC-Benutzer erfolgreich erstellt',
     209: 'RPC-Passwort für ${username} erstellt. Bewahren Sie dieses Passwort an einem sicheren Ort auf. Wenn es verloren geht, muss ein neuer RPC-Benutzer erstellt werden, da Bitcoin.conf nur einen Hash des Passworts speichert',
     210: 'RPC-Passwort',
-    211: '${username} RPC-Passwort',
     212: 'Fehler beim Erstellen des RPC-Benutzers',
     213: 'rpcauth.py ist mit Fehler fehlgeschlagen: ${error}',
 
@@ -606,7 +604,6 @@ export default {
     208: 'Użytkownik RPC utworzony pomyślnie',
     209: 'Hasło RPC utworzone dla ${username}. Przechowuj to hasło w bezpiecznym miejscu. Jeśli zostanie utracone, konieczne będzie utworzenie nowego użytkownika RPC, ponieważ Bitcoin.conf przechowuje tylko hash hasła',
     210: 'Hasło RPC',
-    211: 'Hasło RPC ${username}',
     212: 'Nie udało się utworzyć użytkownika RPC',
     213: 'rpcauth.py zakończył się błędem: ${error}',
 
@@ -892,7 +889,6 @@ export default {
     208: 'Utilisateur RPC créé avec succès',
     209: "Mot de passe RPC créé pour ${username}. Conservez ce mot de passe dans un endroit sûr. En cas de perte, un nouvel utilisateur RPC devra être créé car Bitcoin.conf ne stocke qu'un hachage du mot de passe",
     210: 'Mot de passe RPC',
-    211: 'Mot de passe RPC de ${username}',
     212: "Échec de la création de l'utilisateur RPC",
     213: "rpcauth.py a échoué avec l'erreur : ${error}",
 
