@@ -1,7 +1,7 @@
 import { bitcoinConfFile } from '../fileModels/bitcoin.conf'
+import { i18n } from '../i18n'
 import { sdk } from '../sdk'
 import { getRpcAuth, getRpcUsers } from './deleteRpcAuth'
-import { i18n } from '../i18n'
 const { InputSpec, Value } = sdk
 
 export const inputSpec = InputSpec.of({
@@ -83,12 +83,8 @@ export const generateRpcUser = sdk.Action.withInput(
           { username: input.username },
         ),
         result: {
-          name: i18n('RPC Password'),
           type: 'single',
           value: password,
-          description: i18n('${username} RPC Password', {
-            username: input.username,
-          }),
           copyable: true,
           masked: true,
           qr: false,

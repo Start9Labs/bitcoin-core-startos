@@ -20,6 +20,8 @@ export const autoconfig = sdk.Action.withInput(
 
   // input spec
   async ({ effects, prefill }) => {
+    if (!prefill) return fullConfigSpec
+
     return fullConfigSpec
       .filterFromPartial(prefill as typeof fullConfigSpec._PARTIAL)
       .disableFromPartial(
