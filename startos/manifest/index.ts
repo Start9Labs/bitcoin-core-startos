@@ -1,9 +1,9 @@
 import { setupManifest } from '@start9labs/start-sdk'
 import {
-  short,
-  long,
-  alertUninstall,
   alertRestore,
+  alertUninstall,
+  long,
+  short,
   torDescription,
 } from './i18n'
 
@@ -55,7 +55,7 @@ export const manifest = setupManifest({
       optional: true,
       metadata: {
         title: 'Tor',
-        icon: 'https://raw.githubusercontent.com/Start9Labs/tor-startos/refs/heads/update/040/icon.png',
+        icon: 'https://raw.githubusercontent.com/Start9Labs/tor-startos/65faea17febc739d910e8c26ff4e61f6333487a8/icon.svg',
       },
     },
   },
