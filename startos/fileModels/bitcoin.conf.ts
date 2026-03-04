@@ -541,7 +541,7 @@ function fileToForm(
       discardfee,
     },
     blocknotify,
-    prune,
+    prune: prune ?? 0,
     dbcache: dbcache ?? null,
     blockfilters: {
       blockfilterindex: blockfilterindex === 'basic',
