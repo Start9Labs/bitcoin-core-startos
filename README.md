@@ -7,7 +7,7 @@
 > **Upstream docs:** <https://bitcoincore.org/en/doc/>
 >
 > Everything not listed in this document should behave the same as upstream
-> Bitcoin Core v30.2. If a feature, setting, or behavior is not mentioned
+> Bitcoin Core. If a feature, setting, or behavior is not mentioned
 > here, the upstream documentation is accurate and fully applicable.
 
 The reference implementation of the Bitcoin protocol. See the [upstream repo](https://github.com/bitcoin/bitcoin) for general Bitcoin Core documentation.
@@ -38,7 +38,7 @@ The reference implementation of the Bitcoin protocol. See the [upstream repo](ht
 
 | Property      | Value                                                                       |
 | ------------- | --------------------------------------------------------------------------- |
-| Image         | Custom Dockerfile (multi-stage Alpine build from Bitcoin Core v30.2 source) |
+| Image         | Custom Dockerfile (multi-stage Alpine build from Bitcoin Core source)       |
 | Architectures | x86_64, aarch64, riscv64                                                    |
 | Entrypoint    | `bitcoind` (or `/opt/bitcoin/libexec/bitcoin-node` when IPC is enabled)     |
 
@@ -49,8 +49,8 @@ Three additional containers are used:
 | Container | Image                              | Purpose                                       |
 | --------- | ---------------------------------- | --------------------------------------------- |
 | `proxy`   | `ghcr.io/start9labs/btc-rpc-proxy` | RPC proxy for pruned nodes                    |
-| `python`  | `python:3.13.11-alpine`            | Runs `rpcauth.py` to generate RPC credentials |
-| `i2pd`    | `purplei2p/i2pd:release-2.58.0`    | Embedded I2P daemon (when enabled)            |
+| `python`  | `python` (Alpine)                  | Runs `rpcauth.py` to generate RPC credentials |
+| `i2pd`    | `purplei2p/i2pd`                   | Embedded I2P daemon (when enabled)            |
 
 ## Volume and Data Layout
 
@@ -191,7 +191,7 @@ This is transparent to dependent services — port 8332 always serves RPC.
 
 | Dependency | Condition                                                                                | Required State              |
 | ---------- | ---------------------------------------------------------------------------------------- | --------------------------- |
-| **Tor**    | When `wantsOnion` is true, `externalip` contains `.onion`, or `onlynet` includes `onion` | Running (>= 0.4.8:0-beta.0) |
+| **Tor**    | When `wantsOnion` is true, `externalip` contains `.onion`, or `onlynet` includes `onion` | Running |
 
 When a Tor onion address is requested via the **Peer Settings** action, a task is created asking Tor to provision an onion service. Once fulfilled, the onion address is set as `externalip` automatically. Other StartOS services (LND, Core Lightning, Electrs, etc.) depend on Bitcoin Core.
 
@@ -257,12 +257,11 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for build instructions and development wo
 
 ```yaml
 package_id: bitcoind
-upstream_version: 30.2
-image: custom Dockerfile (built from Bitcoin Core v30.2 source)
+image: custom Dockerfile (built from Bitcoin Core source)
 additional_images:
   - ghcr.io/start9labs/btc-rpc-proxy (pruned node RPC proxy)
-  - python:3.13.11-alpine (RPC credential generation)
-  - purplei2p/i2pd:release-2.58.0 (embedded I2P)
+  - python (Alpine, RPC credential generation)
+  - purplei2p/i2pd (embedded I2P)
 architectures: [x86_64, aarch64, riscv64]
 volumes:
   main: /root/.bitcoin
