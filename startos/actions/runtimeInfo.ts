@@ -4,12 +4,11 @@ import { storeJson } from '../fileModels/store.json'
 import { i18n } from '../i18n'
 import { sdk } from '../sdk'
 import {
+  bitcoinCliArgs,
   bitcoinMounts,
   GetBlockchainInfo,
   GetNetworkInfo,
   ipcSocketPath,
-  rootDir,
-  rpcPort,
 } from '../utils'
 
 export const runtimeInfo = sdk.Action.withoutInput(
@@ -40,10 +39,7 @@ export const runtimeInfo = sdk.Action.withoutInput(
       'getnetworkinfo',
       async (subc) => {
         return await subc.execFail([
-          'bitcoin-cli',
-          `-conf=${rootDir}/bitcoin.conf`,
-          `-rpccookiefile=${rootDir}/.cookie`,
-          `-rpcport=${conf.prune ? 18332 : rpcPort}`,
+          ...bitcoinCliArgs({ prune: !!conf.prune }),
           'getnetworkinfo',
         ])
       },
@@ -62,10 +58,7 @@ export const runtimeInfo = sdk.Action.withoutInput(
       'getblockchaininfo',
       async (subc) => {
         return await subc.execFail([
-          'bitcoin-cli',
-          `-conf=${rootDir}/bitcoin.conf`,
-          `-rpccookiefile=${rootDir}/.cookie`,
-          `-rpcport=${conf.prune ? 18332 : rpcPort}`,
+          ...bitcoinCliArgs({ prune: !!conf.prune }),
           'getblockchaininfo',
         ])
       },
