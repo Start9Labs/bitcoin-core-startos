@@ -14,6 +14,7 @@ import {
   rootDir,
   rpccookiefile,
   rpcPort,
+  rpcPortPruned,
 } from './utils'
 
 // JSON-RPC helper for i2pd's I2PControl API (uses self-signed cert)
@@ -391,14 +392,13 @@ export const main = sdk.setupMain(async ({ effects }) => {
       `${subcontainer.rootfs}/config.toml`,
       TOML.stringify({
         bitcoind_address: '127.0.0.1',
-        bitcoind_port: 18332,
+        bitcoind_port: rpcPortPruned,
         bind_address: '0.0.0.0',
         bind_port: rpcPort,
         cookie_file: rpcCookiePath,
         tor_proxy: torIp ? `${torIp}:9050` : '',
-        tor_only: bitcoinConf.onlynet
-          ? bitcoinConf.onlynet.includes('onion')
-          : false,
+        tor_only:
+          onlynetList.length === 1 && onlynetList[0] === 'onion',
         passthrough_rpcauth: `${rootDir}/bitcoin.conf`,
         passthrough_rpccookie: rpcCookiePath,
       }),
