@@ -7,6 +7,7 @@ import { storeJson } from './fileModels/store.json'
 import { i18n } from './i18n'
 import { sdk } from './sdk'
 import {
+  bitcoinCliArgs,
   bitcoinMounts,
   GetBlockchainInfo,
   i2pControlPort,
@@ -105,6 +106,11 @@ export const main = sdk.setupMain(async ({ effects }) => {
   )
 
   const rpcCookiePath = `${rootDir}/${rpccookiefile}`
+  const getBlockchainInfo = [
+    ...bitcoinCliArgs({ prune: !!bitcoinConf.prune }),
+    '-rpcconnect=127.0.0.1',
+    'getblockchaininfo',
+  ]
 
   // remove cookie file
   await rm(`${bitcoindSub.rootfs}${rpcCookiePath}`, {
@@ -172,12 +178,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
         fn: async () => {
           try {
             await access(`${bitcoindSub.rootfs}${rpcCookiePath}`)
-            const res = await bitcoindSub.exec([
-              'bitcoin-cli',
-              `-rpccookiefile=${rpcCookiePath}`,
-              '-rpcconnect=127.0.0.1',
-              'getrpcinfo',
-            ])
+            const res = await bitcoindSub.exec(getBlockchainInfo)
             return res.exitCode === 0
               ? {
                   message: i18n('The Bitcoin RPC Interface is ready'),
@@ -202,12 +203,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
       ready: {
         display: i18n('Blockchain Sync'),
         fn: async () => {
-          const res = await bitcoindSub.exec([
-            'bitcoin-cli',
-            `-rpccookiefile=${rpcCookiePath}`,
-            '-rpcconnect=127.0.0.1',
-            'getblockchaininfo',
-          ])
+          const res = await bitcoindSub.exec(getBlockchainInfo)
 
           if (
             res.exitCode === 0 &&
