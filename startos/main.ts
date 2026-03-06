@@ -1,3 +1,4 @@
+import { request } from 'node:https'
 import { TOML } from '@start9labs/start-sdk'
 import { access, rm, writeFile } from 'fs/promises'
 import { bitcoinConfFile } from './fileModels/bitcoin.conf'
@@ -14,6 +15,38 @@ import {
   rpccookiefile,
   rpcPort,
 } from './utils'
+
+// JSON-RPC helper for i2pd's I2PControl API (uses self-signed cert)
+const i2pControlRpc = (method: string, params: Record<string, unknown>) =>
+  new Promise<any>((resolve, reject) => {
+    const body = JSON.stringify({ jsonrpc: '2.0', id: 1, method, params })
+    const req = request(
+      {
+        hostname: '127.0.0.1',
+        port: i2pControlPort,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': Buffer.byteLength(body),
+        },
+        rejectUnauthorized: false,
+      },
+      (res) => {
+        let data = ''
+        res.on('data', (chunk: string) => (data += chunk))
+        res.on('end', () => {
+          try {
+            resolve(JSON.parse(data))
+          } catch {
+            reject(new Error('Invalid JSON'))
+          }
+        })
+      },
+    )
+    req.on('error', reject)
+    req.write(body)
+    req.end()
+  })
 
 export const main = sdk.setupMain(async ({ effects }) => {
   /**
@@ -90,20 +123,25 @@ export const main = sdk.setupMain(async ({ effects }) => {
   const i2pEnabled = !!bitcoinConf.raw?.i2psam
   const externalip = bitcoinConf.raw?.externalip
   const onlynetList = [bitcoinConf.onlynet ?? []].flat()
-
-  const i2pMounts = sdk.Mounts.of().mountVolume({
-    volumeId: 'i2pd',
-    mountpoint: '/home/i2pd',
-    subpath: null,
-    readonly: false,
-    type: 'directory',
+  const onlynetActive = onlynetList.length > 0
+  const excludedByOnlynetResult = () => ({
+    result: 'disabled' as const,
+    message: i18n('Excluded by onlynet'),
   })
 
-  const i2pdSub = i2pEnabled
+  const runI2pd = i2pEnabled && (!onlynetActive || onlynetList.includes('i2p'))
+
+  const i2pdSub = runI2pd
     ? await sdk.SubContainer.of(
         effects,
         { imageId: 'i2pd' },
-        i2pMounts,
+        sdk.Mounts.of().mountVolume({
+          volumeId: 'i2pd',
+          mountpoint: '/home/i2pd',
+          subpath: null,
+          readonly: false,
+          type: 'directory',
+        }),
         'i2pd-sub',
       )
     : null
@@ -118,78 +156,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
     requires: [],
   })
 
-  // I2P daemon (conditional)
-  const withI2pd = await base.addDaemon('i2pd', async () => {
-    if (!i2pdSub) return null
-    if (!i2pdConf) throw new Error('No i2pd.conf')
-
-    // Fix volume ownership for the non-root i2pd user
-    await i2pdSub.execFail(['chown', '-R', 'i2pd', '/home/i2pd'], {
-      user: 'root',
-    })
-
-    return {
-      subcontainer: i2pdSub,
-      exec: {
-        command: sdk.useEntrypoint(),
-      },
-      ready: {
-        display: null,
-        fn: async () => {
-          try {
-            const url = `http://127.0.0.1:${i2pControlPort}`
-            const authRes = await fetch(url, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                jsonrpc: '2.0',
-                id: 1,
-                method: 'Authenticate',
-                params: { API: 1, Password: 'itoopie' },
-              }),
-            })
-            const auth = await authRes.json()
-            const token = auth?.result?.Token
-            if (!token) {
-              return { result: 'starting' as const, message: '' }
-            }
-
-            const infoRes = await fetch(url, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                jsonrpc: '2.0',
-                id: 2,
-                method: 'RouterInfo',
-                params: {
-                  Token: token,
-                  'i2p.router.net.status': null,
-                  'i2p.router.netdb.activepeers': null,
-                },
-              }),
-            })
-            const info = await infoRes.json()
-            const netStatus = info?.result?.['i2p.router.net.status']
-            const activePeers = info?.result?.['i2p.router.netdb.activepeers']
-
-            // net.status 0-7 are operational (OK, testing, firewalled, hidden, warnings)
-            // net.status 8+ are errors (I2CP, clock skew, no peers, etc.)
-            if (netStatus >= 8 || activePeers === 0) {
-              return { result: 'starting' as const, message: '' }
-            }
-
-            return { result: 'success' as const, message: '' }
-          } catch {
-            return { result: 'starting' as const, message: '' }
-          }
-        },
-      },
-      requires: [],
-    }
-  })
-
-  // Bitcoind
-  const withBitcoind = withI2pd
+  const withBitcoind = await base
     .addDaemon('bitcoind', {
       subcontainer: bitcoindSub,
       exec: {
@@ -228,11 +195,11 @@ export const main = sdk.setupMain(async ({ effects }) => {
           }
         },
       },
-      requires: i2pEnabled ? ['nocow', 'i2pd'] : ['nocow'],
+      requires: ['nocow'],
     })
     .addHealthCheck('sync-progress', {
       ready: {
-        display: i18n('Blockchain Sync Progress'),
+        display: i18n('Blockchain Sync'),
         fn: async () => {
           const res = await bitcoindSub.exec([
             'bitcoin-cli',
@@ -290,49 +257,82 @@ export const main = sdk.setupMain(async ({ effects }) => {
       },
       requires: ['sync-progress'],
     })
+    // I2P daemon (conditional)
+    .addDaemon('i2pd', async () => {
+      if (!i2pdSub) return null
+      if (!i2pdConf) throw new Error('No i2pd.conf')
 
-  const onlynetActive = onlynetList.length > 0
-  const excludedByOnlynetResult = () => ({
-    result: 'disabled' as const,
-    message: i18n('Excluded by onlynet'),
-  })
+      // Entrypoint runs `ln -s` for certificates, which fails on restarts
+      // when the symlink persists on the volume
+      await i2pdSub.execFail(
+        ['rm', '-rf', '/home/i2pd/data/certificates'],
+        { user: 'root' },
+      )
+      // Fix volume ownership for the non-root i2pd user
+      await i2pdSub.execFail(['chown', '-R', 'i2pd', '/home/i2pd'], {
+        user: 'root',
+      })
 
-  const withI2p = withBitcoind.addHealthCheck('i2p', () => {
-    if (!i2pEnabled) {
       return {
+        subcontainer: i2pdSub,
+        exec: {
+          command: sdk.useEntrypoint(),
+        },
         ready: {
           display: 'I2P',
-          fn: () => ({
-            result: 'disabled' as const,
-            message: i18n('I2P is disabled'),
-          }),
+          fn: async () => {
+            try {
+              const auth = await i2pControlRpc('Authenticate', {
+                API: 1,
+                Password: 'itoopie',
+              })
+              const token = auth?.result?.Token
+              if (!token) {
+                return { result: 'starting' as const, message: '' }
+              }
+
+              const info = await i2pControlRpc('RouterInfo', {
+                Token: token,
+                'i2p.router.net.status': null,
+                'i2p.router.netdb.activepeers': null,
+              })
+              const netStatus = info?.result?.['i2p.router.net.status']
+              const activePeers =
+                info?.result?.['i2p.router.netdb.activepeers']
+
+              // net.status 0-7 are operational (OK, testing, firewalled, hidden, warnings)
+              // net.status 8+ are errors (I2CP, clock skew, no peers, etc.)
+              if (netStatus >= 8 || activePeers === 0) {
+                return { result: 'starting' as const, message: '' }
+              }
+
+              return {
+                result: 'success' as const,
+                message: bitcoinConf.raw?.i2pacceptincoming !== false
+                  ? i18n('Inbound and outbound connections')
+                  : i18n('Outbound connections only'),
+              }
+            } catch {
+              return { result: 'starting' as const, message: '' }
+            }
+          },
         },
         requires: [],
       }
-    }
+    })
 
-    if (onlynetActive && !onlynetList.includes('i2p')) {
-      return {
-        ready: { display: 'I2P', fn: excludedByOnlynetResult },
+  const withI2p = runI2pd
+    ? withBitcoind
+    : withBitcoind.addHealthCheck('i2p', {
+        ready: {
+          display: 'I2P',
+          fn: () =>
+            i2pEnabled
+              ? excludedByOnlynetResult()
+              : { result: 'disabled' as const, message: i18n('I2P is disabled') },
+        },
         requires: [],
-      }
-    }
-
-    const acceptIncoming = bitcoinConf.raw?.i2pacceptincoming !== false
-
-    return {
-      ready: {
-        display: 'I2P',
-        fn: () => ({
-          result: 'success' as const,
-          message: acceptIncoming
-            ? i18n('Inbound and outbound connections')
-            : i18n('Outbound connections only'),
-        }),
-      },
-      requires: ['i2pd'],
-    }
-  })
+      })
 
   const withTor = withI2p.addHealthCheck('tor', {
     ready: {
