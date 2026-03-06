@@ -1,8 +1,8 @@
 import { IMPOSSIBLE, VersionInfo } from '@start9labs/start-sdk'
 import { ensureFiles } from './ensureFiles'
 
-export const v28_3_0_b0 = VersionInfo.of({
-  version: '28.3:0-beta.0',
+export const v28_3_4_b0 = VersionInfo.of({
+  version: '28.3:4-beta.0',
   releaseNotes: {
     en_US: 'Revamped for StartOS 0.4.0',
     es_ES: 'Renovado para StartOS 0.4.0',
