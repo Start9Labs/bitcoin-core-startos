@@ -4,7 +4,7 @@ const dict = {
   // main.ts
   'The Bitcoin RPC Interface is ready': 1,
   'The Bitcoin RPC Interface is not ready': 2,
-  'Blockchain Sync Progress': 3,
+  'Blockchain Sync': 3,
   'Bitcoin is fully synced': 4,
   'Bitcoin is starting…': 5,
   'Syncing blocks...${percentage}%': 6,
