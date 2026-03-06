@@ -271,22 +271,24 @@ export default {
     1740: 'Editar más valores en bitcoin.conf',
     1741: 'Dejar en blanco para archivo completo',
 
-    // actions/config/peers.ts (externalip)
-    1855: 'Dirección pública',
-    1856: 'Seleccione la dirección donde su nodo puede ser contactado por pares.',
-    1858: 'Crear dirección Tor',
-
-    // dependencies.ts
-    1859: 'Bitcoin Core necesita una dirección onion de Tor para conexiones entrantes de pares.',
+    // actions/setExternalAddress.ts
+    1855: 'Establecer dirección externa',
+    1856: 'Establecer la dirección donde su nodo puede ser contactado por pares',
+    1857: 'Dirección externa',
+    1858: 'Seleccione la dirección donde su nodo puede ser contactado por pares.',
 
     // actions/config/autoconfig.ts
     1900: 'Auto-Configurar',
     1901: 'Configurar automáticamente bitcoin.conf para las necesidades de otro servicio',
     1902: 'Estos campos fueron proporcionados por una tarea y no se pueden editar',
 
-    // main.ts (reachability)
-    1950: 'Accesibilidad del nodo',
-    1951: 'Su nodo puede conectarse con otros nodos, pero otros nodos no pueden conectarse con usted. Opcionalmente agregue un dominio Tor, dominio público o dirección IP pública para cambiar este comportamiento.',
+    // main.ts (health checks)
+    1953: 'I2P está desactivado',
+    1954: 'Conexiones entrantes y salientes',
+    1955: 'Solo conexiones salientes',
+    1956: 'Excluido por onlynet',
+    1958: 'Tor no está en ejecución',
+    1959: 'Tor no está instalado',
 
     // Common
     1800: 'Configuración',
@@ -561,22 +563,24 @@ export default {
     1740: 'Weitere Werte in bitcoin.conf bearbeiten',
     1741: 'Leer lassen für vollständiges Archiv',
 
-    // actions/config/peers.ts (externalip)
-    1855: 'Öffentliche Adresse',
-    1856: 'Wählen Sie die Adresse, unter der Ihr Knoten von Peers erreicht werden kann.',
-    1858: 'Tor-Adresse erstellen',
-
-    // dependencies.ts
-    1859: 'Bitcoin Core benötigt eine Tor-Onion-Adresse für eingehende Peer-Verbindungen.',
+    // actions/setExternalAddress.ts
+    1855: 'Externe Adresse festlegen',
+    1856: 'Legen Sie die Adresse fest, unter der Ihr Knoten von Peers erreicht werden kann',
+    1857: 'Externe Adresse',
+    1858: 'Wählen Sie die Adresse, unter der Ihr Knoten von Peers erreicht werden kann.',
 
     // actions/config/autoconfig.ts
     1900: 'Auto-Konfiguration',
     1901: 'bitcoin.conf automatisch für die Anforderungen eines anderen Dienstes konfigurieren',
     1902: 'Diese Felder wurden von einer Aufgabe bereitgestellt und können nicht bearbeitet werden',
 
-    // main.ts (reachability)
-    1950: 'Knoten-Erreichbarkeit',
-    1951: 'Ihr Knoten kann sich mit anderen Knoten verbinden, aber andere Knoten können sich nicht mit Ihnen verbinden. Fügen Sie optional eine Tor-Domain, öffentliche Domain oder öffentliche IP-Adresse hinzu, um dieses Verhalten zu ändern.',
+    // main.ts (health checks)
+    1953: 'I2P ist deaktiviert',
+    1954: 'Eingehende und ausgehende Verbindungen',
+    1955: 'Nur ausgehende Verbindungen',
+    1956: 'Durch onlynet ausgeschlossen',
+    1958: 'Tor läuft nicht',
+    1959: 'Tor ist nicht installiert',
 
     // Common
     1800: 'Konfiguration',
@@ -851,22 +855,24 @@ export default {
     1740: 'Edytuj więcej wartości w bitcoin.conf',
     1741: 'Pozostaw puste dla pełnego archiwum',
 
-    // actions/config/peers.ts (externalip)
-    1855: 'Adres publiczny',
-    1856: 'Wybierz adres, pod którym Twój węzeł może być osiągalny przez peerów.',
-    1858: 'Utwórz adres Tor',
-
-    // dependencies.ts
-    1859: 'Bitcoin Core potrzebuje adresu onion Tor dla przychodzących połączeń peerów.',
+    // actions/setExternalAddress.ts
+    1855: 'Ustaw adres zewnętrzny',
+    1856: 'Ustaw adres, pod którym Twój węzeł może być osiągalny przez peerów',
+    1857: 'Adres zewnętrzny',
+    1858: 'Wybierz adres, pod którym Twój węzeł może być osiągalny przez peerów.',
 
     // actions/config/autoconfig.ts
     1900: 'Auto-Konfiguracja',
     1901: 'Automatycznie skonfiguruj bitcoin.conf dla potrzeb innej usługi',
     1902: 'Te pola zostały dostarczone przez zadanie i nie mogą być edytowane',
 
-    // main.ts (reachability)
-    1950: 'Osiągalność węzła',
-    1951: 'Twój węzeł może łączyć się z innymi węzłami, ale inne węzły nie mogą się z Tobą połączyć. Opcjonalnie dodaj domenę Tor, domenę publiczną lub publiczny adres IP, aby zmienić to zachowanie.',
+    // main.ts (health checks)
+    1953: 'I2P jest wyłączony',
+    1954: 'Połączenia przychodzące i wychodzące',
+    1955: 'Tylko połączenia wychodzące',
+    1956: 'Wykluczone przez onlynet',
+    1958: 'Tor nie jest uruchomiony',
+    1959: 'Tor nie jest zainstalowany',
 
     // Common
     1800: 'Konfiguracja',
@@ -1141,22 +1147,24 @@ export default {
     1740: 'Modifier plus de valeurs dans bitcoin.conf',
     1741: 'Laisser vide pour archive complète',
 
-    // actions/config/peers.ts (externalip)
-    1855: 'Adresse publique',
-    1856: "Sélectionnez l'adresse à laquelle votre nœud peut être contacté par les pairs.",
-    1858: 'Créer une adresse Tor',
-
-    // dependencies.ts
-    1859: "Bitcoin Core a besoin d'une adresse onion Tor pour les connexions entrantes des pairs.",
+    // actions/setExternalAddress.ts
+    1855: "Définir l'adresse externe",
+    1856: "Définir l'adresse à laquelle votre nœud peut être contacté par les pairs",
+    1857: 'Adresse externe',
+    1858: "Sélectionnez l'adresse à laquelle votre nœud peut être contacté par les pairs.",
 
     // actions/config/autoconfig.ts
     1900: 'Auto-Configuration',
     1901: "Configurer automatiquement bitcoin.conf pour les besoins d'un autre service",
     1902: 'Ces champs ont été fournis par une tâche et ne peuvent pas être modifiés',
 
-    // main.ts (reachability)
-    1950: 'Accessibilité du nœud',
-    1951: "Votre nœud peut se connecter à d'autres nœuds, mais les autres nœuds ne peuvent pas se connecter à vous. Ajoutez éventuellement un domaine Tor, un domaine public ou une adresse IP publique pour modifier ce comportement.",
+    // main.ts (health checks)
+    1953: 'I2P est désactivé',
+    1954: 'Connexions entrantes et sortantes',
+    1955: 'Connexions sortantes uniquement',
+    1956: 'Exclu par onlynet',
+    1958: "Tor n'est pas en cours d'exécution",
+    1959: "Tor n'est pas installé",
 
     // Common
     1800: 'Configuration',

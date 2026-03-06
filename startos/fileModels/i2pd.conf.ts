@@ -57,6 +57,14 @@ export const shape = z.object({
       enabled: iniBoolean.catch(true),
     })
     .catch({ enabled: true }),
+  i2pcontrol: z
+    .object({
+      enabled: iniBoolean.catch(true),
+      address: z.literal('127.0.0.1').catch('127.0.0.1'),
+      port: iniNumber.catch(7650),
+      password: z.string().catch('itoopie'),
+    })
+    .catch({ enabled: true, address: '127.0.0.1', port: 7650, password: 'itoopie' }),
   upnp: z
     .object({
       enabled: iniBoolean.catch(false),

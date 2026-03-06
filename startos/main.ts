@@ -1,19 +1,19 @@
-import { sdk } from './sdk'
-import { bitcoinConfFile } from './fileModels/bitcoin.conf'
-import {
-  GetBlockchainInfo,
-  rootDir,
-  ipcSocketPath,
-  rpccookiefile,
-  bitcoinMounts,
-  i2pSamPort,
-} from './utils'
-import { rpcPort } from './utils'
-import { storeJson } from './fileModels/store.json'
-import { access, rm, writeFile } from 'fs/promises'
 import { TOML } from '@start9labs/start-sdk'
+import { access, rm, writeFile } from 'fs/promises'
+import { bitcoinConfFile } from './fileModels/bitcoin.conf'
 import { i2pdConfFile } from './fileModels/i2pd.conf'
+import { storeJson } from './fileModels/store.json'
 import { i18n } from './i18n'
+import { sdk } from './sdk'
+import {
+  bitcoinMounts,
+  GetBlockchainInfo,
+  i2pControlPort,
+  ipcSocketPath,
+  rootDir,
+  rpccookiefile,
+  rpcPort,
+} from './utils'
 
 export const main = sdk.setupMain(async ({ effects }) => {
   /**
@@ -37,8 +37,18 @@ export const main = sdk.setupMain(async ({ effects }) => {
 
   const { reindexBlockchain, reindexChainstate, enableIpc } = store
 
-  // get Tor container IP and watch for changes
+  // get Tor container IP (restarts Bitcoin if IP changes, needed for -onion= flag)
   const torIp = await sdk.getContainerIp(effects, { packageId: 'tor' }).const()
+
+  // track Tor running status dynamically for health check (no restart needed)
+  let torRunning = false
+  if (torIp) {
+    sdk.getStatus(effects, { packageId: 'tor' }).onChange((status) => {
+      torRunning = status?.desired.main === 'running'
+      return { cancel: false }
+    })
+  }
+
   const bitcoinArgs: string[] = torIp ? [`-onion=${torIp}:9050`] : []
 
   if (enableIpc) {
@@ -78,6 +88,8 @@ export const main = sdk.setupMain(async ({ effects }) => {
    */
 
   const i2pEnabled = !!bitcoinConf.raw?.i2psam
+  const externalip = bitcoinConf.raw?.externalip
+  const onlynetList = [bitcoinConf.onlynet ?? []].flat()
 
   const i2pMounts = sdk.Mounts.of().mountVolume({
     volumeId: 'i2pd',
@@ -122,12 +134,55 @@ export const main = sdk.setupMain(async ({ effects }) => {
         command: sdk.useEntrypoint(),
       },
       ready: {
-        display: 'I2P Proxy',
-        fn: () =>
-          sdk.healthCheck.checkPortListening(effects, i2pSamPort, {
-            successMessage: 'I2P Proxy is ready',
-            errorMessage: 'I2P Proxy is not ready',
-          }),
+        display: null,
+        fn: async () => {
+          try {
+            const url = `http://127.0.0.1:${i2pControlPort}`
+            const authRes = await fetch(url, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                jsonrpc: '2.0',
+                id: 1,
+                method: 'Authenticate',
+                params: { API: 1, Password: 'itoopie' },
+              }),
+            })
+            const auth = await authRes.json()
+            const token = auth?.result?.Token
+            if (!token) {
+              return { result: 'starting' as const, message: '' }
+            }
+
+            const infoRes = await fetch(url, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                jsonrpc: '2.0',
+                id: 2,
+                method: 'RouterInfo',
+                params: {
+                  Token: token,
+                  'i2p.router.net.status': null,
+                  'i2p.router.netdb.activepeers': null,
+                },
+              }),
+            })
+            const info = await infoRes.json()
+            const netStatus = info?.result?.['i2p.router.net.status']
+            const activePeers = info?.result?.['i2p.router.netdb.activepeers']
+
+            // net.status 0-7 are operational (OK, testing, firewalled, hidden, warnings)
+            // net.status 8+ are errors (I2CP, clock skew, no peers, etc.)
+            if (netStatus >= 8 || activePeers === 0) {
+              return { result: 'starting' as const, message: '' }
+            }
+
+            return { result: 'success' as const, message: '' }
+          } catch {
+            return { result: 'starting' as const, message: '' }
+          }
+        },
       },
       requires: [],
     }
@@ -209,13 +264,9 @@ export const main = sdk.setupMain(async ({ effects }) => {
             }
           }
 
-          if (res.stderr.includes('error code: -28')) {
-            return {
-              message: i18n('Bitcoin is starting…'),
-              result: 'starting',
-            }
-          } else {
-            return { message: res.stderr as string, result: 'failure' }
+          return {
+            message: i18n('Bitcoin is starting…'),
+            result: 'starting',
           }
         },
       },
@@ -240,29 +291,93 @@ export const main = sdk.setupMain(async ({ effects }) => {
       requires: ['sync-progress'],
     })
 
-  const withReachability = withBitcoind.addHealthCheck('reachability', () => {
-    const hasExternalIp = !!bitcoinConf.raw?.externalip
-    const hasI2pIncoming =
-      !!bitcoinConf.raw?.i2psam && bitcoinConf.raw?.i2pacceptincoming !== false
+  const onlynetActive = onlynetList.length > 0
+  const excludedByOnlynetResult = () => ({
+    result: 'disabled' as const,
+    message: i18n('Excluded by onlynet'),
+  })
 
-    if (hasExternalIp || hasI2pIncoming) return null
+  const withI2p = withBitcoind.addHealthCheck('i2p', () => {
+    if (!i2pEnabled) {
+      return {
+        ready: {
+          display: 'I2P',
+          fn: () => ({
+            result: 'disabled' as const,
+            message: i18n('I2P is disabled'),
+          }),
+        },
+        requires: [],
+      }
+    }
+
+    if (onlynetActive && !onlynetList.includes('i2p')) {
+      return {
+        ready: { display: 'I2P', fn: excludedByOnlynetResult },
+        requires: [],
+      }
+    }
+
+    const acceptIncoming = bitcoinConf.raw?.i2pacceptincoming !== false
 
     return {
       ready: {
-        display: i18n('Node Reachability'),
+        display: 'I2P',
         fn: () => ({
-          result: 'disabled' as const,
-          message: i18n(
-            'Your node can peer with other nodes, but other nodes cannot peer with you. Optionally add a Tor domain, public domain, or public IP address to change this behavior.',
-          ),
+          result: 'success' as const,
+          message: acceptIncoming
+            ? i18n('Inbound and outbound connections')
+            : i18n('Outbound connections only'),
         }),
       },
-      requires: ['bitcoind'],
+      requires: ['i2pd'],
     }
   })
 
+  const withTor = withI2p.addHealthCheck('tor', {
+    ready: {
+      display: 'Tor',
+      fn: () => {
+        if (!torIp) {
+          return { result: 'disabled', message: i18n('Tor is not installed') }
+        }
+        if (!torRunning) {
+          return { result: 'disabled', message: i18n('Tor is not running') }
+        }
+        if (onlynetActive && !onlynetList.includes('onion')) {
+          return excludedByOnlynetResult()
+        }
+        return {
+          result: 'success',
+          message: externalip?.includes('.onion')
+            ? i18n('Inbound and outbound connections')
+            : i18n('Outbound connections only'),
+        }
+      },
+    },
+    requires: [],
+  })
+
+  const withClearnet = withTor.addHealthCheck('clearnet', {
+    ready: {
+      display: 'Clearnet',
+      fn: () => {
+        if (onlynetActive && !onlynetList.includes('ipv4') && !onlynetList.includes('ipv6')) {
+          return excludedByOnlynetResult()
+        }
+        return {
+          result: 'success',
+          message: externalip && !externalip.includes('.onion')
+            ? i18n('Inbound and outbound connections')
+            : i18n('Outbound connections only'),
+        }
+      },
+    },
+    requires: [],
+  })
+
   // RPC proxy (conditional, enabled when pruning)
-  return withReachability.addDaemon('proxy', async () => {
+  return withClearnet.addDaemon('proxy', async () => {
     if (!bitcoinConf.prune) return null
 
     const subcontainer = await sdk.SubContainer.of(

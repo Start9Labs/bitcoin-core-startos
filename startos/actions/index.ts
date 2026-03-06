@@ -15,10 +15,12 @@ import { ipc } from './ipc'
 import { reindexBlockchain } from './reindexBlockchain'
 import { reindexChainstate } from './reindexChainstate'
 import { runtimeInfo } from './runtimeInfo'
+import { setExternalAddress } from './config/setExternalAddress'
 
 export const actions = sdk.Actions.of()
   .addAction(mempoolConfig)
   .addAction(peerConfig)
+  .addAction(setExternalAddress)
   .addAction(rpcConfig)
   .addAction(assumeutxo)
   .addAction(deleteCoinstatsIndex)

@@ -1,7 +1,6 @@
 import { bitcoinConfFile, fullConfigSpec } from '../../fileModels/bitcoin.conf'
-import { storeJson } from '../../fileModels/store.json'
 import { sdk } from '../../sdk'
-import { i2PSamAddress, peerInterfaceId } from '../../utils'
+import { i2PSamAddress } from '../../utils'
 
 import { i18n } from '../../i18n'
 
@@ -12,7 +11,7 @@ export const peerConfig = sdk.Action.withInput(
   'peers-config',
 
   // metadata
-  async ({ effects }) => ({
+  async () => ({
     name: i18n('Peer Settings'),
     description: i18n('Edit the Peer settings in bitcoin.conf'),
     warning: null,
@@ -54,38 +53,15 @@ export const peerConfig = sdk.Action.withInput(
           },
         }),
       }),
-      externalip: Value.dynamicSelect(async ({ effects }) => {
-        const urls = await sdk.serviceInterface
-          .getOwn(
-            effects,
-            peerInterfaceId,
-            (iface) => iface?.addressInfo?.public.format() || [],
-          )
-          .const()
-        const hasOnion = urls.some((url) => url.includes('.onion'))
-
-        const values: Record<string, string> = { none: 'None' }
-        for (const url of urls) values[url] = url
-        if (!hasOnion) values['create-tor'] = i18n('Create Tor Address')
-
-        return {
-          name: i18n('Public Address'),
-          description: i18n(
-            'Select the address at which your node can be reached by peers.',
-          ),
-          values,
-          default: 'none',
-        }
-      }),
     }),
+
   // optionally pre-fill the input form
-  async ({ effects }) => {
+  async () => {
     const bitcoinConf = await bitcoinConfFile.read().once()
 
     if (!bitcoinConf?.raw) return {}
 
     const { i2psam, i2pacceptincoming } = bitcoinConf.raw
-    const wantsOnion = await storeJson.read((s) => s.wantsOnion).once()
 
     return {
       ...bitcoinConf,
@@ -98,29 +74,18 @@ export const peerConfig = sdk.Action.withInput(
                 i2pacceptincoming: i2pacceptincoming ?? true,
               },
             },
-      externalip: wantsOnion ? 'create-tor' : (bitcoinConf.raw.externalip || 'none'),
     }
   },
 
   // the execution function
   async ({ effects, input }) => {
-    const { i2psam, externalip, ...confInput } = input
-
-    if (externalip === 'create-tor') {
-      await storeJson.merge(effects, { wantsOnion: true })
-    } else {
-      await storeJson.merge(effects, { wantsOnion: false })
-    }
+    const { i2psam, ...confInput } = input
 
     await bitcoinConfFile.merge(effects, {
       raw: {
         i2psam: i2psam.selection === 'enabled' ? i2PSamAddress : undefined,
         i2pacceptincoming:
           i2psam.selection === 'enabled' && i2psam.value.i2pacceptincoming,
-        externalip:
-          externalip === 'create-tor' || externalip === 'none'
-            ? undefined
-            : externalip,
       },
       ...confInput,
     })
