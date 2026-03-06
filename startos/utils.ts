@@ -83,6 +83,20 @@ export type GetBlockchainInfo = {
 
 export const ipcSocketPath = `unix:${rootDir}/ipc/bitcoin-core.sock`
 
+/** RPC connection args shared by bitcoin-cli and shell-script wrappers. */
+export function rpcArgs(opts: { prune: boolean }): string[] {
+  return [
+    `-conf=${rootDir}/bitcoin.conf`,
+    `-rpccookiefile=${rootDir}/.cookie`,
+    `-rpcport=${opts.prune ? rpcPortPruned : rpcPort}`,
+  ]
+}
+
+/** Full bitcoin-cli command prefix for actions running in temp subcontainers. */
+export function bitcoinCliArgs(opts: { prune: boolean }): string[] {
+  return ['bitcoin-cli', ...rpcArgs(opts)]
+}
+
 export const zmqBundle = {
   zmqpubrawblock: `tcp://0.0.0.0:${zmqPortBlock}`,
   zmqpubhashblock: `tcp://0.0.0.0:${zmqPortBlock}`,
