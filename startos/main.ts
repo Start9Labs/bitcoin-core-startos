@@ -392,9 +392,13 @@ export const main = sdk.setupMain(async ({ effects }) => {
         bind_address: '0.0.0.0',
         bind_port: rpcPort,
         cookie_file: rpcCookiePath,
-        tor_proxy: torIp ? `${torIp}:9050` : '',
-        tor_only:
-          onlynetList.length === 1 && onlynetList[0] === 'onion',
+        ...(torIp
+          ? {
+              tor_proxy: `${torIp}:9050`,
+              tor_only:
+                onlynetList.length === 1 && onlynetList[0] === 'onion',
+            }
+          : {}),
         passthrough_rpcauth: `${rootDir}/bitcoin.conf`,
         passthrough_rpccookie: rpcCookiePath,
       }),
