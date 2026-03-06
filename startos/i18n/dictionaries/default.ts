@@ -268,22 +268,24 @@ const dict = {
 
   'Leave blank for full archival': 1741,
 
-  // actions/config/peers.ts (externalip)
-  'Public Address': 1855,
-  'Select the address at which your node can be reached by peers.': 1856,
-  'Create Tor Address': 1858,
-
-  // dependencies.ts
-  'Bitcoin Core needs a Tor onion address for inbound peer connections.': 1859,
+  // actions/setExternalAddress.ts
+  'Set External Address': 1855,
+  'Set the address at which your node can be reached by peers': 1856,
+  'External Address': 1857,
+  'Select the address at which your node can be reached by peers.': 1858,
 
   // actions/config/autoconfig.ts
   'Auto-Configure': 1900,
   'Automatically configure bitcoin.conf for the needs of a another service': 1901,
   'These fields were provided by a task and cannot be edited': 1902,
 
-  // main.ts (reachability)
-  'Node Reachability': 1950,
-  'Your node can peer with other nodes, but other nodes cannot peer with you. Optionally add a Tor domain, public domain, or public IP address to change this behavior.': 1951,
+  // main.ts (health checks)
+  'I2P is disabled': 1953,
+  'Inbound and outbound connections': 1954,
+  'Outbound connections only': 1955,
+  'Excluded by onlynet': 1956,
+  'Tor is not running': 1958,
+  'Tor is not installed': 1959,
 
   // Common
   Configuration: 1800,

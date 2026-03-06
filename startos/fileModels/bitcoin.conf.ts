@@ -155,8 +155,6 @@ export const archivalMin = 900_000_000_000
 export const defaultDbcache = 5_000
 export const defaultDbbatchsize = 33_554_432
 export const defaultPrune = 550
-export const defaultRpcthreads = 16
-export const defaultRpcworkqueue = 64
 
 export const fullConfigSpec = sdk.InputSpec.of({
   raw: Value.hidden(shape),
@@ -460,12 +458,12 @@ export const fullConfigSpec = sdk.InputSpec.of({
       'Set the number of threads for handling RPC calls. You may wish to increase this if you are making lots of calls via an integration.',
     ),
     required: false,
-    default: defaultRpcthreads,
+    default: null,
     min: 4,
     max: 64,
     integer: true,
     units: i18n('Threads').toLocaleLowerCase(),
-    placeholder: '4',
+    placeholder: '16',
   }),
   rpcworkqueue: Value.number({
     name: i18n('Work Queue'),
@@ -473,12 +471,12 @@ export const fullConfigSpec = sdk.InputSpec.of({
       'Set the depth of the work queue to service RPC calls. Determines how long the backlog of RPC requests can get before it just rejects new ones.',
     ),
     required: false,
-    default: defaultRpcworkqueue,
+    default: null,
     min: 8,
     max: 256,
     integer: true,
     units: i18n('requests'),
-    placeholder: '16',
+    placeholder: '64',
   }),
 })
 
