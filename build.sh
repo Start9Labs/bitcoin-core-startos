@@ -48,15 +48,10 @@ set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 
-# Use host CapnProto package config, not sysroot's
-set(CapnProto_DIR /usr/share/cmake/capnproto)
 EOF
 
 cmake -B build \
     -DCMAKE_TOOLCHAIN_FILE=/tmp/toolchain.cmake \
-    -DCAPNP_EXECUTABLE=/usr/bin/capnp \
-    -DCAPNPC_CXX_EXECUTABLE=/usr/bin/capnpc-c++ \
-    -DMPGEN_EXECUTABLE=/bitcoin/src/ipc/libmultiprocess/build-native/mpgen \
     -DCMAKE_CXX_FLAGS_RELWITHDEBINFO="-O2 -g0" \
     -DCMAKE_INSTALL_PREFIX="${BITCOIN_PREFIX}" \
     -DINSTALL_MAN=OFF \
@@ -65,7 +60,6 @@ cmake -B build \
     -DBUILD_GUI=OFF \
     -DBUILD_CLI=ON \
     -DBUILD_DAEMON=ON \
-    -DENABLE_IPC=ON \
     -DREDUCE_EXPORTS=ON \
     -DWITH_CCACHE=OFF \
     -DWITH_ZMQ=ON

@@ -14,7 +14,6 @@ RUN apk --no-cache add \
         sqlite-dev \
         libsodium-dev \
         zeromq-dev \
-        capnproto-dev \
         linux-headers && \
     # Remove ZeroMQ cmake config - it has hardcoded absolute paths that break cross-compilation
     rm -rf /usr/lib/cmake/ZeroMQ
@@ -40,17 +39,9 @@ RUN apk --no-cache add \
         linux-headers \
         bash \
         curl \
-        pkgconf \
-        capnproto-dev
+        pkgconf
 
 ADD ./bitcoin /bitcoin
-
-# Build mpgen for native host
-RUN cmake -B /bitcoin/src/ipc/libmultiprocess/build-native \
-        -S /bitcoin/src/ipc/libmultiprocess \
-        -DCMAKE_BUILD_TYPE=Release \
-        -DBUILD_TESTING=OFF && \
-    cmake --build /bitcoin/src/ipc/libmultiprocess/build-native --target mpgen -j$(nproc)
 
 COPY build.sh /build.sh
 
@@ -74,8 +65,7 @@ RUN apk --no-cache add \
   sqlite-dev \
   tini \
   yq \
-  jq \
-  capnproto
+  jq
 
 ARG ARCH
 
