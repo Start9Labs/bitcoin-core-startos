@@ -11,17 +11,13 @@ export PKG_CONFIG_LIBDIR=/sysroot/usr/lib/pkgconfig:/sysroot/usr/share/pkgconfig
 
 case "$TARGETARCH" in
     amd64)
-        CLANG_TARGET="x86_64-alpine-linux-musl"
-        CMAKE_SYSTEM_PROCESSOR="x86_64"
+        HOST_TRIPLE="x86_64-alpine-linux-musl"
         ;;
     arm64)
-        CLANG_TARGET="aarch64-alpine-linux-musl"
-        CMAKE_SYSTEM_PROCESSOR="aarch64"
+        HOST_TRIPLE="aarch64-alpine-linux-musl"
         ;;
     riscv64)
-        CLANG_TARGET="riscv64-alpine-linux-musl"
-        CMAKE_SYSTEM_PROCESSOR="riscv64"
-        # Enable RVA23 profile: RV64GCV with all mandatory extensions
+        HOST_TRIPLE="riscv64-alpine-linux-musl"
         RISCV_ARCH_FLAGS="-march=rva23u64"
         ;;
     *)
@@ -30,40 +26,40 @@ case "$TARGETARCH" in
         ;;
 esac
 
-cat > /tmp/toolchain.cmake <<EOF
-set(CMAKE_SYSTEM_NAME Linux)
-set(CMAKE_SYSTEM_PROCESSOR ${CMAKE_SYSTEM_PROCESSOR})
-set(CMAKE_SYSROOT /sysroot)
-set(CMAKE_C_COMPILER clang)
-set(CMAKE_CXX_COMPILER clang++)
-set(CMAKE_C_COMPILER_TARGET ${CLANG_TARGET})
-set(CMAKE_CXX_COMPILER_TARGET ${CLANG_TARGET})
-set(CMAKE_C_FLAGS_INIT "${RISCV_ARCH_FLAGS:-}")
-set(CMAKE_CXX_FLAGS_INIT "${RISCV_ARCH_FLAGS:-}")
-set(CMAKE_EXE_LINKER_FLAGS_INIT "-fuse-ld=lld -L/sysroot/usr/lib")
-set(CMAKE_SHARED_LINKER_FLAGS_INIT "-fuse-ld=lld -L/sysroot/usr/lib")
-set(CMAKE_FIND_ROOT_PATH /sysroot)
-set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
-set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
-set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
-set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
+COMMON_FLAGS="--sysroot=/sysroot --target=${HOST_TRIPLE} ${RISCV_ARCH_FLAGS:-}"
 
-EOF
+export CC="clang"
+export CXX="clang++"
+export CFLAGS="${COMMON_FLAGS} -O2"
+export CXXFLAGS="${COMMON_FLAGS} -O2"
+export LDFLAGS="--sysroot=/sysroot --target=${HOST_TRIPLE} -fuse-ld=lld -L/sysroot/usr/lib"
 
-cmake -B build \
-    -DCMAKE_TOOLCHAIN_FILE=/tmp/toolchain.cmake \
-    -DCMAKE_CXX_FLAGS_RELWITHDEBINFO="-O2 -g0" \
-    -DCMAKE_INSTALL_PREFIX="${BITCOIN_PREFIX}" \
-    -DINSTALL_MAN=OFF \
-    -DBUILD_TESTS=OFF \
-    -DBUILD_BENCH=OFF \
-    -DBUILD_GUI=OFF \
-    -DBUILD_CLI=ON \
-    -DBUILD_DAEMON=ON \
-    -DREDUCE_EXPORTS=ON \
-    -DWITH_CCACHE=OFF \
-    -DWITH_ZMQ=ON
+./autogen.sh
 
-cmake --build build -j"$(nproc)"
-cmake --install build
+# --disable-suppress-external-warnings: Bitcoin Core's configure converts -I to
+# -isystem for dependency headers (to suppress warnings). With --sysroot, this
+# converts -I/sysroot/usr/include to -isystem /sysroot/usr/include, which places
+# it before GCC's C++ headers in clang's search order. That breaks #include_next
+# in cstdlib (it can only resolve stdlib.h AFTER its own position). Disabling
+# this conversion keeps -I flags as-is, which --sysroot handles correctly.
+./configure \
+    --host="${HOST_TRIPLE}" \
+    --prefix="${BITCOIN_PREFIX}" \
+    --disable-man \
+    --disable-tests \
+    --disable-bench \
+    --disable-ccache \
+    --disable-suppress-external-warnings \
+    --with-gui=no \
+    --with-utils \
+    --with-libs \
+    --with-sqlite=yes \
+    --without-bdb \
+    --with-daemon \
+    --enable-reduce-exports \
+    --with-boost=/sysroot/usr \
+    --with-zmq
+
+make -j"$(nproc)"
+make install
 llvm-strip "${BITCOIN_PREFIX}/bin/"*

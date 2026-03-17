@@ -12,7 +12,6 @@ RUN apk --no-cache add \
         boost-dev \
         libevent-dev \
         sqlite-dev \
-        libsodium-dev \
         zeromq-dev \
         linux-headers && \
     # Remove ZeroMQ cmake config - it has hardcoded absolute paths that break cross-compilation
@@ -25,7 +24,7 @@ ARG TARGETARCH
 
 RUN sed -i 's/http\:\/\/dl-cdn.alpinelinux.org/https\:\/\/alpine.global.ssl.fastly.net/g' /etc/apk/repositories
 RUN apk --no-cache add \
-        cmake \
+        autoconf \
         automake \
         build-base \
         clang \
@@ -60,7 +59,6 @@ RUN apk --no-cache add \
   bash \
   curl \
   libevent \
-  libsodium \
   libzmq \
   sqlite-dev \
   tini \
