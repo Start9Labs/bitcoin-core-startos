@@ -243,9 +243,9 @@ const dict = {
   'The fee rate (in BTC/kB) that indicates your tolerance for discarding change by adding it to the fee.': 1716,
   'BTC/kB': 1717,
   Pruning: 1718,
-  'Set the maximum size of the blockchain you wish to store on disk. If your disk is larger than .9TB this value can be set to zero (0) to maintain a full archival node.': 1719,
+  'Set the maximum size of the blockchain you wish to store on disk. Leave empty to store the entire blockchain (full archival).': 1719,
   'If your node is already pruned increasing this value will require re-syncing your node. Switching from a full archival node to pruned will disable txindex (if enabled)': 1720,
-  'Enter max blockchain size': 1721,
+  'Pruning required, enter value': 1721,
   'Database Cache': 1722,
   'How much RAM to allocate for caching the TXO set. Higher values improve syncing performance, but may result in some re-work in the event of an ungraceful shutdown. 4-7GB is high enough to get most of the peformance benefit during IBD. Consider reducing this setting for lower resource devices (or a device with less available RAM)': 1723,
   'Database Batch': 1724,
@@ -266,7 +266,7 @@ const dict = {
   'Other Settings': 1739,
   'Edit more values in bitcoin.conf': 1740,
 
-  'Leave blank for full archival': 1741,
+  'Full archival': 1741,
 
   // actions/setExternalAddress.ts
   'Set External Address': 1855,

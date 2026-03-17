@@ -5,7 +5,7 @@ import {
   bitcoinConfFile,
   defaultDbbatchsize,
   defaultDbcache,
-  defaultPrune,
+  minPrune,
 } from '../fileModels/bitcoin.conf'
 import { i2pdConfFile } from '../fileModels/i2pd.conf'
 import { storeJson } from '../fileModels/store.json'
@@ -24,7 +24,7 @@ export const seedFiles = sdk.setupOnInit(async (effects, kind) => {
     blockfilters: { blockfilterindex: true },
     dbcache: defaultDbcache,
     dbbatchsize: defaultDbbatchsize,
-    ...((await diskUsage()).total < archivalMin ? { prune: defaultPrune } : {}),
+    ...((await diskUsage()).total < archivalMin ? { prune: minPrune } : {}),
     raw: {
       i2psam: i2PSamAddress,
       assumevalid:
