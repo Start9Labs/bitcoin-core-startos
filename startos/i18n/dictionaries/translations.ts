@@ -247,9 +247,9 @@ export default {
     1716: 'La tasa de tarifa (en BTC/kB) que indica su tolerancia para descartar el cambio agregándolo a la tarifa.',
     1717: 'BTC/kB',
     1718: 'Poda',
-    1719: 'Establecer el tamaño máximo de la blockchain que desea almacenar en disco. Si su disco es mayor de .9TB, este valor se puede establecer en cero (0) para mantener un nodo de archivo completo.',
+    1719: 'Establecer el tamaño máximo de la blockchain que desea almacenar en disco. Dejar vacío para almacenar toda la blockchain (archivo completo).',
     1720: 'Si su nodo ya está podado, aumentar este valor requerirá volver a sincronizar su nodo. Cambiar de un nodo de archivo completo a podado deshabilitará txindex (si está habilitado)',
-    1721: 'Ingresar tamaño máximo de blockchain',
+    1721: 'Poda requerida, ingrese valor',
     1722: 'Caché de base de datos',
     1723: 'Cuánta RAM asignar para almacenar en caché el conjunto TXO. Los valores más altos mejoran el rendimiento de sincronización, pero pueden resultar en algo de trabajo adicional en caso de un apagado no limpio. 4-7GB es suficiente para obtener la mayor parte del beneficio de rendimiento durante IBD. Considere reducir esta configuración para dispositivos de recursos más bajos (o un dispositivo con menos RAM disponible)',
     1724: 'Lote de base de datos',
@@ -269,7 +269,7 @@ export default {
     1738: 'IPC es una característica experimental. Solo habilite esto si sabe lo que está haciendo con el socket IPC. Un caso de uso de ejemplo sería servicios de minería Stratum v2.',
     1739: 'Otras configuraciones',
     1740: 'Editar más valores en bitcoin.conf',
-    1741: 'Dejar en blanco para archivo completo',
+    1741: 'Archivo completo',
 
     // actions/setExternalAddress.ts
     1855: 'Establecer dirección externa',
@@ -539,9 +539,9 @@ export default {
     1716: 'Der Gebührensatz (in BTC/kB), der Ihre Toleranz für das Verwerfen von Wechselgeld angibt, indem Sie es zur Gebühr hinzufügen.',
     1717: 'BTC/kB',
     1718: 'Beschneidung',
-    1719: 'Legen Sie die maximale Größe der Blockchain fest, die Sie auf der Festplatte speichern möchten. Wenn Ihre Festplatte größer als .9TB ist, kann dieser Wert auf Null (0) gesetzt werden, um einen vollständigen Archivknoten beizubehalten.',
+    1719: 'Legen Sie die maximale Größe der Blockchain fest, die Sie auf der Festplatte speichern möchten. Leer lassen, um die gesamte Blockchain zu speichern (vollständiges Archiv).',
     1720: 'Wenn Ihr Knoten bereits beschnitten ist, erfordert das Erhöhen dieses Werts eine erneute Synchronisierung Ihres Knotens. Der Wechsel von einem vollständigen Archivknoten zu beschnitten deaktiviert txindex (falls aktiviert)',
-    1721: 'Maximale Blockchain-Größe eingeben',
+    1721: 'Beschneidung erforderlich, Wert eingeben',
     1722: 'Datenbank-Cache',
     1723: 'Wie viel RAM für das Zwischenspeichern des TXO-Satzes zugewiesen werden soll. Höhere Werte verbessern die Synchronisierungsleistung, können jedoch zu zusätzlicher Arbeit im Falle eines ungünstigen Herunterfahrens führen. 4-7GB sind hoch genug, um den größten Teil des Leistungsvorteils während der IBD zu erzielen. Erwägen Sie, diese Einstellung für Geräte mit geringeren Ressourcen (oder ein Gerät mit weniger verfügbarem RAM) zu reduzieren',
     1724: 'Datenbank-Batch',
@@ -561,7 +561,7 @@ export default {
     1738: 'IPC ist eine experimentelle Funktion. Aktivieren Sie dies nur, wenn Sie wissen, was Sie mit dem IPC-Socket tun. Ein Beispiel-Anwendungsfall wären Stratum v2 Mining-Dienste.',
     1739: 'Weitere Einstellungen',
     1740: 'Weitere Werte in bitcoin.conf bearbeiten',
-    1741: 'Leer lassen für vollständiges Archiv',
+    1741: 'Vollständiges Archiv',
 
     // actions/setExternalAddress.ts
     1855: 'Externe Adresse festlegen',
@@ -831,9 +831,9 @@ export default {
     1716: 'Stawka opłaty (w BTC/kB), która wskazuje Twoją tolerancję na odrzucenie reszty poprzez dodanie jej do opłaty.',
     1717: 'BTC/kB',
     1718: 'Przycinanie',
-    1719: 'Ustaw maksymalny rozmiar blockchain, który chcesz przechowywać na dysku. Jeśli Twój dysk jest większy niż .9TB, ta wartość może być ustawiona na zero (0), aby utrzymać pełny węzeł archiwum.',
+    1719: 'Ustaw maksymalny rozmiar blockchain, który chcesz przechowywać na dysku. Pozostaw puste, aby przechowywać cały blockchain (pełne archiwum).',
     1720: 'Jeśli Twój węzeł jest już przycięty, zwiększenie tej wartości będzie wymagało ponownej synchronizacji węzła. Przełączenie z pełnego węzła archiwum na przycięty wyłączy txindex (jeśli jest włączony)',
-    1721: 'Wprowadź maksymalny rozmiar blockchain',
+    1721: 'Przycinanie wymagane, wprowadź wartość',
     1722: 'Pamięć podręczna bazy danych',
     1723: 'Ile RAM przydzielić na buforowanie zestawu TXO. Wyższe wartości poprawiają wydajność synchronizacji, ale mogą prowadzić do dodatkowej pracy w przypadku nieprawidłowego wyłączenia. 4-7GB jest wystarczająco wysokie, aby uzyskać większość korzyści wydajnościowych podczas IBD. Rozważ zmniejszenie tego ustawienia dla urządzeń o niższych zasobach (lub urządzenia z mniejszą dostępną pamięcią RAM)',
     1724: 'Partia bazy danych',
@@ -853,7 +853,7 @@ export default {
     1738: 'IPC jest funkcją eksperymentalną. Włącz to tylko wtedy, gdy wiesz, co robisz z gniazdem IPC. Przykładowym przypadkiem użycia byłyby usługi wydobycia Stratum v2.',
     1739: 'Inne ustawienia',
     1740: 'Edytuj więcej wartości w bitcoin.conf',
-    1741: 'Pozostaw puste dla pełnego archiwum',
+    1741: 'Pełne archiwum',
 
     // actions/setExternalAddress.ts
     1855: 'Ustaw adres zewnętrzny',
@@ -1123,9 +1123,9 @@ export default {
     1716: "Taux de frais (en BTC/kB) indiquant votre tolérance pour abandonner la monnaie en l'ajoutant aux frais.",
     1717: 'BTC/kB',
     1718: 'Élagage',
-    1719: "Définir la taille maximale de blockchain que vous souhaitez stocker sur le disque. Si votre disque est supérieur à .9TB, cette valeur peut être définie à zéro (0) pour conserver un nœud d'archive complet.",
+    1719: 'Définir la taille maximale de blockchain que vous souhaitez stocker sur le disque. Laisser vide pour stocker la blockchain entière (archive complète).',
     1720: "Si votre nœud est déjà élagué, augmenter cette valeur nécessitera une resynchronisation du nœud. Le passage d'un nœud d'archive complet à élagué désactivera txindex (s'il est activé)",
-    1721: 'Entrer la taille maximale de blockchain',
+    1721: 'Élagage requis, entrer la valeur',
     1722: 'Cache de base de données',
     1723: "Quantité de RAM à allouer pour la mise en cache de l'ensemble TXO. Des valeurs plus élevées améliorent les performances de synchronisation mais peuvent entraîner un travail supplémentaire en cas d'arrêt incorrect. 4-7 Go est suffisamment élevé pour obtenir la plupart des avantages de performances pendant l'IBD. Envisagez de réduire ce paramètre pour les appareils à faibles ressources (ou les appareils avec moins de RAM disponible)",
     1724: 'Batch de base de données',
@@ -1145,7 +1145,7 @@ export default {
     1738: "IPC est une fonctionnalité expérimentale. N'activez ceci que si vous savez ce que vous faites avec le socket IPC. Un exemple d'utilisation serait les services de minage Stratum v2.",
     1739: 'Autres paramètres',
     1740: 'Modifier plus de valeurs dans bitcoin.conf',
-    1741: 'Laisser vide pour archive complète',
+    1741: 'Archive complète',
 
     // actions/setExternalAddress.ts
     1855: "Définir l'adresse externe",
