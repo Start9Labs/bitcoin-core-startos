@@ -45,6 +45,8 @@ const iniBoolean = z
   .optional()
   .catch(undefined)
 
+export const minPrune = 550
+
 const validNets = ['ipv4', 'ipv6', 'onion', 'i2p'] as const
 const onlyNetOption = z.enum(validNets)
 type ValidNets = z.infer<typeof onlyNetOption>
@@ -114,7 +116,15 @@ export const shape = z.object({
 
   // Other
   blocknotify: iniString,
-  prune: iniNumber,
+  prune: z
+    .union([
+      z.array(z.string()).transform((a) => Number(a.at(-1))),
+      z.string().transform(Number),
+      z.number(),
+    ])
+    .transform((v) => (v < minPrune ? minPrune : v))
+    .optional()
+    .catch(undefined),
   coinstatsindex: iniBoolean,
   txindex: iniBoolean,
   peerbloomfilters: iniBoolean,
@@ -154,7 +164,6 @@ export const archivalMin = 900_000_000_000
 // Override defaults (diverging from upstream bitcoind)
 export const defaultDbcache = 5_000
 export const defaultDbbatchsize = 33_554_432
-export const defaultPrune = 550
 
 export const fullConfigSpec = sdk.InputSpec.of({
   raw: Value.hidden(shape),
@@ -286,10 +295,10 @@ export const fullConfigSpec = sdk.InputSpec.of({
           ? i18n('Pruning required, enter value')
           : i18n('Full archival'),
       required: disk.total < archivalMin,
-      default: disk.total < archivalMin ? defaultPrune : null,
+      default: disk.total < archivalMin ? minPrune : null,
       integer: true,
       units: 'MiB',
-      min: 550,
+      min: minPrune,
       max: Math.floor((disk.total * 0.75) / (1024 * 1024)),
     }
   }),
