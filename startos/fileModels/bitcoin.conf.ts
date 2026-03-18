@@ -158,7 +158,7 @@ function stringifyPrimitives(a: unknown): any {
 
 const { InputSpec, Value, Variants, List } = sdk
 
-const diskUsage = utils.once(() => diskusage.check('/'))
+export const diskUsage = utils.once(() => diskusage.check('/'))
 export const archivalMin = 900_000_000_000
 
 // Override defaults (diverging from upstream bitcoind)

@@ -1,5 +1,4 @@
 import { IMPOSSIBLE, VersionInfo } from '@start9labs/start-sdk'
-import { ensureFiles } from './ensureFiles'
 
 export const v_28_3_5_b1 = VersionInfo.of({
   version: '28.3:5-beta.1',
@@ -11,9 +10,6 @@ export const v_28_3_5_b1 = VersionInfo.of({
     fr_FR: 'Mise à jour vers StartOS SDK beta.60',
   },
   migrations: {
-    up: async ({ effects }) => {
-      await ensureFiles(effects)
-    },
     down: IMPOSSIBLE,
   },
 })
