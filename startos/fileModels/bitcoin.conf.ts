@@ -122,7 +122,7 @@ export const shape = z.object({
       z.string().transform(Number),
       z.number(),
     ])
-    .transform((v) => (v < minPrune ? minPrune : v))
+    .transform((v) => (v !== 0 && v < minPrune ? minPrune : v))
     .optional()
     .catch(undefined),
   coinstatsindex: iniBoolean,
@@ -298,7 +298,7 @@ export const fullConfigSpec = sdk.InputSpec.of({
       default: disk.total < archivalMin ? minPrune : null,
       integer: true,
       units: 'MiB',
-      min: minPrune,
+      min: 0,
       max: Math.floor((disk.total * 0.75) / (1024 * 1024)),
     }
   }),
