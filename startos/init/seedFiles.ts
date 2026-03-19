@@ -1,10 +1,9 @@
 import { YAML } from '@start9labs/start-sdk'
 import { readFile, rm } from 'fs/promises'
+import { totalmem } from 'os'
 import {
   archivalMin,
   bitcoinConfFile,
-  defaultDbbatchsize,
-  defaultDbcache,
   diskUsage,
   minPrune,
 } from '../fileModels/bitcoin.conf'
@@ -27,8 +26,8 @@ export const seedFiles = sdk.setupOnInit(async (effects, kind) => {
     await bitcoinConfFile.merge(effects, {
       zmqEnabled: true,
       blockfilters: { blockfilterindex: true },
-      dbcache: defaultDbcache,
-      dbbatchsize: defaultDbbatchsize,
+      dbcache: Math.min(Math.floor((totalmem() * 0.25) / (1024 * 1024)), 8_192),
+      dbbatchsize: Math.min(Math.max(Math.floor(totalmem() / 256), 16_777_216), 67_108_864),
       ...((await diskUsage()).total < archivalMin ? { prune: minPrune } : {}),
       raw: {
         i2psam: i2PSamAddress,
