@@ -1,6 +1,6 @@
-import { request } from 'node:https'
 import { TOML } from '@start9labs/start-sdk'
 import { access, rm, writeFile } from 'fs/promises'
+import { request } from 'node:https'
 import { bitcoinConfFile } from './fileModels/bitcoin.conf'
 import { i2pdConfFile } from './fileModels/i2pd.conf'
 import { storeJson } from './fileModels/store.json'
@@ -178,16 +178,6 @@ export const main = sdk.setupMain(async ({ effects }) => {
         fn: async () => {
           try {
             await access(`${bitcoindSub.rootfs}${rpcCookiePath}`)
-            const res = await bitcoindSub.exec(getBlockchainInfo)
-            return res.exitCode === 0
-              ? {
-                  message: i18n('The Bitcoin RPC Interface is ready'),
-                  result: 'success',
-                }
-              : {
-                  message: i18n('The Bitcoin RPC Interface is not ready'),
-                  result: 'starting',
-                }
           } catch {
             console.log('Waiting for cookie to be created')
             return {
@@ -195,6 +185,15 @@ export const main = sdk.setupMain(async ({ effects }) => {
               result: 'starting',
             }
           }
+
+          return sdk.healthCheck.checkPortListening(
+            effects,
+            bitcoinConf.prune ? rpcPortPruned : rpcPort,
+            {
+              successMessage: i18n('The Bitcoin RPC Interface is ready'),
+              errorMessage: i18n('The Bitcoin RPC Interface is not ready'),
+            },
+          )
         },
       },
       requires: ['nocow'],
@@ -245,8 +244,8 @@ export const main = sdk.setupMain(async ({ effects }) => {
               fullySynced: true,
               snapshotInUse: false,
             })
-            // Reduce dbcache after initial sync to free RAM
-            await bitcoinConfFile.merge(effects, { dbcache: 450 })
+            // Reduce dbcache and dbbatchsize after initial sync to free RAM
+            await bitcoinConfFile.merge(effects, { dbcache: undefined, dbbatchsize: undefined })
           }
 
           return null
@@ -261,10 +260,9 @@ export const main = sdk.setupMain(async ({ effects }) => {
 
       // Entrypoint runs `ln -s` for certificates, which fails on restarts
       // when the symlink persists on the volume
-      await i2pdSub.execFail(
-        ['rm', '-rf', '/home/i2pd/data/certificates'],
-        { user: 'root' },
-      )
+      await i2pdSub.execFail(['rm', '-rf', '/home/i2pd/data/certificates'], {
+        user: 'root',
+      })
       // Fix volume ownership for the non-root i2pd user
       await i2pdSub.execFail(['chown', '-R', 'i2pd', '/home/i2pd'], {
         user: 'root',
@@ -294,8 +292,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
                 'i2p.router.netdb.activepeers': null,
               })
               const netStatus = info?.result?.['i2p.router.net.status']
-              const activePeers =
-                info?.result?.['i2p.router.netdb.activepeers']
+              const activePeers = info?.result?.['i2p.router.netdb.activepeers']
 
               // net.status 0-7 are operational (OK, testing, firewalled, hidden, warnings)
               // net.status 8+ are errors (I2CP, clock skew, no peers, etc.)
@@ -305,9 +302,10 @@ export const main = sdk.setupMain(async ({ effects }) => {
 
               return {
                 result: 'success' as const,
-                message: bitcoinConf.raw?.i2pacceptincoming !== false
-                  ? i18n('Inbound and outbound connections')
-                  : i18n('Outbound connections only'),
+                message:
+                  bitcoinConf.raw?.i2pacceptincoming !== false
+                    ? i18n('Inbound and outbound connections')
+                    : i18n('Outbound connections only'),
               }
             } catch {
               return { result: 'starting' as const, message: '' }
@@ -326,7 +324,10 @@ export const main = sdk.setupMain(async ({ effects }) => {
           fn: () =>
             i2pEnabled
               ? excludedByOnlynetResult()
-              : { result: 'disabled' as const, message: i18n('I2P is disabled') },
+              : {
+                  result: 'disabled' as const,
+                  message: i18n('I2P is disabled'),
+                },
         },
         requires: [],
       })
@@ -359,14 +360,19 @@ export const main = sdk.setupMain(async ({ effects }) => {
     ready: {
       display: 'Clearnet',
       fn: () => {
-        if (onlynetActive && !onlynetList.includes('ipv4') && !onlynetList.includes('ipv6')) {
+        if (
+          onlynetActive &&
+          !onlynetList.includes('ipv4') &&
+          !onlynetList.includes('ipv6')
+        ) {
           return excludedByOnlynetResult()
         }
         return {
           result: 'success',
-          message: externalip && !externalip.includes('.onion')
-            ? i18n('Inbound and outbound connections')
-            : i18n('Outbound connections only'),
+          message:
+            externalip && !externalip.includes('.onion')
+              ? i18n('Inbound and outbound connections')
+              : i18n('Outbound connections only'),
         }
       },
     },
@@ -395,8 +401,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
         ...(torIp
           ? {
               tor_proxy: `${torIp}:9050`,
-              tor_only:
-                onlynetList.length === 1 && onlynetList[0] === 'onion',
+              tor_only: onlynetList.length === 1 && onlynetList[0] === 'onion',
             }
           : {}),
         passthrough_rpcauth: `${rootDir}/bitcoin.conf`,
