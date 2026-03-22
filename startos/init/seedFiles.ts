@@ -26,8 +26,8 @@ export const seedFiles = sdk.setupOnInit(async (effects, kind) => {
     await bitcoinConfFile.merge(effects, {
       zmqEnabled: true,
       blockfilters: { blockfilterindex: true },
-      dbcache: Math.min(Math.floor((totalmem() * 0.25) / (1024 * 1024)), 8_192),
-      dbbatchsize: Math.min(Math.max(Math.floor(totalmem() / 256), 16_777_216), 67_108_864),
+      dbcache: Math.min(Math.floor((totalmem() * 0.25) / (1024 * 1024)), 5_120),
+      dbbatchsize: Math.min(Math.max(Math.floor(totalmem() / 256), 16_777_216), 33_554_432),
       ...((await diskUsage()).total < archivalMin ? { prune: minPrune } : {}),
       raw: {
         i2psam: i2PSamAddress,
