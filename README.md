@@ -183,9 +183,12 @@ This is transparent to dependent services — port 8332 always serves RPC.
 
 | Check              | Method                                                  | Messages                                                                            |
 | ------------------ | ------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| **RPC**            | Waits for `.cookie` file, then `bitcoin-cli getrpcinfo` | Ready: "The Bitcoin RPC Interface is ready"                                         |
-| **Sync Progress**  | `bitcoin-cli getblockchaininfo`                         | Shows percentage during IBD; "Bitcoin is fully synced" when complete                |
-| **Reachability**   | Checks `externalip` and I2P incoming config             | Disabled: "Your node can peer with other nodes, but other nodes cannot peer with you" (hidden when node is reachable via public IP, Tor, or I2P incoming) |
+| **RPC**            | Waits for `.cookie` file, then port listening            | Ready: "The Bitcoin RPC Interface is ready"                                         |
+| **Blockchain Sync**| `bitcoin-cli getblockchaininfo`                         | Shows percentage during IBD; "Bitcoin is fully synced" when complete                |
+| **I2P**            | Port listening or status check                          | Ready/not ready based on I2P daemon state                                           |
+| **Tor**            | Tor proxy reachability                                  | Ready when Tor connection is available                                              |
+| **Clearnet**       | Checks `externalip` and incoming config                 | Informational: "Your node can peer with other nodes, but other nodes cannot peer with you" (hidden when node is reachable) |
+| **RPC Proxy**      | Port listening (when pruned)                            | Ready: "The Bitcoin RPC Proxy is ready"                                             |
 
 ## Dependencies
 
@@ -203,8 +206,8 @@ Only settings that **diverge from upstream Bitcoin Core defaults** are seeded in
 
 | Setting | Upstream Default | Our Default | Reason |
 | --- | --- | --- | --- |
-| `dbcache` | 450 MiB | 5000 MiB | Faster IBD; reduced to 450 automatically after initial sync completes |
-| `dbbatchsize` | 16777216 (16 MiB) | 33554432 (32 MiB) | Faster UTXO writes during sync |
+| `dbcache` | 450 MiB | 25% of system RAM (max 5120 MiB) | Faster IBD; reset to upstream default automatically after initial sync completes |
+| `dbbatchsize` | 16777216 (16 MiB) | RAM-scaled (16–32 MiB) | Faster UTXO writes during sync; reset to upstream default after initial sync |
 | `rpcthreads` | 4 | 16 | Better RPC concurrency for dependent services |
 | `rpcworkqueue` | 16 | 64 | Deeper RPC backlog for dependent services |
 | `blockfilterindex` | off | `basic` | Required by dependent services (Electrs, etc.) for BIP158 filters |
@@ -220,9 +223,9 @@ Configuration actions use a consistent pattern for number fields:
 
 - **`default: null`** — the field is empty; if the user saves without setting a value, the key is omitted from `bitcoin.conf` and bitcoind uses its upstream default
 - **`placeholder`** — shows the upstream bitcoind default, so the user knows what value applies when the field is left empty
-- **`default: <value>`** — used only when we intentionally override the upstream default (e.g. `dbcache: 5000`); "reset defaults" restores our override, not the upstream value
+- **`default: <value>`** — used only when we intentionally override the upstream default; "reset defaults" restores our override, not the upstream value
 
-Override defaults (`defaultDbcache`, `defaultDbbatchsize`, `defaultPrune`, `defaultRpcthreads`, `defaultRpcworkqueue`) are defined once in `bitcoin.conf.ts` and imported by `seedFiles.ts`, ensuring the form defaults and seed values cannot drift apart.
+Override defaults for `dbcache` and `dbbatchsize` are computed dynamically from system RAM at install time in `seedFiles.ts`. Static overrides (`defaultPrune`, `defaultRpcthreads`, `defaultRpcworkqueue`) are defined once in `bitcoin.conf.ts` and imported by `seedFiles.ts`, ensuring the form defaults and seed values cannot drift apart.
 
 ## Limitations and Differences
 
@@ -291,9 +294,12 @@ actions:
   - assumeutxo
   - runtime-info
 health_checks:
-  - bitcoin-cli_getrpcinfo: rpc_ready
-  - bitcoin-cli_getblockchaininfo: sync_progress
-  - reachability: disabled_when_unreachable
+  - rpc: port_listening (after .cookie file exists)
+  - sync-progress: bitcoin-cli_getblockchaininfo
+  - i2p: port_listening / status
+  - tor: proxy reachability
+  - clearnet: externalip / incoming check
+  - rpc-proxy: port_listening (pruned only)
 backup_volumes:
   - main (excluding blocks/, chainstate/, indexes/)
   - i2pd (excluding ephemeral data)
