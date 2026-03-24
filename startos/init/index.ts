@@ -1,7 +1,7 @@
 import { actions } from '../actions'
 import { restoreInit } from '../backups'
 import { setDependencies } from '../dependencies'
-import { versionGraph } from '../install/versionGraph'
+import { versionGraph } from '../versions'
 import { setInterfaces } from '../interfaces'
 import { sdk } from '../sdk'
 import { seedFiles } from './seedFiles'
