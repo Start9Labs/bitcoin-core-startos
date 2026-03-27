@@ -7,6 +7,8 @@ export const { createBackup, restoreInit } = sdk.setupBackups(async () =>
       'blocks/',
       'chainstate/',
       'indexes/',
+      '.cookie',
+      '**/*-journal',
       // i2pd
       'data/addressbook/',
       'data/certificates/',
