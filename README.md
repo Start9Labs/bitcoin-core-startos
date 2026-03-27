@@ -183,7 +183,7 @@ This is transparent to dependent services — port 8332 always serves RPC.
 
 | Check              | Method                                                  | Messages                                                                            |
 | ------------------ | ------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| **RPC**            | Waits for `.cookie` file, then port listening            | Ready: "The Bitcoin RPC Interface is ready"                                         |
+| **RPC**            | Waits for `.cookie` file, then `bitcoin-cli uptime`      | Ready: "The Bitcoin RPC Interface is ready"                                         |
 | **Blockchain Sync**| `bitcoin-cli getblockchaininfo`                         | Shows percentage during IBD; "Bitcoin is fully synced" when complete                |
 | **I2P**            | Port listening or status check                          | Ready/not ready based on I2P daemon state                                           |
 | **Tor**            | Tor proxy reachability                                  | Ready when Tor connection is available                                              |
@@ -294,7 +294,7 @@ actions:
   - assumeutxo
   - runtime-info
 health_checks:
-  - rpc: port_listening (after .cookie file exists)
+  - rpc: bitcoin-cli_uptime (after .cookie file exists)
   - sync-progress: bitcoin-cli_getblockchaininfo
   - i2p: port_listening / status
   - tor: proxy reachability
