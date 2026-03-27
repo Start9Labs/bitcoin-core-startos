@@ -186,14 +186,23 @@ export const main = sdk.setupMain(async ({ effects }) => {
             }
           }
 
-          return sdk.healthCheck.checkPortListening(
-            effects,
-            bitcoinConf.prune ? rpcPortPruned : rpcPort,
-            {
-              successMessage: i18n('The Bitcoin RPC Interface is ready'),
-              errorMessage: i18n('The Bitcoin RPC Interface is not ready'),
-            },
-          )
+          const res = await bitcoindSub.exec([
+            ...bitcoinCliArgs({ prune: !!bitcoinConf.prune }),
+            '-rpcconnect=127.0.0.1',
+            'uptime',
+          ])
+
+          if (res.exitCode === 0) {
+            return {
+              message: i18n('The Bitcoin RPC Interface is ready'),
+              result: 'success',
+            }
+          }
+
+          return {
+            message: i18n('The Bitcoin RPC Interface is not ready'),
+            result: 'starting',
+          }
         },
       },
       requires: ['nocow'],
