@@ -271,11 +271,6 @@ export default {
     1740: 'Editar más valores en bitcoin.conf',
     1741: 'Archivo completo',
 
-    // actions/setExternalAddress.ts
-    1855: 'Establecer dirección externa',
-    1856: 'Establecer la dirección donde su nodo puede ser contactado por pares',
-    1857: 'Dirección externa',
-    1858: 'Seleccione la dirección donde su nodo puede ser contactado por pares.',
 
     // actions/config/autoconfig.ts
     1900: 'Auto-Configurar',
@@ -289,6 +284,8 @@ export default {
     1956: 'Excluido por onlynet',
     1958: 'Tor no está en ejecución',
     1959: 'Tor no está instalado',
+    1960: 'Solo saliente. Agregue una dirección onion para habilitar entrante.',
+    1961: 'Solo saliente. Publique una dirección IP para habilitar entrante.',
 
     // Common
     1800: 'Configuración',
@@ -563,11 +560,6 @@ export default {
     1740: 'Weitere Werte in bitcoin.conf bearbeiten',
     1741: 'Vollständiges Archiv',
 
-    // actions/setExternalAddress.ts
-    1855: 'Externe Adresse festlegen',
-    1856: 'Legen Sie die Adresse fest, unter der Ihr Knoten von Peers erreicht werden kann',
-    1857: 'Externe Adresse',
-    1858: 'Wählen Sie die Adresse, unter der Ihr Knoten von Peers erreicht werden kann.',
 
     // actions/config/autoconfig.ts
     1900: 'Auto-Konfiguration',
@@ -581,6 +573,8 @@ export default {
     1956: 'Durch onlynet ausgeschlossen',
     1958: 'Tor läuft nicht',
     1959: 'Tor ist nicht installiert',
+    1960: 'Nur ausgehend. Fügen Sie eine Onion-Adresse hinzu, um eingehende Verbindungen zu ermöglichen.',
+    1961: 'Nur ausgehend. Veröffentlichen Sie eine IP-Adresse, um eingehende Verbindungen zu ermöglichen.',
 
     // Common
     1800: 'Konfiguration',
@@ -855,11 +849,6 @@ export default {
     1740: 'Edytuj więcej wartości w bitcoin.conf',
     1741: 'Pełne archiwum',
 
-    // actions/setExternalAddress.ts
-    1855: 'Ustaw adres zewnętrzny',
-    1856: 'Ustaw adres, pod którym Twój węzeł może być osiągalny przez peerów',
-    1857: 'Adres zewnętrzny',
-    1858: 'Wybierz adres, pod którym Twój węzeł może być osiągalny przez peerów.',
 
     // actions/config/autoconfig.ts
     1900: 'Auto-Konfiguracja',
@@ -873,6 +862,8 @@ export default {
     1956: 'Wykluczone przez onlynet',
     1958: 'Tor nie jest uruchomiony',
     1959: 'Tor nie jest zainstalowany',
+    1960: 'Tylko wychodzące. Dodaj adres onion, aby włączyć przychodzące.',
+    1961: 'Tylko wychodzące. Opublikuj adres IP, aby włączyć przychodzące.',
 
     // Common
     1800: 'Konfiguracja',
@@ -1147,11 +1138,6 @@ export default {
     1740: 'Modifier plus de valeurs dans bitcoin.conf',
     1741: 'Archive complète',
 
-    // actions/setExternalAddress.ts
-    1855: "Définir l'adresse externe",
-    1856: "Définir l'adresse à laquelle votre nœud peut être contacté par les pairs",
-    1857: 'Adresse externe',
-    1858: "Sélectionnez l'adresse à laquelle votre nœud peut être contacté par les pairs.",
 
     // actions/config/autoconfig.ts
     1900: 'Auto-Configuration',
@@ -1165,6 +1151,8 @@ export default {
     1956: 'Exclu par onlynet',
     1958: "Tor n'est pas en cours d'exécution",
     1959: "Tor n'est pas installé",
+    1960: 'Sortant uniquement. Ajoutez une adresse onion pour activer les connexions entrantes.',
+    1961: 'Sortant uniquement. Publiez une adresse IP pour activer les connexions entrantes.',
 
     // Common
     1800: 'Configuration',

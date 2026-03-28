@@ -88,7 +88,7 @@ export const shape = z.object({
     .union([onlyNetOption, z.array(onlyNetOption)])
     .optional()
     .catch(undefined),
-  externalip: iniString,
+  externalip: iniStringArray,
   whitelist: iniStringArray,
   v2transport: iniBoolean,
   connect: iniStringArray,
@@ -620,6 +620,7 @@ function formToFile(
     whitebind: `0.0.0.0:${peerPortExternal}`,
     rpcauth: raw?.rpcauth?.filter((a) => !!a) as string[] | undefined,
     whitelist: raw?.whitelist?.filter((a) => !!a) as string[] | undefined,
+    externalip: raw?.externalip?.filter((a) => !!a) as string[] | undefined,
 
     // Mempool
     persistmempool,
