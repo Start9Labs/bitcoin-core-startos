@@ -9,7 +9,7 @@ export const setDependencies = sdk.setupDependencies(async ({ effects }) => {
 
   const onlynetList = [onlynet ?? []].flat()
 
-  if (externalip?.includes('.onion') || onlynetList.includes('onion')) {
+  if (externalip?.some((ip) => ip?.includes('.onion')) || onlynetList.includes('onion')) {
     return {
       tor: {
         kind: 'running',
