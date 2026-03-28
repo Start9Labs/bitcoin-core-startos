@@ -5,7 +5,7 @@ import { versionGraph } from '../versions'
 import { setInterfaces } from '../interfaces'
 import { sdk } from '../sdk'
 import { seedFiles } from './seedFiles'
-import { taskSetExternal } from './taskSetExternal'
+import { watchHosts } from './watchHosts'
 
 export const init = sdk.setupInit(
   restoreInit,
@@ -14,7 +14,7 @@ export const init = sdk.setupInit(
   setInterfaces,
   setDependencies,
   actions,
-  taskSetExternal,
+  watchHosts,
 )
 
 export const uninit = sdk.setupUninit(versionGraph)

@@ -268,11 +268,6 @@ const dict = {
 
   'Full archival': 1741,
 
-  // actions/setExternalAddress.ts
-  'Set External Address': 1855,
-  'Set the address at which your node can be reached by peers': 1856,
-  'External Address': 1857,
-  'Select the address at which your node can be reached by peers.': 1858,
 
   // actions/config/autoconfig.ts
   'Auto-Configure': 1900,
@@ -283,6 +278,8 @@ const dict = {
   'I2P is disabled': 1953,
   'Inbound and outbound connections': 1954,
   'Outbound connections only': 1955,
+  'Outbound only. Add an onion address to enable inbound.': 1960,
+  'Outbound only. Publish an IP address to enable inbound.': 1961,
   'Excluded by onlynet': 1956,
   'Tor is not running': 1958,
   'Tor is not installed': 1959,
