@@ -130,7 +130,8 @@ This is transparent to dependent services — port 8332 always serves RPC.
 | ----------- | ----- | -------- | -------------------------------- | ------------------------------------------ |
 | RPC         | 8332  | HTTP     | JSON-RPC commands                | Always                                     |
 | Peer        | 8333  | TCP      | Bitcoin peer-to-peer connections | Always                                     |
-| ZeroMQ      | 28332 | TCP      | Block/transaction notifications  | When ZMQ enabled                           |
+| ZeroMQ      | 28332 | TCP      | Block notifications (rawblock, hashblock)  | When ZMQ enabled                           |
+| ZeroMQ      | 28333 | TCP      | Transaction notifications (rawtx, hashtx, sequence) | When ZMQ enabled                |
 | I2P Console | 7070  | HTTP     | I2P daemon web console           | When embedded I2P enabled with web console |
 
 ## Actions (StartOS UI)
@@ -169,6 +170,13 @@ This is transparent to dependent services — port 8332 always serves RPC.
 | **Download UTXO Snapshot (assumeutxo)** | Load a UTXO snapshot for fast sync (hidden when fully synced)                    | Running only |
 | **Runtime Information**                 | Display connections, block height, sync progress, softfork info, IPC socket path | Running only |
 
+### Hidden (Dependent Service Automation)
+
+| Action                     | Purpose                                                  | Availability |
+| -------------------------- | -------------------------------------------------------- | ------------ |
+| **Auto-Configure**         | Automatically configure Bitcoin Core for dependent services (prefills all config) | Any |
+| **Create RPC Credentials** | Create RPC credentials with a provided username/password for dependent services   | Any |
+
 ## Backups and Restore
 
 **Backed up:** The `main` and `i2pd` volumes, **excluding** `blocks/`, `chainstate/`, `indexes/` (blockchain data) and I2P ephemeral data.
@@ -192,11 +200,17 @@ This is transparent to dependent services — port 8332 always serves RPC.
 
 ## Dependencies
 
-| Dependency | Condition                                                                                | Required State              |
-| ---------- | ---------------------------------------------------------------------------------------- | --------------------------- |
-| **Tor**    | When `externalip` contains `.onion` or `onlynet` includes `onion` | Running |
+### Tor (optional, conditional)
 
-When a Tor onion address is added to the peer interface, it is automatically set as `externalip` in `bitcoin.conf` and advertised to peers. Other StartOS services (LND, Core Lightning, Electrs, etc.) depend on Bitcoin Core.
+| Property | Value |
+|----------|-------|
+| Version constraint | `>= 0.4.9.5` |
+| Required state | Running |
+| Health checks | None |
+| Mounted volumes | None |
+| Purpose | Tor SOCKS proxy for outbound connections and onion address advertisement |
+
+Required when `externalip` contains a `.onion` address or `onlynet` includes `onion`. When a Tor onion address is added to the peer interface, it is automatically set as `externalip` in `bitcoin.conf` and advertised to peers. Other StartOS services (LND, Core Lightning, Electrs, etc.) depend on Bitcoin Core.
 
 ## Default Overrides
 
@@ -207,7 +221,7 @@ Only settings that **diverge from upstream Bitcoin Core defaults** are seeded in
 | Setting | Upstream Default | Our Default | Reason |
 | --- | --- | --- | --- |
 | `dbcache` | 450 MiB | 25% of system RAM (max 5120 MiB) | Faster IBD; reset to upstream default automatically after initial sync completes |
-| `dbbatchsize` | 16777216 (16 MiB) | RAM-scaled (16–32 MiB) | Faster UTXO writes during sync; reset to upstream default after initial sync |
+| `dbbatchsize` | 16777216 (16 MiB) | RAM-scaled (16–33 MiB) | Faster UTXO writes during sync; reset to upstream default after initial sync |
 | `rpcthreads` | 4 | 16 | Better RPC concurrency for dependent services |
 | `rpcworkqueue` | 16 | 64 | Deeper RPC backlog for dependent services |
 | `blockfilterindex` | off | `basic` | Required by dependent services (Electrs, etc.) for BIP158 filters |
@@ -272,7 +286,8 @@ volumes:
 ports:
   rpc: 8332
   peer: 8333
-  zmq: 28332 (conditional)
+  zmq-block: 28332 (conditional)
+  zmq-tx: 28333 (conditional)
   i2p-console: 7070 (conditional)
 dependencies:
   tor: conditional (onion connectivity)
@@ -293,6 +308,8 @@ actions:
   - delete-coinstats-index
   - assumeutxo
   - runtime-info
+  - autoconfig (hidden, dependent service automation)
+  - generate-rpc-dependent (hidden, dependent service automation)
 health_checks:
   - rpc: bitcoin-cli_uptime (after .cookie file exists)
   - sync-progress: bitcoin-cli_getblockchaininfo
