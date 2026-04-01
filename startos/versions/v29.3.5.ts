@@ -1,7 +1,7 @@
 import { VersionInfo } from '@start9labs/start-sdk'
 
-export const v_29_3_5_b7 = VersionInfo.of({
-  version: '29.3:5-beta.7',
+export const v_29_3_5 = VersionInfo.of({
+  version: '29.3:5',
   releaseNotes: {
     en_US: 'Multiple bug fixes',
     es_ES: 'Múltiples correcciones de errores',

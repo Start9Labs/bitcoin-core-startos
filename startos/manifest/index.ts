@@ -12,7 +12,7 @@ export const manifest = setupManifest({
   title: 'Bitcoin Core',
   license: 'MIT',
   donationUrl: null,
-  packageRepo: 'https://github.com/Start9Labs/bitcoin-core-startos/tree/040/29.3',
+  packageRepo: 'https://github.com/Start9Labs/bitcoin-core-startos/tree/29.x',
   upstreamRepo: 'https://github.com/bitcoin/bitcoin',
   marketingUrl: 'https://bitcoincore.org/',
   docsUrls: ['https://docs.start9.com/bitcoin-guides/'],
