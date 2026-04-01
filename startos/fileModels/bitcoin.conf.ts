@@ -93,6 +93,7 @@ export const shape = z.object({
   v2transport: iniBoolean,
   connect: iniStringArray,
   addnode: iniStringArray,
+  blocksonly: iniBoolean,
   maxconnections: iniNumber,
   i2psam: z.literal(i2PSamAddress).optional().catch(undefined),
   i2pacceptincoming: iniBoolean,
@@ -433,6 +434,13 @@ export const fullConfigSpec = sdk.InputSpec.of({
       },
     }),
   }),
+  blocksonly: Value.toggle({
+    name: i18n('Blocks Only'),
+    description: i18n(
+      'Reduce bandwidth by not relaying transactions. Blocks will still be downloaded and validated normally. Disables the mempool, wallet transaction broadcasting, and fee estimation.',
+    ),
+    default: false,
+  }),
   maxconnections: Value.number({
     name: i18n('Maximum Connections'),
     description: i18n(
@@ -516,6 +524,7 @@ function fileToForm(
     v2transport,
     connect,
     addnode,
+    blocksonly,
     maxconnections,
     rpcservertimeout,
     rpcthreads,
@@ -572,6 +581,7 @@ function fileToForm(
             : [addnode].flat().filter((x): x is string => x !== undefined),
       },
     },
+    blocksonly,
     maxconnections,
     rpcservertimeout,
     rpcthreads,
@@ -605,6 +615,7 @@ function formToFile(
     v2transport,
     onlynet,
     connectpeer,
+    blocksonly,
     maxconnections,
     rpcservertimeout,
     rpcthreads,
@@ -671,6 +682,7 @@ function formToFile(
       connectpeer?.selection === 'addnode'
         ? (connectpeer.value?.peers?.filter((a) => !!a) as string[] | undefined)
         : undefined,
+    blocksonly,
     maxconnections: maxconnections ?? undefined,
 
     // RPC

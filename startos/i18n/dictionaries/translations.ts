@@ -196,6 +196,8 @@ export default {
     1255: 'Conexiones máximas',
     1256: 'Establecer el número máximo de conexiones a mantener con pares.',
     1257: 'ilimitado',
+    1258: 'Solo Bloques',
+    1259: 'Reduce el ancho de banda al no retransmitir transacciones. Los bloques se seguirán descargando y validando normalmente. Desactiva el mempool, la transmisión de transacciones de la billetera y la estimación de comisiones.',
 
     // actions/config/mempool.ts
     1500: 'Persistir Mempool',
@@ -485,6 +487,8 @@ export default {
     1255: 'Maximale Verbindungen',
     1256: 'Maximale Anzahl der Verbindungen zu Peers festlegen.',
     1257: 'unbegrenzt',
+    1258: 'Nur Blöcke',
+    1259: 'Reduziert die Bandbreite, indem keine Transaktionen weitergeleitet werden. Blöcke werden weiterhin normal heruntergeladen und validiert. Deaktiviert den Mempool, das Senden von Wallet-Transaktionen und die Gebührenschätzung.',
 
     // actions/config/mempool.ts
     1500: 'Mempool behalten',
@@ -774,6 +778,8 @@ export default {
     1255: 'Maksymalna liczba połączeń',
     1256: 'Ustaw maksymalną liczbę połączeń z peerami.',
     1257: 'nieograniczony',
+    1258: 'Tylko bloki',
+    1259: 'Zmniejsz zużycie pasma, nie przekazując transakcji. Bloki będą nadal pobierane i walidowane normalnie. Wyłącza mempool, nadawanie transakcji portfela i szacowanie opłat.',
 
     // actions/config/mempool.ts
     1500: 'Zachowaj Mempool',
@@ -1063,6 +1069,8 @@ export default {
     1255: 'Connexions maximales',
     1256: 'Définir le nombre maximum de connexions à maintenir avec les pairs.',
     1257: 'illimité',
+    1258: 'Blocs uniquement',
+    1259: "Réduire la bande passante en ne relayant pas les transactions. Les blocs seront toujours téléchargés et validés normalement. Désactive le mempool, la diffusion des transactions du portefeuille et l'estimation des frais.",
 
     // actions/config/mempool.ts
     1500: 'Conserver le Mempool',

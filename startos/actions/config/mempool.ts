@@ -24,6 +24,7 @@ export const mempoolConfig = sdk.Action.withInput(
     permitbaremultisig: true,
     datacarrier: true,
     datacarriersize: true,
+    blocksonly: true,
   }),
 
   // optionally pre-fill the input form
