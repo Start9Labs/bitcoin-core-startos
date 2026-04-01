@@ -4,10 +4,10 @@ on:
   workflow_dispatch:
   pull_request:
     paths-ignore: ['*.md']
-    branches: ['main', 'master', 'update/040']
+    branches: ['28.x']
   push:
     paths-ignore: ['*.md']
-    branches: ['main', 'master', 'update/040']
+    branches: ['28.x']
 
 jobs:
   build:
