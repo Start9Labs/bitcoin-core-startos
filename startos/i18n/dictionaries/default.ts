@@ -187,6 +187,8 @@ const dict = {
   'Add Node': 1250,
   'Add Nodes': 1251,
   'Add addresses of nodes for Bitcoin to connect with in addition to default nodes.': 1252,
+  'Blocks Only': 1258,
+  'Reduce bandwidth by not relaying transactions. Blocks will still be downloaded and validated normally. Disables the mempool, wallet transaction broadcasting, and fee estimation.': 1259,
   'Maximum Connections': 1255,
   'Set the maximum number of connections to maintain with peers.': 1256,
   unlimited: 1257,

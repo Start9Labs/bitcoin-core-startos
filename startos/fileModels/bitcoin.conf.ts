@@ -94,6 +94,7 @@ export const shape = z.object({
   connect: iniStringArray,
   addnode: iniStringArray,
   maxconnections: iniNumber,
+  blocksonly: iniBoolean,
   i2psam: z.literal(i2PSamAddress).optional().catch(undefined),
   i2pacceptincoming: iniBoolean,
 
@@ -444,6 +445,13 @@ export const fullConfigSpec = sdk.InputSpec.of({
     integer: true,
     placeholder: i18n('unlimited'),
   }),
+  blocksonly: Value.toggle({
+    name: i18n('Blocks Only'),
+    description: i18n(
+      'Reduce bandwidth by not relaying transactions. Blocks will still be downloaded and validated normally. Disables the mempool, wallet transaction broadcasting, and fee estimation.',
+    ),
+    default: false,
+  }),
   rpcservertimeout: Value.number({
     name: i18n('Rpc Server Timeout'),
     description: i18n(
@@ -517,6 +525,7 @@ function fileToForm(
     connect,
     addnode,
     maxconnections,
+    blocksonly,
     rpcservertimeout,
     rpcthreads,
     rpcworkqueue,
@@ -573,6 +582,7 @@ function fileToForm(
       },
     },
     maxconnections,
+    blocksonly,
     rpcservertimeout,
     rpcthreads,
     rpcworkqueue,
@@ -606,6 +616,7 @@ function formToFile(
     onlynet,
     connectpeer,
     maxconnections,
+    blocksonly,
     rpcservertimeout,
     rpcthreads,
     rpcworkqueue,
@@ -672,6 +683,7 @@ function formToFile(
         ? (connectpeer.value?.peers?.filter((a) => !!a) as string[] | undefined)
         : undefined,
     maxconnections: maxconnections ?? undefined,
+    blocksonly,
 
     // RPC
     rpcservertimeout: rpcservertimeout ?? undefined,
