@@ -77,7 +77,7 @@ export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
       name: i18n('ZeroMQ Interface'),
       id: zmqInterfaceId,
       description: i18n(
-        'Listens for incoming connections from peers on the bitcoin network',
+        'Streams real-time Bitcoin block and transaction notifications (hashes and raw data)',
       ),
       type: 'api',
       masked: false,
