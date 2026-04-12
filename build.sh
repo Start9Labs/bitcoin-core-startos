@@ -34,6 +34,21 @@ export CFLAGS="${COMMON_FLAGS} -O2"
 export CXXFLAGS="${COMMON_FLAGS} -O2"
 export LDFLAGS="--sysroot=/sysroot --target=${HOST_TRIPLE} -fuse-ld=lld -L/sysroot/usr/lib"
 
+# Build BDB 4.8 from depends system so the wallet can open legacy BDB wallets
+BDB_PREFIX="/bitcoin/depends/${HOST_TRIPLE}"
+echo "Building BDB 4.8 for ${HOST_TRIPLE}..."
+make -C /bitcoin/depends \
+    HOST="${HOST_TRIPLE}" \
+    CC="clang --target=${HOST_TRIPLE} --sysroot=/sysroot" \
+    CXX="clang++ --target=${HOST_TRIPLE} --sysroot=/sysroot" \
+    LDFLAGS="-fuse-ld=lld" \
+    AR="llvm-ar" \
+    RANLIB="llvm-ranlib" \
+    STRIP="llvm-strip" \
+    NM="llvm-nm" \
+    NO_BOOST=1 NO_LIBEVENT=1 NO_QT=1 NO_SQLITE=1 NO_UPNP=1 NO_ZMQ=1 NO_USDT=1 \
+    -j"$(nproc)"
+
 ./autogen.sh
 
 # --disable-suppress-external-warnings: Bitcoin Core's configure converts -I to
@@ -54,11 +69,12 @@ export LDFLAGS="--sysroot=/sysroot --target=${HOST_TRIPLE} -fuse-ld=lld -L/sysro
     --with-utils \
     --with-libs \
     --with-sqlite=yes \
-    --without-bdb \
     --with-daemon \
     --enable-reduce-exports \
     --with-boost=/sysroot/usr \
-    --with-zmq
+    --with-zmq \
+    BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" \
+    BDB_CFLAGS="-I${BDB_PREFIX}/include"
 
 make -j"$(nproc)"
 make install

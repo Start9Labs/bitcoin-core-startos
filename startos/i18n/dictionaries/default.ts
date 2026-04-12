@@ -20,6 +20,7 @@ const dict = {
   'ZeroMQ Interface': 104,
   'I2P Daemon Console': 105,
   'Interface to access the embedded I2P daemon console': 106,
+  'Streams real-time Bitcoin block and transaction notifications (hashes and raw data)': 107,
 
   // actions/generateRpcUser.ts
   Username: 200,
