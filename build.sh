@@ -46,7 +46,7 @@ make -C /bitcoin/depends \
     RANLIB="llvm-ranlib" \
     STRIP="llvm-strip" \
     NM="llvm-nm" \
-    NO_BOOST=1 NO_LIBEVENT=1 NO_QT=1 NO_SQLITE=1 NO_UPNP=1 NO_ZMQ=1 NO_USDT=1 \
+    NO_BOOST=1 NO_LIBEVENT=1 NO_QT=1 NO_SQLITE=1 NO_UPNP=1 NO_NATPMP=1 NO_ZMQ=1 NO_USDT=1 \
     -j"$(nproc)"
 
 ./autogen.sh
