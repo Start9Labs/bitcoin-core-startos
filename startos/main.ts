@@ -150,13 +150,25 @@ export const main = sdk.setupMain(async ({ effects }) => {
 
   // ---- Build daemon chain step by step ----
 
-  const base = sdk.Daemons.of(effects).addOneshot('nocow', {
-    subcontainer: bitcoindSub,
-    exec: {
-      command: ['chattr', '-R', '+C', '/.bitcoin'],
-    },
-    requires: [],
-  })
+  const base = sdk.Daemons.of(effects)
+    .addOneshot('nocow', {
+      subcontainer: bitcoindSub,
+      exec: {
+        command: ['chattr', '-R', '+C', '/.bitcoin'],
+      },
+      requires: [],
+    })
+    .addOneshot('clean-chainstate-old', {
+      subcontainer: bitcoindSub,
+      exec: {
+        command: [
+          'sh',
+          '-c',
+          `rm -rf ${rootDir}/chainstate.old ${rootDir}/*/chainstate.old`,
+        ],
+      },
+      requires: [],
+    })
 
   const withBitcoind = await base
     .addDaemon('bitcoind', {
@@ -191,7 +203,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
           )
         },
       },
-      requires: ['nocow'],
+      requires: ['nocow', 'clean-chainstate-old'],
     })
     .addHealthCheck('sync-progress', {
       ready: {

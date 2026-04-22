@@ -6,6 +6,7 @@ export const { createBackup, restoreInit } = sdk.setupBackups(async () =>
       // main
       'blocks/',
       'chainstate/',
+      'chainstate.old/',
       'indexes/',
       '.cookie',
       '**/*-journal',
