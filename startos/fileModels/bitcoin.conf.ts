@@ -1,5 +1,6 @@
 import { FileHelper, T, utils, z } from '@start9labs/start-sdk'
 import * as diskusage from 'diskusage'
+import { totalmem } from 'os'
 import { i18n } from '../i18n'
 import { sdk } from '../sdk'
 import {
@@ -93,8 +94,8 @@ export const shape = z.object({
   v2transport: iniBoolean,
   connect: iniStringArray,
   addnode: iniStringArray,
-  blocksonly: iniBoolean,
   maxconnections: iniNumber,
+  blocksonly: iniBoolean,
   i2psam: z.literal(i2PSamAddress).optional().catch(undefined),
   i2pacceptincoming: iniBoolean,
 
@@ -162,12 +163,22 @@ const { InputSpec, Value, Variants, List } = sdk
 export const diskUsage = utils.once(() => diskusage.check('/'))
 export const archivalMin = 900_000_000_000
 
+export const defaultDbcache = () =>
+  Math.min(Math.floor((totalmem() * 0.25) / (1024 * 1024)), 5_120)
+
+export const defaultDbbatchsize = () =>
+  Math.min(Math.max(Math.floor(totalmem() / 256), 16_777_216), 33_554_432)
+
+export const defaultRpcthreads = 16
+export const defaultRpcworkqueue = 64
+
 export const fullConfigSpec = sdk.InputSpec.of({
   raw: Value.hidden(shape),
-  persistmempool: Value.toggle({
+  persistmempool: Value.triState({
     name: i18n('Persist Mempool'),
     description: i18n('Save the mempool on shutdown and load on restart.'),
-    default: true,
+    default: null,
+    footnote: `${i18n('Default')}: true`,
   }),
   maxmempool: Value.number({
     name: i18n('Max Mempool Size'),
@@ -177,7 +188,7 @@ export const fullConfigSpec = sdk.InputSpec.of({
     min: 1,
     integer: true,
     units: 'MiB',
-    placeholder: '300',
+    footnote: `${i18n('Default')}: 300 MiB`,
   }),
   mempoolexpiry: Value.number({
     name: i18n('Mempool Expiration'),
@@ -189,17 +200,19 @@ export const fullConfigSpec = sdk.InputSpec.of({
     min: 1,
     integer: true,
     units: i18n('Hr'),
-    placeholder: '336',
+    footnote: `${i18n('Default')}: 336 Hr`,
   }),
-  permitbaremultisig: Value.toggle({
+  permitbaremultisig: Value.triState({
     name: i18n('Permit Bare Multisig'),
     description: i18n('Relay non-P2SH multisig transactions'),
-    default: true,
+    default: null,
+    footnote: `${i18n('Default')}: true`,
   }),
-  datacarrier: Value.toggle({
+  datacarrier: Value.triState({
     name: i18n('Relay OP_RETURN Transactions'),
     description: i18n('Relay transactions with OP_RETURN outputs'),
-    default: true,
+    default: null,
+    footnote: `${i18n('Default')}: true`,
   }),
   datacarriersize: Value.number({
     name: i18n('Max OP_RETURN Size'),
@@ -210,23 +223,25 @@ export const fullConfigSpec = sdk.InputSpec.of({
     max: 100_000,
     integer: true,
     units: i18n('bytes'),
-    placeholder: '100000',
+    footnote: `${i18n('Default')}: 100000 bytes`,
   }),
-  zmqEnabled: Value.toggle({
+  zmqEnabled: Value.triState({
     name: i18n('ZeroMQ Enabled'),
     description: i18n(
       'The ZeroMQ interface is useful for some applications which might require data related to block and transaction events from Bitcoin Core. For example, LND requires ZeroMQ be enabled for LND to get the latest block data',
     ),
     default: true,
+    footnote: `${i18n('Default')}: false`,
   }),
-  txindex: Value.dynamicToggle(async ({ effects }) => {
+  txindex: Value.dynamicTriState(async ({ effects }) => {
     const disk = await diskUsage()
     return {
       name: i18n('Transaction Index'),
-      default: disk.total >= archivalMin,
+      default: null,
       description: i18n(
         'By enabling Transaction Index (txindex) Bitcoin Core will build a complete transaction index. This allows Bitcoin Core to access any transaction with commands like `getrawtransaction`.',
       ),
+      footnote: `${i18n('Default')}: false`,
       disabled:
         disk.total < archivalMin ? i18n('Not enough disk space') : false,
     }
@@ -239,27 +254,30 @@ export const fullConfigSpec = sdk.InputSpec.of({
       'Execute an arbitrary command when the best block changes',
     ),
   }),
-  coinstatsindex: Value.toggle({
+  coinstatsindex: Value.triState({
     name: i18n('Coinstats Index'),
     description: i18n(
       'Enabling Coinstats Index reduces the time for the gettxoutsetinfo RPC to complete at the cost of using additional disk space',
     ),
-    default: false,
+    default: null,
+    footnote: `${i18n('Default')}: false`,
   }),
   wallet: Value.object(
     { name: i18n('Wallet'), description: i18n('Wallet Settings') },
     InputSpec.of({
-      enable: Value.toggle({
+      enable: Value.triState({
         name: i18n('Enable Wallet'),
         description: i18n('Load the wallet and enable wallet RPC calls.'),
-        default: true,
+        default: null,
+        footnote: `${i18n('Default')}: true`,
       }),
-      avoidpartialspends: Value.toggle({
+      avoidpartialspends: Value.triState({
         name: i18n('Avoid Partial Spends'),
         description: i18n(
           'Group outputs by address, selecting all or none, instead of selecting on a per-output basis. This improves privacy at the expense of higher transaction fees.',
         ),
-        default: false,
+        default: null,
+        footnote: `${i18n('Default')}: false`,
       }),
       discardfee: Value.number({
         name: i18n('Discard Change Tolerance'),
@@ -272,7 +290,7 @@ export const fullConfigSpec = sdk.InputSpec.of({
         max: 0.01,
         integer: false,
         units: i18n('BTC/kB'),
-        placeholder: '0.0001',
+        footnote: `${i18n('Default')}: 0.0001 BTC/kB`,
       }),
     }),
   ),
@@ -309,7 +327,7 @@ export const fullConfigSpec = sdk.InputSpec.of({
     min: 0,
     integer: true,
     units: 'MiB',
-    placeholder: '450',
+    footnote: `${i18n('Default')}: 450 MiB`,
   }),
   dbbatchsize: Value.number({
     name: i18n('Database Batch'),
@@ -321,7 +339,7 @@ export const fullConfigSpec = sdk.InputSpec.of({
     min: 0,
     integer: true,
     units: i18n('Bytes'),
-    placeholder: '16777216',
+    footnote: `${i18n('Default')}: 16777216 Bytes`,
   }),
   blockfilters: Value.object(
     {
@@ -331,23 +349,25 @@ export const fullConfigSpec = sdk.InputSpec.of({
       ),
     },
     InputSpec.of({
-      blockfilterindex: Value.toggle({
+      blockfilterindex: Value.triState({
         name: i18n('Compute Compact Block Filters (BIP158)'),
         description: i18n(
           "Generate Compact Block Filters during initial sync (IBD) to enable 'getblockfilter' RPC. This is useful if dependent services need block filters to efficiently scan for addresses/transactions etc.",
         ),
         default: true,
+        footnote: `${i18n('Default')}: false`,
       }),
-      peerblockfilters: Value.toggle({
+      peerblockfilters: Value.triState({
         name: i18n('Serve Compact Block Filters to Peers (BIP157)'),
         description: i18n(
           "Serve Compact Block Filters as a peer service to other nodes on the network. This is useful if you wish to connect an SPV client to your node to make it efficient to scan transactions without having to download all block data.  'Compute Compact Block Filters (BIP158)' is required.",
         ),
-        default: false,
+        default: null,
+        footnote: `${i18n('Default')}: false`,
       }),
     }),
   ),
-  peerbloomfilters: Value.toggle({
+  peerbloomfilters: Value.triState({
     name: i18n('Serve Bloom Filters to Peers'),
     description: i18n(
       'Peers have the option of setting filters on each connection they make after the version handshake has completed. Bloom filters are for clients implementing SPV (Simplified Payment Verification) that want to check that block headers  connect together correctly, without needing to verify the full blockchain.  The client must trust that the transactions in the chain are in fact valid.  It is highly recommended AGAINST using for anything except Bisq integration.',
@@ -355,7 +375,8 @@ export const fullConfigSpec = sdk.InputSpec.of({
     warning: i18n(
       'This is ONLY for use with Bisq integration, please use Block Filters for all other applications.',
     ),
-    default: false,
+    default: null,
+    footnote: `${i18n('Default')}: false`,
   }),
   onlynet: Value.multiselect({
     name: i18n('Onlynet'),
@@ -367,12 +388,13 @@ export const fullConfigSpec = sdk.InputSpec.of({
     ) as Record<ValidNets, string>,
     default: [],
   }),
-  v2transport: Value.toggle({
+  v2transport: Value.triState({
     name: i18n('Use V2 P2P Transport Protocol'),
     description: i18n(
       'Enable or disable the use of BIP324 V2 P2P transport protocol.',
     ),
-    default: true,
+    default: null,
+    footnote: `${i18n('Default')}: true`,
   }),
   connectpeer: Value.union({
     name: i18n('Connect Peer'),
@@ -434,23 +456,24 @@ export const fullConfigSpec = sdk.InputSpec.of({
       },
     }),
   }),
-  blocksonly: Value.toggle({
-    name: i18n('Blocks Only'),
-    description: i18n(
-      'Reduce bandwidth by not relaying transactions. Blocks will still be downloaded and validated normally. Disables the mempool, wallet transaction broadcasting, and fee estimation.',
-    ),
-    default: false,
-  }),
   maxconnections: Value.number({
     name: i18n('Maximum Connections'),
     description: i18n(
       'Set the maximum number of connections to maintain with peers.',
     ),
-    default: 125,
+    default: null,
     required: false,
     min: 0,
     integer: true,
-    placeholder: i18n('unlimited'),
+    footnote: `${i18n('Default')}: 125`,
+  }),
+  blocksonly: Value.triState({
+    name: i18n('Blocks Only'),
+    description: i18n(
+      'Reduce bandwidth by not relaying transactions. Blocks will still be downloaded and validated normally. Disables the mempool, wallet transaction broadcasting, and fee estimation.',
+    ),
+    default: null,
+    footnote: `${i18n('Default')}: false`,
   }),
   rpcservertimeout: Value.number({
     name: i18n('Rpc Server Timeout'),
@@ -463,7 +486,7 @@ export const fullConfigSpec = sdk.InputSpec.of({
     max: 300,
     integer: true,
     units: i18n('seconds'),
-    placeholder: '30',
+    footnote: `${i18n('Default')}: 30 seconds`,
   }),
   rpcthreads: Value.number({
     name: i18n('Threads'),
@@ -471,12 +494,12 @@ export const fullConfigSpec = sdk.InputSpec.of({
       'Set the number of threads for handling RPC calls. You may wish to increase this if you are making lots of calls via an integration.',
     ),
     required: false,
-    default: null,
+    default: defaultRpcthreads,
     min: 4,
     max: 64,
     integer: true,
     units: i18n('Threads').toLocaleLowerCase(),
-    placeholder: '16',
+    footnote: `${i18n('Default')}: 4 threads`,
   }),
   rpcworkqueue: Value.number({
     name: i18n('Work Queue'),
@@ -484,12 +507,12 @@ export const fullConfigSpec = sdk.InputSpec.of({
       'Set the depth of the work queue to service RPC calls. Determines how long the backlog of RPC requests can get before it just rejects new ones.',
     ),
     required: false,
-    default: null,
+    default: defaultRpcworkqueue,
     min: 8,
     max: 256,
     integer: true,
     units: i18n('requests'),
-    placeholder: '64',
+    footnote: `${i18n('Default')}: 16 requests`,
   }),
 })
 
@@ -524,8 +547,8 @@ function fileToForm(
     v2transport,
     connect,
     addnode,
-    blocksonly,
     maxconnections,
+    blocksonly,
     rpcservertimeout,
     rpcthreads,
     rpcworkqueue,
@@ -581,8 +604,8 @@ function fileToForm(
             : [addnode].flat().filter((x): x is string => x !== undefined),
       },
     },
-    blocksonly,
     maxconnections,
+    blocksonly,
     rpcservertimeout,
     rpcthreads,
     rpcworkqueue,
@@ -615,8 +638,8 @@ function formToFile(
     v2transport,
     onlynet,
     connectpeer,
-    blocksonly,
     maxconnections,
+    blocksonly,
     rpcservertimeout,
     rpcthreads,
     rpcworkqueue,
@@ -634,11 +657,11 @@ function formToFile(
     externalip: raw?.externalip?.filter((a) => !!a) as string[] | undefined,
 
     // Mempool
-    persistmempool,
+    persistmempool: persistmempool ?? undefined,
     maxmempool: maxmempool ?? undefined,
     mempoolexpiry: mempoolexpiry ?? undefined,
-    permitbaremultisig,
-    datacarrier,
+    permitbaremultisig: permitbaremultisig ?? undefined,
+    datacarrier: datacarrier ?? undefined,
     datacarriersize: datacarriersize ?? undefined,
 
     // RPC
@@ -646,33 +669,40 @@ function formToFile(
     rpcallowip: prune ? rpcallowipPruned : rpcallowip,
 
     // Wallet
-    disablewallet: !wallet?.enable,
-    avoidpartialspends: wallet?.avoidpartialspends,
+    disablewallet: wallet?.enable == null ? undefined : !wallet.enable,
+    avoidpartialspends: wallet?.avoidpartialspends ?? undefined,
     discardfee: wallet?.discardfee ?? undefined,
 
     // Other
-    txindex: prune ? false : txindex,
-    coinstatsindex,
-    peerbloomfilters,
-    peerblockfilters: blockfilters?.peerblockfilters,
-    blockfilterindex: blockfilters?.blockfilterindex ? 'basic' : false,
+    txindex: prune ? false : (txindex ?? undefined),
+    coinstatsindex: coinstatsindex ?? undefined,
+    peerbloomfilters: peerbloomfilters ?? undefined,
+    peerblockfilters: blockfilters?.peerblockfilters ?? undefined,
+    blockfilterindex:
+      blockfilters?.blockfilterindex == null
+        ? undefined
+        : blockfilters.blockfilterindex
+          ? 'basic'
+          : false,
     blocknotify: blocknotify || undefined,
     prune: prune ?? undefined,
     dbcache: dbcache ?? undefined,
     dbbatchsize: dbbatchsize ?? undefined,
     // ZMQ
-    ...(zmqEnabled
+    ...(zmqEnabled === true
       ? zmqBundle
-      : {
-          zmqpubrawblock: undefined,
-          zmqpubhashblock: undefined,
-          zmqpubrawtx: undefined,
-          zmqpubhashtx: undefined,
-          zmqpubsequence: undefined,
-        }),
+      : zmqEnabled === false
+        ? {
+            zmqpubrawblock: undefined,
+            zmqpubhashblock: undefined,
+            zmqpubrawtx: undefined,
+            zmqpubhashtx: undefined,
+            zmqpubsequence: undefined,
+          }
+        : {}),
 
     // Peer
-    v2transport,
+    v2transport: v2transport ?? undefined,
     onlynet: onlynet?.length ? input.onlynet?.filter((a) => !!a) : undefined,
     connect:
       connectpeer?.selection === 'connect'
@@ -682,8 +712,8 @@ function formToFile(
       connectpeer?.selection === 'addnode'
         ? (connectpeer.value?.peers?.filter((a) => !!a) as string[] | undefined)
         : undefined,
-    blocksonly,
     maxconnections: maxconnections ?? undefined,
+    blocksonly: blocksonly ?? undefined,
 
     // RPC
     rpcservertimeout: rpcservertimeout ?? undefined,
