@@ -89,7 +89,7 @@ Out of the box, Bitcoin Core on StartOS connects to the Bitcoin network over mul
 
 To restrict outbound connections to specific networks only, use the **onlynet** setting in Peer Settings.
 
-The I2P web console is disabled by default. It can be enabled via advanced i2pd settings in Peer Settings (when I2P is enabled).
+Advanced i2pd-daemon tuning (log level, bandwidth class, transit share, floodfill, web console, transit-tunnel limits) is **not** exposed in the StartOS UI. Those values are baked as defaults in the bundled `i2pd.conf` schema; users who need to change them can edit `i2pd.conf` directly on the `i2pd` volume.
 
 ## Configuration Management
 
@@ -189,14 +189,14 @@ This is transparent to dependent services — port 8332 always serves RPC.
 
 ## Health Checks
 
-| Check              | Method                                                  | Messages                                                                                          |
-| ------------------ | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| **RPC**            | Waits for `.cookie` file, then `bitcoin-cli uptime`      | Ready: "The Bitcoin RPC Interface is ready"                                                       |
-| **Blockchain Sync**| `bitcoin-cli getblockchaininfo`                         | Shows percentage during IBD; "Bitcoin is fully synced" when complete                              |
-| **I2P**            | I2PControl API (auth + router info)                     | "Inbound and outbound connections" or "Outbound connections only" based on `i2pacceptincoming`    |
-| **Tor**            | Tor install/running status                              | "Inbound and outbound" when an onion address is published; otherwise "Outbound only"              |
-| **Clearnet**       | Checks published IP addresses                           | "Inbound and outbound" when an IP address is published; otherwise "Outbound only"                 |
-| **RPC Proxy**      | Port listening (when pruned)                            | Ready: "The Bitcoin RPC Proxy is ready"                                                           |
+| Check               | Method                                                                                 | Messages                                                                                       |
+| ------------------- | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| **RPC**             | Waits for `.cookie` file, then port-listening check on `8332` (or `58332` when pruned) | Ready: "The Bitcoin RPC Interface is ready"                                                    |
+| **Blockchain Sync** | `bitcoin-cli getblockchaininfo` (polled every 30 s; 5 s during startup/failure)        | Shows percentage during IBD; "Bitcoin is fully synced" when complete                           |
+| **I2P**             | I2PControl API (auth + router info)                                                    | "Inbound and outbound connections" or "Outbound connections only" based on `i2pacceptincoming` |
+| **Tor**             | Tor install/running status                                                             | "Inbound and outbound" when an onion address is published; otherwise "Outbound only"           |
+| **Clearnet**        | Checks published IP addresses                                                          | "Inbound and outbound" when an IP address is published; otherwise "Outbound only"              |
+| **RPC Proxy**       | Port listening (when pruned)                                                           | Ready: "The Bitcoin RPC Proxy is ready"                                                        |
 
 ## Dependencies
 
@@ -222,8 +222,6 @@ Only settings that **diverge from upstream Bitcoin Core defaults** are seeded in
 | --- | --- | --- | --- |
 | `dbcache` | 450 MiB | 25% of system RAM (max 5120 MiB) | Faster IBD; reset to upstream default automatically after initial sync completes |
 | `dbbatchsize` | 16777216 (16 MiB) | RAM-scaled (16–33 MiB) | Faster UTXO writes during sync; reset to upstream default after initial sync |
-| `rpcthreads` | 4 | 16 | Better RPC concurrency for dependent services |
-| `rpcworkqueue` | 16 | 64 | Deeper RPC backlog for dependent services |
 | `blockfilterindex` | off | `basic` | Required by dependent services (Electrs, etc.) for BIP158 filters |
 | `zmqpubrawblock`, `zmqpubhashblock` | off | `tcp://0.0.0.0:28332` | Required by dependent services (LND, etc.) |
 | `zmqpubrawtx`, `zmqpubhashtx`, `zmqpubsequence` | off | `tcp://0.0.0.0:28333` | Required by dependent services (LND, etc.) |
@@ -231,15 +229,17 @@ Only settings that **diverge from upstream Bitcoin Core defaults** are seeded in
 | `assumevalid` | built-in block hash | custom block hash | Performance optimization for IBD |
 | `prune` (disk < 900 GB only) | 0 (off) | 550 MiB | Automatic pruning on smaller disks |
 
-### Form defaults vs placeholders
+### Form defaults and footnotes
 
-Configuration actions use a consistent pattern for number fields:
+Every user-exposed field in the configuration actions is optional, including booleans. The pattern:
 
-- **`default: null`** — the field is empty; if the user saves without setting a value, the key is omitted from `bitcoin.conf` and bitcoind uses its upstream default
-- **`placeholder`** — shows the upstream bitcoind default, so the user knows what value applies when the field is left empty
-- **`default: <value>`** — used only when we intentionally override the upstream default; "reset defaults" restores our override, not the upstream value
+- **Number / text fields** use `default: null` when our permanent default matches upstream, or `default: <value>` when we override upstream.
+- **Boolean fields** use `Value.triState` with `default: null` when our permanent default matches upstream, or `default: true` / `default: false` when we override. The null (middle) state omits the key from `bitcoin.conf` and bitcoind uses its upstream default; explicit `true` / `false` write the option.
+- **`footnote: 'Default: <val>'`** — every field annotates its **upstream** bitcoind default in the footnote, so users can see what value applies when the field is left empty / null.
 
-Override defaults for `dbcache` and `dbbatchsize` are computed dynamically from system RAM at install time in `seedFiles.ts`. Static overrides (`defaultPrune`, `defaultRpcthreads`, `defaultRpcworkqueue`) are defined once in `bitcoin.conf.ts` and imported by `seedFiles.ts`, ensuring the form defaults and seed values cannot drift apart.
+Where our permanent default overrides upstream, the input spec's `default` and the value seeded into `bitcoin.conf` by `seedFiles.ts` share a single source of truth: constants like `minPrune` are exported from `bitcoin.conf.ts` and imported by `seedFiles.ts` so the form and seed cannot drift.
+
+`dbcache` and `dbbatchsize` are special: the seeded values (`defaultDbcache()`, `defaultDbbatchsize()` — RAM-scaled) are an **IBD-only boost**. After initial sync completes, `main.ts` clears them so bitcoind reverts to upstream defaults. Because the permanent default matches upstream, the input spec uses `default: null` rather than the boost value.
 
 ## Limitations and Differences
 
@@ -311,8 +311,8 @@ actions:
   - autoconfig (hidden, dependent service automation)
   - generate-rpc-dependent (hidden, dependent service automation)
 health_checks:
-  - rpc: bitcoin-cli_uptime (after .cookie file exists)
-  - sync-progress: bitcoin-cli_getblockchaininfo
+  - rpc: port_listening 8332 (or 58332 pruned), after .cookie file exists
+  - sync-progress: bitcoin-cli_getblockchaininfo (30s trigger; 5s during starting/failure)
   - i2p: port_listening / status
   - tor: install/running status + onion address check
   - clearnet: published IP address check

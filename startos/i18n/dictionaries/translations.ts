@@ -21,6 +21,7 @@ export default {
     104: 'Interfaz ZeroMQ',
     105: 'Consola del daemon I2P',
     106: 'Interfaz para acceder a la consola del daemon I2P integrado',
+    107: 'Transmite notificaciones en tiempo real de bloques y transacciones de Bitcoin (hashes y datos sin procesar)',
 
     // actions/generateRpcUser.ts
     200: 'Nombre de usuario',
@@ -33,7 +34,6 @@ export default {
     207: 'Ya existe una entrada RPCAuth con este nombre de usuario.',
     208: 'Usuario RPC creado exitosamente',
     209: 'Contraseña RPC creada para ${username}. Guarde esta contraseña en un lugar seguro. Si la pierde, será necesario crear un nuevo usuario RPC ya que Bitcoin.conf solo almacena un hash de la contraseña',
-    210: 'Contraseña RPC',
     212: 'Error al crear usuario RPC',
     213: 'rpcauth.py falló con error: ${error}',
 
@@ -150,32 +150,6 @@ export default {
     1201: 'Seleccione cómo conectarse a la red I2P.',
     1204: 'Aceptar conexiones I2P entrantes',
     1205: 'Aceptar conexiones I2P entrantes (efectivo solo cuando I2P está habilitado).',
-    1206: 'Configuración avanzada del daemon I2P',
-    1207: 'Configurar ajustes avanzados para el daemon I2P integrado.',
-    1208: 'Nivel de registro',
-    1209: 'Establecer el nivel de registro para el router I2P.',
-    1210: 'ninguno',
-    1211: 'crítico (predeterminado)',
-    1212: 'error',
-    1213: 'advertencia',
-    1214: 'info',
-    1215: 'depuración',
-    1216: 'Habilitar consola web',
-    1217: 'Habilitar la consola web para el daemon I2P integrado.',
-    1218: 'Ancho de banda',
-    1219: 'Configuración de ancho de banda para el router I2P.',
-    1220: '32 KB/seg (L, predeterminado)',
-    1221: '256 KB/seg (O)',
-    1222: '2048 KB/seg (P)',
-    1223: 'Compartir (%)',
-    1224: '% máximo del límite de ancho de banda para tránsito. 0-100 (predeterminado: 100)',
-    1225: 'Deshabilitar tránsito',
-    1226: 'El router no aceptará túneles de tránsito, deshabilitando completamente el tráfico de tránsito.',
-    1227: 'Modo Floodfill',
-    1228: 'El router participará en la base de datos de red distribuida como un par floodfill.',
-    1229: '¡Nota: este modo usa muchas más conexiones de red y CPU!',
-    1230: 'Límite de túneles de tránsito',
-    1231: 'Sesiones de tránsito activas máximas (predeterminado: 10000). ¡Este valor se duplica si el modo floodfill está habilitado!',
 
     // actions/config/peers.ts - Peer settings
     1236: 'Onlynet',
@@ -291,6 +265,7 @@ export default {
 
     // Common
     1800: 'Configuración',
+    2000: 'Por defecto',
   } satisfies LangDict,
   de_DE: {
     // main.ts
@@ -312,6 +287,7 @@ export default {
     104: 'ZeroMQ-Schnittstelle',
     105: 'I2P-Daemon-Konsole',
     106: 'Schnittstelle zum Zugriff auf die eingebettete I2P-Daemon-Konsole',
+    107: 'Streamt Echtzeit-Benachrichtigungen über Bitcoin-Blöcke und Transaktionen (Hashes und Rohdaten)',
 
     // actions/generateRpcUser.ts
     200: 'Benutzername',
@@ -324,7 +300,6 @@ export default {
     207: 'RPCAuth-Eintrag mit diesem Benutzernamen existiert bereits.',
     208: 'RPC-Benutzer erfolgreich erstellt',
     209: 'RPC-Passwort für ${username} erstellt. Bewahren Sie dieses Passwort an einem sicheren Ort auf. Wenn es verloren geht, muss ein neuer RPC-Benutzer erstellt werden, da Bitcoin.conf nur einen Hash des Passworts speichert',
-    210: 'RPC-Passwort',
     212: 'Fehler beim Erstellen des RPC-Benutzers',
     213: 'rpcauth.py ist mit Fehler fehlgeschlagen: ${error}',
 
@@ -441,32 +416,6 @@ export default {
     1201: 'Wählen Sie aus, wie eine Verbindung zum I2P-Netzwerk hergestellt werden soll.',
     1204: 'Eingehende I2P-Verbindungen akzeptieren',
     1205: 'Eingehende I2P-Verbindungen akzeptieren (nur wirksam, wenn I2P aktiviert ist).',
-    1206: 'Erweiterte I2P-Daemon-Einstellungen',
-    1207: 'Erweiterte Einstellungen für den eingebetteten I2P-Daemon konfigurieren.',
-    1208: 'Protokollstufe',
-    1209: 'Protokollierungsstufe für den I2P-Router festlegen.',
-    1210: 'keine',
-    1211: 'kritisch (Standard)',
-    1212: 'Fehler',
-    1213: 'Warnung',
-    1214: 'Info',
-    1215: 'Debug',
-    1216: 'Webkonsole aktivieren',
-    1217: 'Webkonsole für den eingebetteten I2P-Daemon aktivieren.',
-    1218: 'Bandbreite',
-    1219: 'Bandbreitenkonfiguration für I2P-Router.',
-    1220: '32 KB/Sek (L, Standard)',
-    1221: '256 KB/Sek (O)',
-    1222: '2048 KB/Sek (P)',
-    1223: 'Teilen (%)',
-    1224: 'Max. % der Bandbreitenbegrenzung für Transit. 0-100 (Standard: 100)',
-    1225: 'Transit deaktivieren',
-    1226: 'Router akzeptiert keine Transit-Tunnel und deaktiviert den Transit-Verkehr vollständig.',
-    1227: 'Floodfill-Modus',
-    1228: 'Router nimmt als Floodfill-Peer an der verteilten Netzwerkdatenbank teil.',
-    1229: 'Hinweis: Dieser Modus verwendet viel mehr Netzwerkverbindungen und CPU!',
-    1230: 'Transit-Tunnel-Limit',
-    1231: 'Maximale aktive Transit-Sitzungen (Standard: 10000). Dieser Wert verdoppelt sich, wenn der Floodfill-Modus aktiviert ist!',
 
     // actions/config/peers.ts - Peer settings
     1236: 'Onlynet',
@@ -582,6 +531,7 @@ export default {
 
     // Common
     1800: 'Konfiguration',
+    2000: 'Standard',
   } satisfies LangDict,
   pl_PL: {
     // main.ts
@@ -603,6 +553,7 @@ export default {
     104: 'Interfejs ZeroMQ',
     105: 'Konsola daemona I2P',
     106: 'Interfejs dostępu do konsoli wbudowanego daemona I2P',
+    107: 'Strumieniuje powiadomienia o blokach i transakcjach Bitcoin w czasie rzeczywistym (hashe i surowe dane)',
 
     // actions/generateRpcUser.ts
     200: 'Nazwa użytkownika',
@@ -615,7 +566,6 @@ export default {
     207: 'Wpis RPCAuth z tą nazwą użytkownika już istnieje.',
     208: 'Użytkownik RPC utworzony pomyślnie',
     209: 'Hasło RPC utworzone dla ${username}. Przechowuj to hasło w bezpiecznym miejscu. Jeśli zostanie utracone, konieczne będzie utworzenie nowego użytkownika RPC, ponieważ Bitcoin.conf przechowuje tylko hash hasła',
-    210: 'Hasło RPC',
     212: 'Nie udało się utworzyć użytkownika RPC',
     213: 'rpcauth.py zakończył się błędem: ${error}',
 
@@ -732,32 +682,6 @@ export default {
     1201: 'Wybierz sposób łączenia się z siecią I2P.',
     1204: 'Akceptuj przychodzące połączenia I2P',
     1205: 'Akceptuj przychodzące połączenia I2P (skuteczne tylko gdy I2P jest włączone).',
-    1206: 'Zaawansowane ustawienia daemona I2P',
-    1207: 'Skonfiguruj zaawansowane ustawienia wbudowanego daemona I2P.',
-    1208: 'Poziom logowania',
-    1209: 'Ustaw poziom logowania dla routera I2P.',
-    1210: 'brak',
-    1211: 'krytyczny (domyślny)',
-    1212: 'błąd',
-    1213: 'ostrzeżenie',
-    1214: 'info',
-    1215: 'debug',
-    1216: 'Włącz konsolę webową',
-    1217: 'Włącz konsolę webową dla wbudowanego daemona I2P.',
-    1218: 'Przepustowość',
-    1219: 'Konfiguracja przepustowości dla routera I2P.',
-    1220: '32 KB/sek (L, domyślne)',
-    1221: '256 KB/sek (O)',
-    1222: '2048 KB/sek (P)',
-    1223: 'Udział (%)',
-    1224: 'Maks. % limitu przepustowości dla tranzytu. 0-100 (domyślnie: 100)',
-    1225: 'Wyłącz tranzyt',
-    1226: 'Router nie będzie akceptował tuneli tranzytowych, całkowicie wyłączając ruch tranzytowy.',
-    1227: 'Tryb Floodfill',
-    1228: 'Router będzie uczestniczył w rozproszonej bazie danych sieciowej jako peer floodfill.',
-    1229: 'Uwaga: ten tryb używa znacznie więcej połączeń sieciowych i CPU!',
-    1230: 'Limit tuneli tranzytowych',
-    1231: 'Maksymalna liczba aktywnych sesji tranzytowych (domyślnie: 10000). Ta wartość jest podwajana, jeśli tryb floodfill jest włączony!',
 
     // actions/config/peers.ts - Peer settings
     1236: 'Onlynet',
@@ -873,6 +797,7 @@ export default {
 
     // Common
     1800: 'Konfiguracja',
+    2000: 'Domyślnie',
   } satisfies LangDict,
   fr_FR: {
     // main.ts
@@ -894,6 +819,7 @@ export default {
     104: 'Interface ZeroMQ',
     105: 'Console du démon I2P',
     106: 'Interface pour accéder à la console du démon I2P intégré',
+    107: 'Diffuse en temps réel les notifications de blocs et de transactions Bitcoin (hachages et données brutes)',
 
     // actions/generateRpcUser.ts
     200: "Nom d'utilisateur",
@@ -906,7 +832,6 @@ export default {
     207: "L'entrée RPCAuth avec ce nom d'utilisateur existe déjà.",
     208: 'Utilisateur RPC créé avec succès',
     209: "Mot de passe RPC créé pour ${username}. Conservez ce mot de passe dans un endroit sûr. En cas de perte, un nouvel utilisateur RPC devra être créé car Bitcoin.conf ne stocke qu'un hachage du mot de passe",
-    210: 'Mot de passe RPC',
     212: "Échec de la création de l'utilisateur RPC",
     213: "rpcauth.py a échoué avec l'erreur : ${error}",
 
@@ -1023,32 +948,6 @@ export default {
     1201: 'Sélectionnez comment vous connecter au réseau I2P.',
     1204: 'Accepter les connexions I2P entrantes',
     1205: 'Accepter les connexions I2P entrantes (effectif uniquement lorsque I2P est activé).',
-    1206: 'Paramètres avancés du démon I2P',
-    1207: 'Configurer les paramètres avancés pour le démon I2P intégré.',
-    1208: 'Niveau de journalisation',
-    1209: 'Définir le niveau de journalisation pour le routeur I2P.',
-    1210: 'aucun',
-    1211: 'critique (par défaut)',
-    1212: 'erreur',
-    1213: 'avertissement',
-    1214: 'info',
-    1215: 'débogage',
-    1216: 'Activer la console Web',
-    1217: 'Activer la console Web pour le démon I2P intégré.',
-    1218: 'Bande passante',
-    1219: 'Configuration de la bande passante pour le routeur I2P.',
-    1220: '32 Ko/s (L, par défaut)',
-    1221: '256 Ko/s (O)',
-    1222: '2048 Ko/s (P)',
-    1223: 'Partage (%)',
-    1224: '% max. de la limite de bande passante pour le transit. 0-100 (par défaut : 100)',
-    1225: 'Désactiver le transit',
-    1226: "Le routeur n'acceptera pas les tunnels de transit, désactivant complètement le trafic de transit.",
-    1227: 'Mode Floodfill',
-    1228: 'Le routeur participera à la base de données réseau distribuée en tant que pair floodfill.',
-    1229: 'Remarque : ce mode utilise beaucoup plus de connexions réseau et de CPU !',
-    1230: 'Limite des tunnels de transit',
-    1231: 'Sessions de transit actives maximales (par défaut : 10000). Cette valeur est doublée si le mode floodfill est activé !',
 
     // actions/config/peers.ts - Peer settings
     1236: 'Onlynet',
@@ -1164,5 +1063,6 @@ export default {
 
     // Common
     1800: 'Configuration',
+    2000: 'Par défaut',
   } satisfies LangDict,
 }

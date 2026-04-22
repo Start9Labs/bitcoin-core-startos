@@ -20,6 +20,7 @@ const dict = {
   'ZeroMQ Interface': 104,
   'I2P Daemon Console': 105,
   'Interface to access the embedded I2P daemon console': 106,
+  'Streams real-time Bitcoin block and transaction notifications (hashes and raw data)': 107,
 
   // actions/generateRpcUser.ts
   Username: 200,
@@ -32,7 +33,6 @@ const dict = {
   'RPCAuth entry with this username already exists.': 207,
   'RPC user successfully created': 208,
   'RPC password created for ${username}. Store this password in a secure place. If lost, a new RPC user will need to be created as Bitcoin.conf only stores a hash of the password': 209,
-  'RPC Password': 210,
   'Failed to create RPC user': 212,
   'rpcauth.py failed with error: ${error}': 213,
 
@@ -149,32 +149,6 @@ const dict = {
   'Select how to connect to the I2P network.': 1201,
   'Accept Incoming I2P Connections': 1204,
   'Accept inbound I2P connections (effective only when I2P is enabled).': 1205,
-  'Advanced I2P Daemon Settings': 1206,
-  'Configure advanced settings for the embedded I2P daemon.': 1207,
-  'Log Level': 1208,
-  'Set the logging level for the I2P router.': 1209,
-  none: 1210,
-  'critical (default)': 1211,
-  error: 1212,
-  warning: 1213,
-  info: 1214,
-  debug: 1215,
-  'Enable Web Console': 1216,
-  'Enable the web console for the embedded I2P daemon.': 1217,
-  Bandwidth: 1218,
-  'Bandwidth configuration for I2P router.': 1219,
-  '32 KB/sec (L, default)': 1220,
-  '256 KB/sec (O)': 1221,
-  '2048 KB/sec (P)': 1222,
-  'Share (%)': 1223,
-  'Max % of bandwidth limit for transit. 0-100 (default: 100)': 1224,
-  'Disable Transit': 1225,
-  'Router will not accept transit tunnels, disabling transit traffic completely.': 1226,
-  'Floodfill mode': 1227,
-  'Router will participate in the distributed network database as a floodfill peer.': 1228,
-  'Note: this mode uses much more network connections and CPU!': 1229,
-  'Transit Tunnels Limit': 1230,
-  'Maximum active transit sessions (default: 10000). This value is doubled if floodfill mode is enabled!': 1231,
   Onlynet: 1236,
   'Make automatic outbound connections only to the selected networks. Inbound and manual connections are not affected by this option.': 1237,
   'Use V2 P2P Transport Protocol': 1243,
@@ -288,6 +262,7 @@ const dict = {
 
   // Common
   Configuration: 1800,
+  Default: 2000,
 } as const
 
 /**
