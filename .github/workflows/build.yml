@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   pull_request:
     paths-ignore: ['*.md']
-    branches: ['30.x']
+    branches: ['31.x']
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
