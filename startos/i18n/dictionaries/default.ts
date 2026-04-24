@@ -219,7 +219,7 @@ const dict = {
   'The fee rate (in BTC/kB) that indicates your tolerance for discarding change by adding it to the fee.': 1716,
   'BTC/kB': 1717,
   Pruning: 1718,
-  'Set the maximum size of the blockchain you wish to store on disk. Leave empty to store the entire blockchain (full archival).': 1719,
+  'Set the maximum size of the blockchain you wish to store on disk. Set to 0 to store the entire blockchain (full archival).': 1719,
   'If your node is already pruned increasing this value will require re-syncing your node. Switching from a full archival node to pruned will disable txindex (if enabled)': 1720,
   'Pruning required, enter value': 1721,
   'Database Cache': 1722,

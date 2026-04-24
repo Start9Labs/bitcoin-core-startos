@@ -24,7 +24,7 @@ export const seedFiles = sdk.setupOnInit(async (effects, kind) => {
       blockfilters: { blockfilterindex: true },
       dbcache: defaultDbcache(),
       dbbatchsize: defaultDbbatchsize(),
-      ...((await diskUsage()).total < archivalMin ? { prune: minPrune } : {}),
+      prune: (await diskUsage()).total < archivalMin ? minPrune : 0,
       raw: {
         i2psam: i2PSamAddress,
         assumevalid:
