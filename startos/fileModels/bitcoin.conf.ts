@@ -124,9 +124,8 @@ export const shape = z.object({
       z.string().transform(Number),
       z.number(),
     ])
-    .transform((v) => (v === 0 ? undefined : v < minPrune ? minPrune : v))
-    .optional()
-    .catch(undefined),
+    .transform((v) => (v > 0 && v < minPrune ? minPrune : v))
+    .catch(0),
   coinstatsindex: iniBoolean,
   txindex: iniBoolean,
   peerbloomfilters: iniBoolean,
@@ -293,24 +292,22 @@ export const fullConfigSpec = sdk.InputSpec.of({
   ),
   prune: Value.dynamicNumber(async ({ effects }) => {
     const disk = await diskUsage()
+    const smallDisk = disk.total < archivalMin
 
     return {
       name: i18n('Pruning'),
       description: i18n(
-        'Set the maximum size of the blockchain you wish to store on disk. Leave empty to store the entire blockchain (full archival).',
+        'Set the maximum size of the blockchain you wish to store on disk. Set to 0 to store the entire blockchain (full archival).',
       ),
       warning: i18n(
         'If your node is already pruned increasing this value will require re-syncing your node. Switching from a full archival node to pruned will disable txindex (if enabled)',
       ),
-      placeholder:
-        disk.total < archivalMin
-          ? i18n('Pruning required, enter value')
-          : i18n('Full archival'),
-      required: disk.total < archivalMin,
-      default: disk.total < archivalMin ? minPrune : null,
+      placeholder: null,
+      required: false,
+      default: smallDisk ? minPrune : 0,
       integer: true,
       units: 'MiB',
-      min: minPrune,
+      min: smallDisk ? minPrune : 0,
       max: Math.floor((disk.total * 0.75) / (1024 * 1024)),
     }
   }),
@@ -574,7 +571,7 @@ function fileToForm(
       discardfee,
     },
     blocknotify,
-    prune: prune ?? null,
+    prune,
     dbcache: dbcache ?? null,
     dbbatchsize: dbbatchsize ?? null,
     blockfilters: {
@@ -682,7 +679,7 @@ function formToFile(
           ? 'basic'
           : false,
     blocknotify: blocknotify || undefined,
-    prune: prune ?? undefined,
+    prune: prune ?? 0,
     dbcache: dbcache ?? undefined,
     dbbatchsize: dbbatchsize ?? undefined,
     // ZMQ
