@@ -38,11 +38,11 @@ The reference implementation of the Bitcoin protocol. See the [upstream repo](ht
 
 | Property      | Value                                                                       |
 | ------------- | --------------------------------------------------------------------------- |
-| Image         | Custom Dockerfile (multi-stage Alpine build from Bitcoin Core source)       |
+| Image         | Debian-based Dockerfile that downloads upstream Guix-built binaries         |
 | Architectures | x86_64, aarch64, riscv64                                                    |
-| Entrypoint    | `bitcoind` (or `/opt/bitcoin/libexec/bitcoin-node` when IPC is enabled)     |
+| Entrypoint    | `bitcoind`                                                                  |
 
-The custom Dockerfile cross-compiles Bitcoin Core with ZMQ support (`-DWITH_ZMQ=ON`), IPC support (`-DENABLE_IPC=ON` via Cap'n Proto), and adds runtime utilities (curl, yq, jq, tini).
+The Dockerfile fetches the upstream Bitcoin Core release tarball from `bitcoincore.org`, verifies `SHA256SUMS.asc` against a pinned 5-of-7 quorum of release signers, and copies `bitcoind` and `bitcoin-cli` into a slim Debian runtime alongside `curl`, `yq`, `jq`, `tini`, and `e2fsprogs`. ZMQ support comes from the upstream binary.
 
 Three additional containers are used:
 
@@ -63,7 +63,7 @@ StartOS-specific files on the `main` volume:
 
 | File         | Purpose                                                                       |
 | ------------ | ----------------------------------------------------------------------------- |
-| `store.json` | Persistent StartOS state (reindex flags, sync status, IPC toggle) |
+| `store.json` | Persistent StartOS state (reindex flags, sync status)             |
 
 Blockchain data directories (`blocks/`, `chainstate/`, `indexes/`) reside on the `main` volume alongside the standard `bitcoin.conf` and `.cookie` files.
 
@@ -144,7 +144,6 @@ This is transparent to dependent services — port 8332 always serves RPC.
 | **Peer Settings**    | Configure networking, I2P, peer connections                              | Any          |
 | **RPC Settings**     | Configure RPC server parameters                                          | Any          |
 | **Other Settings**   | Configure ZMQ, indexes, wallets, pruning, performance tuning             | Any          |
-| **Enable IPC**       | Toggle inter-process communication via Unix socket (experimental)        | Any          |
 
 ### RPC Users
 
@@ -168,7 +167,7 @@ This is transparent to dependent services — port 8332 always serves RPC.
 | Action                                  | Purpose                                                                          | Availability |
 | --------------------------------------- | -------------------------------------------------------------------------------- | ------------ |
 | **Download UTXO Snapshot (assumeutxo)** | Load a UTXO snapshot for fast sync (hidden when fully synced)                    | Running only |
-| **Runtime Information**                 | Display connections, block height, sync progress, softfork info, IPC socket path | Running only |
+| **Runtime Information**                 | Display connections, block height, sync progress, softfork info                  | Running only |
 
 ### Hidden (Dependent Service Automation)
 
@@ -243,12 +242,11 @@ Where our permanent default overrides upstream, the input spec's `default` and t
 
 ## Limitations and Differences
 
-1. **Custom Docker image** — built from source with IPC and ZMQ support; adds runtime utilities not in upstream releases
+1. **Custom Docker image** — copies upstream Guix-built binaries (verified against a pinned 5-of-7 quorum of Bitcoin Core release signers) into a Debian runtime with curl, yq, jq, tini, and e2fsprogs
 2. **Tor proxy always configured** — the `-onion` flag is set to the StartOS Tor proxy on every start; Tor itself is a conditional dependency (required only when onion connectivity is configured)
 3. **RPC cookie auth enforced** — `rpcuser`/`rpcpassword` are forcibly removed; authentication uses `.cookie` or `rpcauth` credentials generated via the action
 4. **Disk-aware defaults** — pruning and txindex are auto-configured based on available disk space (< 900 GB enables pruning)
 5. **Pruned nodes use RPC proxy** — an intermediary `btc-rpc-proxy` container transparently fetches pruned blocks over the P2P network, allowing dependent services to request any block even from a pruned node
-6. **IPC is experimental** — enabling IPC switches the binary from `bitcoind` to `bitcoin-node` (multiprocess) and requires a restart
 7. **5-minute shutdown timeout** — SIGTERM allows 300 seconds for graceful database flush
 8. **Embedded I2P enabled by default** — a bundled `i2pd` daemon provides the I2P SAM proxy, with `i2pacceptincoming=true`; inbound I2P connections work out of the box with no user configuration. Can be disabled via Peer Settings
 
@@ -274,7 +272,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for build instructions and development wo
 
 ```yaml
 package_id: bitcoind
-image: custom Dockerfile (built from Bitcoin Core source)
+image: custom Dockerfile (copies upstream Guix-built binaries from bitcoincore.org)
 additional_images:
   - ghcr.io/start9labs/btc-rpc-proxy (pruned node RPC proxy)
   - python (Alpine, RPC credential generation)
@@ -298,7 +296,6 @@ actions:
   - peers-config
   - rpc-config
   - other-config
-  - ipc
   - generate-rpcuser
   - delete-rpcauth
   - reindex-blockchain

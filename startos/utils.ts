@@ -81,8 +81,6 @@ export type GetBlockchainInfo = {
   warnings: string
 }
 
-export const ipcSocketPath = `unix:${rootDir}/ipc/bitcoin-core.sock`
-
 /** RPC connection args shared by bitcoin-cli and shell-script wrappers. */
 export function rpcArgs(opts: { prune: boolean }): string[] {
   return [
