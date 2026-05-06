@@ -40,7 +40,12 @@ RUN url="https://bitcoincore.org/bin/bitcoin-core-${VERSION}" && \
             "${url}/SHA256SUMS" \
             "${url}/SHA256SUMS.asc"
 
-RUN gpg --keyserver hkps://keys.openpgp.org --recv-keys ${PINNED_FINGERPRINTS}
+COPY assets/release-keys/ /tmp/release-keys/
+RUN gpg --import /tmp/release-keys/*.asc && \
+    for fp in ${PINNED_FINGERPRINTS}; do \
+        gpg --list-keys "$fp" >/dev/null 2>&1 || { echo "MISSING PINNED KEY: $fp"; exit 1; }; \
+    done && \
+    rm -rf /tmp/release-keys
 
 # Verify SHA256SUMS.asc: any BADSIG from a pinned key fails the build,
 # and at least REQUIRED_QUORUM pinned signers must verify successfully.
