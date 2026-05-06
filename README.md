@@ -38,11 +38,11 @@ The reference implementation of the Bitcoin protocol. See the [upstream repo](ht
 
 | Property      | Value                                                                       |
 | ------------- | --------------------------------------------------------------------------- |
-| Image         | Custom Dockerfile (multi-stage Alpine build from Bitcoin Core source)       |
+| Image         | Debian-based Dockerfile that downloads upstream Guix-built binaries         |
 | Architectures | x86_64, aarch64, riscv64                                                    |
 | Entrypoint    | `bitcoind` (or `/opt/bitcoin/libexec/bitcoin-node` when IPC is enabled)     |
 
-The custom Dockerfile cross-compiles Bitcoin Core with ZMQ support (`-DWITH_ZMQ=ON`), IPC support (`-DENABLE_IPC=ON` via Cap'n Proto), and adds runtime utilities (curl, yq, jq, tini).
+The Dockerfile fetches the upstream Bitcoin Core release tarball from `bitcoincore.org`, verifies `SHA256SUMS.asc` against a pinned 5-of-7 quorum of release signers, and copies `bitcoind`, `bitcoin-cli`, and `libexec/bitcoin-node` into a slim Debian runtime alongside `curl`, `yq`, `jq`, `tini`, and `e2fsprogs`. ZMQ and IPC support come from the upstream binary.
 
 Three additional containers are used:
 
@@ -243,7 +243,7 @@ Where our permanent default overrides upstream, the input spec's `default` and t
 
 ## Limitations and Differences
 
-1. **Custom Docker image** — built from source with IPC and ZMQ support; adds runtime utilities not in upstream releases
+1. **Custom Docker image** — copies upstream Guix-built binaries (verified against a pinned 5-of-7 quorum of Bitcoin Core release signers) into a Debian runtime with curl, yq, jq, tini, and e2fsprogs
 2. **Tor proxy always configured** — the `-onion` flag is set to the StartOS Tor proxy on every start; Tor itself is a conditional dependency (required only when onion connectivity is configured)
 3. **RPC cookie auth enforced** — `rpcuser`/`rpcpassword` are forcibly removed; authentication uses `.cookie` or `rpcauth` credentials generated via the action
 4. **Disk-aware defaults** — pruning and txindex are auto-configured based on available disk space (< 900 GB enables pruning)
@@ -274,7 +274,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for build instructions and development wo
 
 ```yaml
 package_id: bitcoind
-image: custom Dockerfile (built from Bitcoin Core source)
+image: custom Dockerfile (copies upstream Guix-built binaries from bitcoincore.org)
 additional_images:
   - ghcr.io/start9labs/btc-rpc-proxy (pruned node RPC proxy)
   - python (Alpine, RPC credential generation)
