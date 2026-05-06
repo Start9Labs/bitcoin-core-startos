@@ -1,6 +1,5 @@
 import { T } from '@start9labs/start-sdk'
 import { bitcoinConfFile } from '../fileModels/bitcoin.conf'
-import { storeJson } from '../fileModels/store.json'
 import { i18n } from '../i18n'
 import { sdk } from '../sdk'
 import {
@@ -8,7 +7,6 @@ import {
   bitcoinMounts,
   GetBlockchainInfo,
   GetNetworkInfo,
-  ipcSocketPath,
 } from '../utils'
 
 export const runtimeInfo = sdk.Action.withoutInput(
@@ -71,12 +69,6 @@ export const runtimeInfo = sdk.Action.withoutInput(
     // return
     const value = [getConnections(networkInfoRaw)]
 
-    const store = await storeJson.read().const(effects)
-    if (store?.enableIpc === true) {
-      // Default to false if not set
-      value.push(getIpcSocketPath())
-    }
-
     value.push(getBlockchainInfo(blockchainInfoRaw))
 
     if (blockchainInfoRaw.softforks) {
@@ -104,19 +96,6 @@ function getConnections(networkInfoRaw: GetNetworkInfo): T.ActionResultMember {
   }
 }
 
-function getIpcSocketPath(): T.ActionResultMember {
-  return {
-    type: 'single',
-    name: i18n('IPC Socket Path'),
-    description: i18n(
-      'Unix socket path for IPC communication with Bitcoin Core. Other services can bind to this socket in their Docker configuration.',
-    ),
-    value: ipcSocketPath,
-    copyable: true,
-    masked: false,
-    qr: false,
-  }
-}
 
 function getBlockchainInfo(
   blockchainInfoRaw: GetBlockchainInfo,

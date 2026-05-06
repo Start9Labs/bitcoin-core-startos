@@ -11,7 +11,6 @@ import {
   bitcoinMounts,
   GetBlockchainInfo,
   i2pControlPort,
-  ipcSocketPath,
   rootDir,
   rpccookiefile,
   rpcPort,
@@ -70,7 +69,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
   // get i2pd.conf and watch for changes
   const i2pdConf = await i2pdConfFile.read().const(effects)
 
-  const { reindexBlockchain, reindexChainstate, enableIpc } = store
+  const { reindexBlockchain, reindexChainstate } = store
 
   // get Tor container IP (restarts Bitcoin if IP changes, needed for -onion= flag)
   const torIp = await sdk.getContainerIp(effects, { packageId: 'tor' }).const()
@@ -85,10 +84,6 @@ export const main = sdk.setupMain(async ({ effects }) => {
   }
 
   const bitcoinArgs: string[] = torIp ? [`-onion=${torIp}:9050`] : []
-
-  if (enableIpc) {
-    bitcoinArgs.push(`-ipcbind=${ipcSocketPath}`)
-  }
 
   if (reindexBlockchain) {
     bitcoinArgs.push('-reindex')
@@ -154,7 +149,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
     .addOneshot('nocow', {
       subcontainer: bitcoindSub,
       exec: {
-        command: ['chattr', '-R', '+C', '/.bitcoin'],
+        command: ['chattr', '-R', '+C', rootDir],
       },
       requires: [],
     })
@@ -175,7 +170,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
       subcontainer: bitcoindSub,
       exec: {
         command: [
-          enableIpc ? '/opt/bitcoin/libexec/bitcoin-node' : 'bitcoind',
+          'bitcoind',
           ...bitcoinArgs,
         ],
         sigtermTimeout: 300_000,

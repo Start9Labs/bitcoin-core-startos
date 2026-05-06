@@ -1,3 +1,0 @@
-[submodule "bitcoin"]
-	path = bitcoin
-	url = git@github.com:bitcoin/bitcoin.git
