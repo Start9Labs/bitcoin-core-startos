@@ -15,8 +15,8 @@ RUN apt-get update && \
 
 # Pinned Bitcoin Core release signers. Each of these has signed every
 # Core release in the 28.x–31.x range (with the exception of 0xB10C,
-# who signed 29.3, 30.2, 31.0 but not 28.3). Build requires REQUIRED_QUORUM
-# valid signatures from this set.
+# who signed 29.3, 30.2, 31.0 but not 28.3 or 28.4). Build requires
+# REQUIRED_QUORUM valid signatures from this set.
 ENV PINNED_FINGERPRINTS="\
 152812300785C96444D3334D17565732E08E5E41 \
 637DB1E23370F84AFF88CCE03152347D07DA627C \
