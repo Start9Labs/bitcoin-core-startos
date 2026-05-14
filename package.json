@@ -6,7 +6,7 @@
     "check": "tsc --noEmit"
   },
   "dependencies": {
-    "@start9labs/start-sdk": "1.3.3",
+    "@start9labs/start-sdk": "1.5.1",
     "diskusage": "^1.2.0"
   },
   "devDependencies": {

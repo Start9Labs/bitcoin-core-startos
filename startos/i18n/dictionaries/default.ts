@@ -11,6 +11,8 @@ const dict = {
   'RPC Proxy': 7,
   'The Bitcoin RPC Proxy is ready': 8,
   'The Bitcoin RPC Proxy is not ready': 9,
+  'Sync Complete': 10,
+  'The blockchain is fully synced.': 11,
 
   // interfaces.ts
   'RPC Interface': 100,
