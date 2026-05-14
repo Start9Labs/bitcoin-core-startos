@@ -15,7 +15,6 @@ export const manifest = setupManifest({
   packageRepo: 'https://github.com/Start9Labs/bitcoin-core-startos/tree/28.x',
   upstreamRepo: 'https://github.com/bitcoin/bitcoin',
   marketingUrl: 'https://bitcoincore.org/',
-  docsUrls: ['https://docs.start9.com/bitcoin-guides/'],
   description: { short, long },
   volumes: ['main', 'i2pd'],
   images: {
@@ -23,7 +22,7 @@ export const manifest = setupManifest({
       source: {
         dockerBuild: {
           buildArgs: {
-            VERSION: '28.3',
+            VERSION: '28.4',
           },
         },
       },
