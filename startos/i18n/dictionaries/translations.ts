@@ -12,6 +12,8 @@ export default {
     7: 'Proxy RPC',
     8: 'El proxy RPC de Bitcoin está listo',
     9: 'El proxy RPC de Bitcoin no está listo',
+    10: 'Sincronización completa',
+    11: 'La blockchain está completamente sincronizada.',
 
     // interfaces.ts
     100: 'Interfaz RPC',
@@ -278,6 +280,8 @@ export default {
     7: 'RPC-Proxy',
     8: 'Der Bitcoin RPC-Proxy ist bereit',
     9: 'Der Bitcoin RPC-Proxy ist nicht bereit',
+    10: 'Synchronisierung abgeschlossen',
+    11: 'Die Blockchain ist vollständig synchronisiert.',
 
     // interfaces.ts
     100: 'RPC-Schnittstelle',
@@ -544,6 +548,8 @@ export default {
     7: 'Proxy RPC',
     8: 'Proxy RPC Bitcoin jest gotowy',
     9: 'Proxy RPC Bitcoin nie jest gotowy',
+    10: 'Synchronizacja zakończona',
+    11: 'Łańcuch bloków jest w pełni zsynchronizowany.',
 
     // interfaces.ts
     100: 'Interfejs RPC',
@@ -810,6 +816,8 @@ export default {
     7: 'Proxy RPC',
     8: 'Le proxy RPC Bitcoin est prêt',
     9: "Le proxy RPC Bitcoin n'est pas prêt",
+    10: 'Synchronisation terminée',
+    11: 'La blockchain est entièrement synchronisée.',
 
     // interfaces.ts
     100: 'Interface RPC',
