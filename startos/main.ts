@@ -255,6 +255,11 @@ export const main = sdk.setupMain(async ({ effects }) => {
       exec: {
         fn: async () => {
           if (!store.fullySynced) {
+            await sdk.notification.create(effects, {
+              level: 'success',
+              title: i18n('Sync Complete'),
+              message: i18n('The blockchain is fully synced.'),
+            })
             await storeJson.merge(effects, {
               fullySynced: true,
               snapshotInUse: false,
