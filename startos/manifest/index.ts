@@ -16,7 +16,6 @@ export const manifest = setupManifest({
     'https://github.com/Start9Labs/bitcoin-core-startos/tree/30.x',
   upstreamRepo: 'https://github.com/bitcoin/bitcoin',
   marketingUrl: 'https://bitcoincore.org/',
-  docsUrls: ['https://docs.start9.com/bitcoin-guides/'],
   description: { short, long },
   volumes: ['main', 'i2pd'],
   images: {
