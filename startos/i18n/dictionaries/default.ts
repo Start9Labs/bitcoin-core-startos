@@ -245,6 +245,7 @@ const dict = {
   'Enable IPC': 1736,
   'Enable inter-process communication (IPC) via Unix socket. This allows other services to communicate with Bitcoin Core using a high-performance local socket connection. The socket path will be displayed in Runtime Information.': 1737,
   'IPC is an experimental feature. Only enable this if you know what you are doing with the IPC socket. An example use case would be Stratum v2 mining services.': 1738,
+  'Changing this value will automatically restart the service.': 1742,
   'Other Settings': 1739,
   'Edit more values in bitcoin.conf': 1740,
 

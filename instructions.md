@@ -58,11 +58,11 @@ Some options are fixed by the package and not exposed: RPC cookie authentication
 
 - **Download UTXO Snapshot (assumeutxo)** — fast-sync from a recent UTXO snapshot; available while running, hidden once fully synced.
 - **Runtime Information** — connection count, block height, sync progress, soft-fork status, and (when enabled) the IPC socket path.
-- **Enable IPC** — toggle Bitcoin Core's experimental multiprocess IPC socket. Turning it on switches the running binary and requires a restart; leave it off unless an integration you're using calls for it.
+- **Enable IPC** — toggle Bitcoin Core's experimental multiprocess IPC socket. Toggling switches the running binary and the action restarts Bitcoin Core to apply the change; leave it off unless an integration you're using calls for it.
 
 ## Limitations
 
 - **Blockchain data is not backed up.** Backups cover `bitcoin.conf`, `store.json`, wallets, and `peers.dat` — block and chainstate data re-sync after a restore.
 - **Shutdown can take up to 5 minutes** while the database flushes; let it finish rather than force-stopping.
-- **IPC is experimental** — enabling it requires a restart and is intended for advanced integrations.
+- **IPC is experimental** — toggling it restarts Bitcoin Core, and it's intended for advanced integrations.
 - **Some i2pd tuning isn't in the UI** (log level, bandwidth class, transit limits, web console) — edit `i2pd.conf` directly if you need to change those.
