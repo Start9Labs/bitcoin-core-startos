@@ -18,6 +18,8 @@ import {
   rpcPortPruned,
 } from './utils'
 
+const ipcSocketFile = `${rootDir}/ipc/bitcoin-core.sock`
+
 // JSON-RPC helper for i2pd's I2PControl API (uses self-signed cert)
 const i2pControlRpc = (method: string, params: Record<string, unknown>) =>
   new Promise<any>((resolve, reject) => {
@@ -154,7 +156,11 @@ export const main = sdk.setupMain(async ({ effects }) => {
     .addOneshot('nocow', {
       subcontainer: bitcoindSub,
       exec: {
-        command: ['chattr', '-R', '+C', rootDir],
+        command: [
+          'sh',
+          '-c',
+          `rm -f ${ipcSocketFile}; find ${rootDir} \\( -type d -o -type f \\) -exec chattr +C {} +`,
+        ],
       },
       requires: [],
     })
