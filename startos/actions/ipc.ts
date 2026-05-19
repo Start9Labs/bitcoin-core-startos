@@ -4,6 +4,11 @@ import { sdk } from '../sdk'
 
 const { Value } = sdk
 
+const ipcDescription = () =>
+  `${i18n(
+    'Enable inter-process communication (IPC) via Unix socket. This allows other services to communicate with Bitcoin Core using a high-performance local socket connection. The socket path will be displayed in Runtime Information.',
+  )} ${i18n('Changing this value will automatically restart the service.')}`
+
 export const ipc = sdk.Action.withInput(
   // id
   'ipc',
@@ -11,9 +16,7 @@ export const ipc = sdk.Action.withInput(
   // metadata
   async ({ effects }) => ({
     name: i18n('Enable IPC'),
-    description: i18n(
-      'Enable inter-process communication (IPC) via Unix socket. This allows other services to communicate with Bitcoin Core using a high-performance local socket connection. The socket path will be displayed in Runtime Information.',
-    ),
+    description: ipcDescription(),
     warning: null,
     allowedStatuses: 'any',
     group: null,
@@ -26,9 +29,7 @@ export const ipc = sdk.Action.withInput(
       const ipcEnabled = await storeJson.read((s) => s.enableIpc).once()
       return {
         name: i18n('Enable IPC'),
-        description: i18n(
-          'Enable inter-process communication (IPC) via Unix socket. This allows other services to communicate with Bitcoin Core using a high-performance local socket connection. The socket path will be displayed in Runtime Information.',
-        ),
+        description: ipcDescription(),
         warning: ipcEnabled
           ? null
           : i18n(
@@ -46,6 +47,16 @@ export const ipc = sdk.Action.withInput(
 
   // the execution function
   async ({ effects, input }) => {
+    const prev = (await storeJson.read((s) => s.enableIpc).once()) ?? false
     await storeJson.merge(effects, { enableIpc: input.enableIpc })
+
+    if (prev === input.enableIpc) return
+
+    const status = await sdk
+      .getStatus(effects, { packageId: 'bitcoind' })
+      .once()
+    if (status?.desired.main === 'running') {
+      await sdk.restart(effects)
+    }
   },
 )
