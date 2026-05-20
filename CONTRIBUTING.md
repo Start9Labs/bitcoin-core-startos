@@ -1,39 +1,43 @@
 # Contributing
 
-This repo packages [Bitcoin Core](https://github.com/bitcoin/bitcoin) for StartOS. It ships one branch per supported Bitcoin Core major version — `28.x`, `29.x`, `30.x`, `31.x` — with `31.x` as the primary/default. Target the branch for the major version you're changing; structural changes (SDK bumps, shared scaffolding, doc rewrites) generally need to be applied to every branch.
+## Keep these in sync
 
-## Documentation — keep it in sync
+- **[`README.md`](./README.md)** — what this package is and how it's built (image, volumes, interfaces). Technical reference for developers and AI assistants.
+- **[`instructions.md`](./instructions.md)** — the user-facing instructions packed into the `.s9pk` and shown on the **Instructions** tab in StartOS, for the person running the service.
+- **[`TODO.md`](./TODO.md)** — pending work on this package.
 
-- **`README.md`** — what this package is and how it's built (image, volumes, interfaces, actions, defaults). For developers and AI assistants.
-- **`instructions.md`** — the user-facing instructions packed into the `.s9pk` and shown on the **Instructions** tab in StartOS, for the person running the node.
-- **`CONTRIBUTING.md`** — this file.
-- **`CLAUDE.md`** — operating rules for AI developers working in this repo.
+**Read all three before starting any work.** Any code change that affects user-visible behavior must update `README.md` and `instructions.md` in the same change; add to `TODO.md` when you defer work, and remove items when complete. Content rules: [Writing READMEs](https://docs.start9.com/packaging/writing-readmes.html), [Writing Instructions](https://docs.start9.com/packaging/writing-instructions.html).
 
-**Any code change that warrants it must update `README.md` and `instructions.md` in the same change** — a new or renamed action, an added or removed volume / port / interface / dependency, a changed default, a new limitation, any altered user-visible behavior. Don't defer: a package that ships with a stale README or stale instructions is not done, even if the code is perfect. Content rules live in the packaging guide: [Writing READMEs](https://docs.start9.com/packaging/writing-readmes.html) and [Writing Service Instructions](https://docs.start9.com/packaging/writing-instructions.html).
+## Environment setup
+
+See [Environment Setup](https://docs.start9.com/packaging/environment-setup.html)
 
 ## Building
-
-See the [StartOS Packaging Guide](https://docs.start9.com/packaging/) for environment setup, then:
 
 ```bash
 npm ci    # install dependencies
 make      # build the universal .s9pk
 ```
 
-The `bitcoind` image is built locally from `Dockerfile`: it downloads the upstream Guix-built release tarball from `bitcoincore.org`, verifies `SHA256SUMS.asc` against a pinned 5-of-7 quorum of Bitcoin Core release signers, and copies the binaries into a slim Debian runtime.
+For a complete list of build options, see [Makefile](https://docs.start9.com/packaging/makefile.html).
 
-## Updating the upstream Bitcoin Core version
+## Updating the upstream version
 
-1. Bump `VERSION` in `startos/manifest/index.ts` under `images.bitcoind.source.dockerBuild.buildArgs`.
-2. Rename the version file under `startos/versions/` to the new version string and update its `version` and `releaseNotes`. A *new* version file is only needed when the bump carries an `up`/`down` migration, or when you want the old release notes preserved in git history — see [Versions](https://docs.start9.com/packaging/versions.html).
-3. If upstream rotated release signers, update `PINNED_FINGERPRINTS` in `Dockerfile` and refresh the keys in `assets/release-keys/`.
-4. Rebuild (`make`), sideload the `.s9pk`, and confirm the node starts and syncs.
-5. Review `README.md` and `instructions.md` for anything the bump changed.
+1. Apply the upstream bump per [UPDATING.md](./UPDATING.md).
+2. Update `version` and `releaseNotes` in the file under `startos/versions/`, renaming it to the new version string. A _new_ version file is only needed when the bump requires a migration, or when you want the old release notes preserved in git history — see [Versions](https://docs.start9.com/packaging/versions.html).
 
-> All four major-version branches share the same StartOS `:N` revision suffix — when you bump it on one branch, bump it on the others too.
+## CI/CD
+
+Three workflows under `.github/workflows/` wrap reusable workflows in [`start9labs/shared-workflows`](https://github.com/Start9Labs/shared-workflows):
+
+- **`build.yml`** — on PR, builds the `.s9pk` and uploads per-arch artifacts for sideload testing.
+- **`release.yml`** — on `v*` tag, builds per arch and publishes to the test registry.
+- **`tagAndRelease.yml`** — on push to `master`, tags `v<version>` and runs `release.yml`, skipping if already in production.
+
+Promotion to `beta` and `prod` is a separate, manual step.
 
 ## How to contribute
 
-1. Fork the repository and create a branch from the major-version branch you're targeting.
+1. Fork the repository and create a branch from `master`.
 2. Make your changes — including the doc updates above.
-3. Open a pull request to that branch.
+3. Open a pull request to `master`.
