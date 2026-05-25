@@ -259,6 +259,9 @@ export const main = sdk.setupMain(async ({ effects }) => {
               fullySynced: true,
               snapshotInUse: false,
             })
+            // Keep the in-memory guard in sync so a sync-progress dip and
+            // recovery within this run doesn't re-fire the notification.
+            store.fullySynced = true
             // Reduce dbcache and dbbatchsize after initial sync to free RAM
             await bitcoinConfFile.merge(effects, {
               dbcache: undefined,
