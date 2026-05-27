@@ -1,7 +1,7 @@
 import { VersionInfo } from '@start9labs/start-sdk'
 import { rm } from 'fs/promises'
 
-export const v_31_0_14 = VersionInfo.of({
+export const current = VersionInfo.of({
   version: '31.0:14',
   releaseNotes: {
     en_US:
