@@ -101,7 +101,7 @@ Bitcoin Core is configured through **StartOS actions** that write to `bitcoin.co
 | Action               | Settings                                                                                                                                                                                         |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Mempool Settings** | persistmempool, maxmempool, mempoolexpiry, permitbaremultisig, OP_RETURN (datacarrier/datacarriersize), blocksonly                                                                               |
-| **Peer Settings**    | onlynet (ipv4/ipv6/onion/i2p/cjdns), BIP324 v2transport, I2P SAM proxy (enabled/disabled), connect/addnode peers                                                                                |
+| **Peer Settings**    | onlynet (ipv4/ipv6/onion/i2p), BIP324 v2transport, I2P SAM proxy (enabled/disabled), connect/addnode peers, maxconnections                                                                       |
 | **RPC Settings**     | rpcservertimeout, rpcthreads, rpcworkqueue                                                                                                                                                       |
 | **Other Settings**   | ZMQ, txindex, blocknotify, coinstatsindex, wallet settings (enable/avoidpartialspends/discardfee), pruning, dbcache, dbbatchsize, BIP158/BIP157 block filters, bloom filters |
 
@@ -114,7 +114,7 @@ Settings **not** managed by StartOS (hardcoded):
 | `bind`          | `0.0.0.0:58333`      | Internal peer listening port       |
 | `listen`        | `1`                  | Always accepting connections       |
 | `assumevalid`   | Hardcoded block hash | Performance optimization           |
-| `-onion`        | `<osIp>:9050`        | StartOS Tor proxy (set at runtime) |
+| `-onion`        | `<torIp>:9050`       | StartOS Tor proxy (set at runtime) |
 
 ### Pruned Node Architecture
 
@@ -252,6 +252,7 @@ Where our permanent default overrides upstream, the input spec's `default` and t
 6. **IPC is experimental** — enabling IPC switches the binary from `bitcoind` to `bitcoin-node` (multiprocess); the **Enable IPC** action restarts Bitcoin Core to apply the change
 7. **5-minute shutdown timeout** — SIGTERM allows 300 seconds for graceful database flush
 8. **Embedded I2P enabled by default** — a bundled `i2pd` daemon provides the I2P SAM proxy, with `i2pacceptincoming=true`; inbound I2P connections work out of the box with no user configuration. Can be disabled via Peer Settings
+9. **CJDNS not supported** — StartOS provides no CJDNS transport, so `cjdns` is not offered as an `onlynet` option and CJDNS peer connectivity is unavailable; the other three Bitcoin networks (clearnet, Tor, I2P) are fully supported
 
 ## What Is Unchanged from Upstream
 
