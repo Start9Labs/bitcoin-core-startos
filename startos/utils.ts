@@ -3,6 +3,7 @@ import { sdk } from './sdk'
 export const rpcInterfaceId = 'rpc'
 export const peerInterfaceId = 'peer'
 export const zmqInterfaceId = 'zmq'
+export const zmqTxInterfaceId = 'zmq-tx'
 
 export const zmqPortBlock = 28332
 export const zmqPortTransaction = 28333

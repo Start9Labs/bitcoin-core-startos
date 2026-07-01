@@ -9,7 +9,9 @@ import {
   rpcInterfaceId,
   rpcPort,
   zmqInterfaceId,
+  zmqTxInterfaceId,
   zmqPortBlock,
+  zmqPortTransaction,
 } from './utils'
 import { i18n } from './i18n'
 
@@ -64,20 +66,23 @@ export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
 
   receipts.push(peerReceipt)
 
-  // ZMQ (conditional)
+  // ZMQ (conditional). Block (28332) and transaction (28333) are exposed as
+  // separate interfaces so a dependent (e.g. LND) can resolve each one's bridge
+  // address independently — bitcoind publishes the two on distinct ports.
   if (bitcoinConf.zmqEnabled) {
     const zmqMulti = sdk.MultiHost.of(effects, 'zmq')
-    const zmqMultiOrigin = await zmqMulti.bindPort(zmqPortBlock, {
+
+    const zmqBlockOrigin = await zmqMulti.bindPort(zmqPortBlock, {
       preferredExternalPort: zmqPortBlock,
       addSsl: null,
       secure: { ssl: false },
       protocol: null,
     })
-    const zmq = sdk.createInterface(effects, {
+    const zmqBlock = sdk.createInterface(effects, {
       name: i18n('ZeroMQ Interface'),
       id: zmqInterfaceId,
       description: i18n(
-        'Streams real-time Bitcoin block and transaction notifications (hashes and raw data)',
+        'Streams real-time Bitcoin block notifications (hashes and raw data)',
       ),
       type: 'api',
       masked: false,
@@ -86,9 +91,28 @@ export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
       path: '',
       query: {},
     })
-    const zmqReceipt = await zmqMultiOrigin.export([zmq])
+    receipts.push(await zmqBlockOrigin.export([zmqBlock]))
 
-    receipts.push(zmqReceipt)
+    const zmqTxOrigin = await zmqMulti.bindPort(zmqPortTransaction, {
+      preferredExternalPort: zmqPortTransaction,
+      addSsl: null,
+      secure: { ssl: false },
+      protocol: null,
+    })
+    const zmqTx = sdk.createInterface(effects, {
+      name: i18n('ZeroMQ Transaction Interface'),
+      id: zmqTxInterfaceId,
+      description: i18n(
+        'Streams real-time Bitcoin transaction notifications (hashes, raw data, and sequence)',
+      ),
+      type: 'api',
+      masked: false,
+      schemeOverride: null,
+      username: null,
+      path: '',
+      query: {},
+    })
+    receipts.push(await zmqTxOrigin.export([zmqTx]))
   }
 
   // I2P (conditional)

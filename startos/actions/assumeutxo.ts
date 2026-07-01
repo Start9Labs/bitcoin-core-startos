@@ -1,12 +1,12 @@
 import { sdk } from '../sdk'
 import { bitcoinConfFile } from '../fileModels/bitcoin.conf'
 import { bitcoinCliArgs, bitcoinMounts, rootDir } from '../utils'
-import { Value } from '@start9labs/start-sdk/base/lib/actions/input/builder'
 import * as fs from 'fs/promises'
 import { SubContainer } from '@start9labs/start-sdk'
 import { manifest } from '../manifest'
 import { storeJson } from '../fileModels/store.json'
 import { i18n } from '../i18n'
+const { Value } = sdk
 
 export const snapshotTempFile = `/tmp/snap/snapshot`
 const block_840_000 =

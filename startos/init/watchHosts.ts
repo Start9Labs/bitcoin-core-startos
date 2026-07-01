@@ -1,15 +1,21 @@
+import { utils } from '@start9labs/start-sdk'
 import { bitcoinConfFile } from '../fileModels/bitcoin.conf'
 import { sdk } from '../sdk'
 import { peerInterfaceId } from '../utils'
 
 export const watchHosts = sdk.setupOnInit(async (effects, kind) => {
-  const publicInfo = await sdk.serviceInterface
-    .getOwn(effects, peerInterfaceId, (i) =>
-      i?.addressInfo?.public.filter({
-        exclude: { kind: 'domain' },
-      }),
-    )
-    .const()
+  const host = await sdk.host.getOwn(effects, peerInterfaceId).const()
+  const peerIface = host
+    ? Object.values(host.bindings)
+        .flatMap((b) => Object.values(b.interfaces))
+        .find((i) => i.id === peerInterfaceId)
+    : undefined
+  const publicInfo =
+    host && peerIface
+      ? utils
+          .filledAddress(host, peerIface.addressInfo)
+          .public.filter({ exclude: { kind: 'domain' } })
+      : undefined
 
   if (!publicInfo) return
 

@@ -1,18 +1,13 @@
 import { IMPOSSIBLE, VersionInfo } from '@start9labs/start-sdk'
 
 export const current = VersionInfo.of({
-  version: '28.4:12',
+  version: '28.4:13',
   releaseNotes: {
-    en_US:
-      'Fixes repeated "Sync Complete" notifications that could fire after the initial sync.',
-    es_ES:
-      'Corrige notificaciones repetidas de "Sincronización completa" que podían aparecer tras la sincronización inicial.',
-    de_DE:
-      'Behebt wiederholte „Synchronisierung abgeschlossen"-Benachrichtigungen, die nach der ersten Synchronisierung auftreten konnten.',
-    pl_PL:
-      'Naprawia powtarzające się powiadomienia „Synchronizacja zakończona", które mogły pojawiać się po początkowej synchronizacji.',
-    fr_FR:
-      'Corrige les notifications « Synchronisation terminée » répétées qui pouvaient apparaître après la synchronisation initiale.',
+    en_US: 'Internal updates (start-sdk 2.0.x)',
+    es_ES: 'Actualizaciones internas (start-sdk 2.0.x)',
+    de_DE: 'Interne Aktualisierungen (start-sdk 2.0.x)',
+    pl_PL: 'Aktualizacje wewnętrzne (start-sdk 2.0.x)',
+    fr_FR: 'Mises à jour internes (start-sdk 2.0.x)',
   },
   migrations: {
     up: async ({ effects }) => {},
