@@ -1,8 +1,16 @@
 import { sdk } from './sdk'
 
+// Host ids (the `sdk.MultiHost.of` groups) — distinct from the interface ids
+// exported on them. Used for `sdk.host.getOwn`/`get` lookups.
+export const rpcHostId = 'rpc'
+export const peerHostId = 'peer'
+export const zmqHostId = 'zmq'
+export const i2pConsoleHostId = 'i2p-console'
+
+// Interface ids (the exported service interfaces on the hosts above).
 export const rpcInterfaceId = 'rpc'
 export const peerInterfaceId = 'peer'
-export const zmqInterfaceId = 'zmq'
+export const zmqBlockInterfaceId = 'zmq-block'
 export const zmqTxInterfaceId = 'zmq-tx'
 
 export const zmqPortBlock = 28332

@@ -93,7 +93,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
     await storeJson.merge(effects, { reindexChainstate: false })
   }
 
-  const bitcoindSub = await sdk.SubContainer.of(
+  const bitcoindSub = await sdk.SubContainer.eager(
     effects,
     { imageId: 'bitcoind' },
     bitcoinMounts,
@@ -129,7 +129,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
   const runI2pd = i2pEnabled && (!onlynetActive || onlynetList.includes('i2p'))
 
   const i2pdSub = runI2pd
-    ? await sdk.SubContainer.of(
+    ? await sdk.SubContainer.eager(
         effects,
         { imageId: 'i2pd' },
         sdk.Mounts.of().mountVolume({
@@ -403,7 +403,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
   return withClearnet.addDaemon('proxy', async () => {
     if (!bitcoinConf.prune) return null
 
-    const subcontainer = await sdk.SubContainer.of(
+    const subcontainer = await sdk.SubContainer.eager(
       effects,
       { imageId: 'proxy' },
       bitcoinMounts,

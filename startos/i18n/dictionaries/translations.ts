@@ -16,15 +16,15 @@ export default {
     11: 'La blockchain está completamente sincronizada.',
 
     // interfaces.ts
-    100: 'Interfaz RPC',
+    100: 'RPC',
     101: 'Escucha comandos JSON-RPC',
-    102: 'Interfaz de pares',
+    102: 'Par',
     103: 'Escucha conexiones entrantes de pares en la red Bitcoin',
-    104: 'Interfaz ZeroMQ',
+    104: 'Bloque ZeroMQ',
     105: 'Consola del daemon I2P',
     106: 'Interfaz para acceder a la consola del daemon I2P integrado',
     107: 'Transmite notificaciones en tiempo real de bloques y transacciones de Bitcoin (hashes y datos en bruto)',
-    108: 'Interfaz de transacciones ZeroMQ',
+    108: 'Transacción ZeroMQ',
     109: 'Transmite notificaciones en tiempo real de transacciones de Bitcoin (hashes, datos en bruto y secuencia)',
 
     // actions/generateRpcUser.ts
@@ -286,15 +286,15 @@ export default {
     11: 'Die Blockchain ist vollständig synchronisiert.',
 
     // interfaces.ts
-    100: 'RPC-Schnittstelle',
+    100: 'RPC',
     101: 'Wartet auf JSON-RPC-Befehle',
-    102: 'Peer-Schnittstelle',
+    102: 'Peer',
     103: 'Wartet auf eingehende Verbindungen von Peers im Bitcoin-Netzwerk',
-    104: 'ZeroMQ-Schnittstelle',
+    104: 'ZeroMQ-Block',
     105: 'I2P-Daemon-Konsole',
     106: 'Schnittstelle zum Zugriff auf die eingebettete I2P-Daemon-Konsole',
     107: 'Überträgt Echtzeit-Benachrichtigungen über Bitcoin-Blöcke und -Transaktionen (Hashes und Rohdaten)',
-    108: 'ZeroMQ-Transaktionsschnittstelle',
+    108: 'ZeroMQ-Transaktion',
     109: 'Überträgt Echtzeit-Benachrichtigungen über Bitcoin-Transaktionen (Hashes, Rohdaten und Sequenz)',
 
     // actions/generateRpcUser.ts
@@ -556,15 +556,15 @@ export default {
     11: 'Łańcuch bloków jest w pełni zsynchronizowany.',
 
     // interfaces.ts
-    100: 'Interfejs RPC',
+    100: 'RPC',
     101: 'Nasłuchuje poleceń JSON-RPC',
-    102: 'Interfejs peerów',
+    102: 'Peer',
     103: 'Nasłuchuje przychodzących połączeń od peerów w sieci Bitcoin',
-    104: 'Interfejs ZeroMQ',
+    104: 'Blok ZeroMQ',
     105: 'Konsola daemona I2P',
     106: 'Interfejs dostępu do konsoli wbudowanego daemona I2P',
     107: 'Strumieniuje powiadomienia w czasie rzeczywistym o blokach i transakcjach Bitcoin (hashe i dane surowe)',
-    108: 'Interfejs transakcji ZeroMQ',
+    108: 'Transakcja ZeroMQ',
     109: 'Strumieniuje powiadomienia w czasie rzeczywistym o transakcjach Bitcoin (hashe, dane surowe i sekwencja)',
 
     // actions/generateRpcUser.ts
@@ -826,15 +826,15 @@ export default {
     11: 'La blockchain est entièrement synchronisée.',
 
     // interfaces.ts
-    100: 'Interface RPC',
+    100: 'RPC',
     101: 'Écoute les commandes JSON-RPC',
-    102: 'Interface de pairs',
+    102: 'Pair',
     103: 'Écoute les connexions entrantes des pairs sur le réseau Bitcoin',
-    104: 'Interface ZeroMQ',
+    104: 'Bloc ZeroMQ',
     105: 'Console du démon I2P',
     106: 'Interface pour accéder à la console du démon I2P intégré',
     107: 'Diffuse en temps réel des notifications de blocs et de transactions Bitcoin (hashs et données brutes)',
-    108: 'Interface de transactions ZeroMQ',
+    108: 'Transaction ZeroMQ',
     109: 'Diffuse en temps réel des notifications de transactions Bitcoin (hashs, données brutes et séquence)',
 
     // actions/generateRpcUser.ts
