@@ -1,16 +1,16 @@
-import { Effects } from '@start9labs/start-sdk/base/lib/Effects'
+import { T } from '@start9labs/start-sdk'
 import { bitcoinConfFile } from '../fileModels/bitcoin.conf'
 import { sdk } from '../sdk'
 import { i18n } from '../i18n'
 const { InputSpec, Value } = sdk
 
-export async function getRpcUsers(effects: Effects) {
+export async function getRpcUsers(effects: T.Effects) {
   const rpcauth = await getRpcAuth(effects)
   if (!rpcauth) return
   return [rpcauth].flat().filter((e): e is string => !!e).map((e) => e.split(':', 2)[0])
 }
 
-export async function getRpcAuth(effects: Effects) {
+export async function getRpcAuth(effects: T.Effects) {
   return (await bitcoinConfFile.read().const(effects))?.raw?.rpcauth
 }
 

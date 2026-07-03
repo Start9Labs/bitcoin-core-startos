@@ -1,12 +1,12 @@
 import { sdk } from '../sdk'
 import { bitcoinConfFile } from '../fileModels/bitcoin.conf'
 import { bitcoinCliArgs, bitcoinMounts, rootDir } from '../utils'
-import { Value } from '@start9labs/start-sdk/base/lib/actions/input/builder'
 import * as fs from 'fs/promises'
 import { SubContainer } from '@start9labs/start-sdk'
 import { manifest } from '../manifest'
 import { storeJson } from '../fileModels/store.json'
 import { i18n } from '../i18n'
+const { Value } = sdk
 
 export const snapshotTempFile = `/tmp/snap/snapshot`
 const block_840_000 =
@@ -68,7 +68,7 @@ export const assumeutxo = sdk.Action.withInput(
     if (assumeutxoSubc || assumeutxoPromise)
       throw new Error('already in progress')
 
-    assumeutxoSubc = await sdk.SubContainer.of(
+    assumeutxoSubc = await sdk.SubContainer.eager(
       effects,
       { imageId: 'bitcoind' },
       bitcoinMounts.mountVolume({
@@ -84,8 +84,9 @@ export const assumeutxo = sdk.Action.withInput(
       const conf = (await bitcoinConfFile.read().once())!
 
       try {
-        await fs.mkdir(`${assumeutxoSubc.rootfs}/tmp/snap`, { recursive: true })
-        await fs.rm(`${assumeutxoSubc.rootfs}${snapshotTempFile}`, {
+        const rootfs = await assumeutxoSubc.rootfs
+        await fs.mkdir(`${rootfs}/tmp/snap`, { recursive: true })
+        await fs.rm(`${rootfs}${snapshotTempFile}`, {
           force: true,
         })
 
