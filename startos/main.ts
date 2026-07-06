@@ -180,10 +180,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
     .addDaemon('bitcoind', {
       subcontainer: bitcoindSub,
       exec: {
-        command: [
-          'bitcoind',
-          ...bitcoinArgs,
-        ],
+        command: ['bitcoind', ...bitcoinArgs],
         sigtermTimeout: 300_000,
       },
       ready: {
