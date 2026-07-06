@@ -1,6 +1,7 @@
 import { TOML } from '@start9labs/start-sdk'
 import { access, rm, writeFile } from 'fs/promises'
 import { request } from 'node:https'
+import { socksHostId, socksPort } from 'tor-startos/startos/utils'
 import { bitcoinConfFile } from './fileModels/bitcoin.conf'
 import { i2pdConfFile } from './fileModels/i2pd.conf'
 import { storeJson } from './fileModels/store.json'
@@ -71,19 +72,29 @@ export const main = sdk.setupMain(async ({ effects }) => {
 
   const { reindexBlockchain, reindexChainstate } = store
 
-  // get Tor container IP (restarts Bitcoin if IP changes, needed for -onion= flag)
-  const torIp = await sdk.getContainerIp(effects, { packageId: 'tor' }).const()
+  // Tor SOCKS over the bridge: a startup snapshot (never .const — Bitcoin must
+  // not restart on Tor churn), falling back to 9050 when Tor isn't installed.
+  // A dead bridge address is just connection-refused, so -onion is always safe.
+  const osIp = await sdk.getOsIp(effects)
+  const torSocks =
+    (await sdk.host
+      .get(effects, { packageId: 'tor', hostId: socksHostId }, (host) =>
+        host
+          ? `${osIp}:${host.bindings[socksPort]?.net.assignedPort ?? socksPort}`
+          : null,
+      )
+      .once()) ?? `${osIp}:${socksPort}`
 
-  // track Tor running status dynamically for health check (no restart needed)
+  // track Tor install/run state dynamically for the health check (no restart)
+  let torInstalled = false
   let torRunning = false
-  if (torIp) {
-    sdk.getStatus(effects, { packageId: 'tor' }).onChange((status) => {
-      torRunning = status?.desired.main === 'running'
-      return { cancel: false }
-    })
-  }
+  sdk.getStatus(effects, { packageId: 'tor' }).onChange((status) => {
+    torInstalled = status !== null
+    torRunning = status?.desired.main === 'running'
+    return { cancel: false }
+  })
 
-  const bitcoinArgs: string[] = torIp ? [`-onion=${torIp}:9050`] : []
+  const bitcoinArgs: string[] = [`-onion=${torSocks}`]
 
   if (reindexBlockchain) {
     bitcoinArgs.push('-reindex')
@@ -357,7 +368,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
     ready: {
       display: 'Tor',
       fn: () => {
-        if (!torIp) {
+        if (!torInstalled) {
           return { result: 'disabled', message: i18n('Tor is not installed') }
         }
         if (!torRunning) {
@@ -418,12 +429,8 @@ export const main = sdk.setupMain(async ({ effects }) => {
         bind_address: '0.0.0.0',
         bind_port: rpcPort,
         cookie_file: rpcCookiePath,
-        ...(torIp
-          ? {
-              tor_proxy: `${torIp}:9050`,
-              tor_only: onlynetList.length === 1 && onlynetList[0] === 'onion',
-            }
-          : {}),
+        tor_proxy: torSocks,
+        tor_only: onlynetList.length === 1 && onlynetList[0] === 'onion',
         passthrough_rpcauth: `${rootDir}/bitcoin.conf`,
         passthrough_rpccookie: rpcCookiePath,
       }),
