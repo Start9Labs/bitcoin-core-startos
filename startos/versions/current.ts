@@ -2,18 +2,53 @@ import { VersionInfo } from '@start9labs/start-sdk'
 import { rm } from 'fs/promises'
 
 export const current = VersionInfo.of({
-  version: '30.2:13',
+  version: '30.3:0',
   releaseNotes: {
-    en_US:
-      'Internal updates (start-sdk 2.0.x). Bitcoin now reaches Tor at a fixed internal bridge address and no longer restarts when Tor is installed, updated, or removed.',
-    es_ES:
-      'Actualizaciones internas (start-sdk 2.0.x). Bitcoin ahora alcanza Tor en una dirección fija del puente interno y ya no se reinicia cuando Tor se instala, actualiza o elimina.',
-    de_DE:
-      'Interne Aktualisierungen (start-sdk 2.0.x). Bitcoin erreicht Tor jetzt über eine feste interne Bridge-Adresse und startet nicht mehr neu, wenn Tor installiert, aktualisiert oder entfernt wird.',
-    pl_PL:
-      'Aktualizacje wewnętrzne (start-sdk 2.0.x). Bitcoin łączy się teraz z Torem pod stałym adresem wewnętrznego mostka i nie restartuje się już przy instalacji, aktualizacji ani usunięciu Tora.',
-    fr_FR:
-      'Mises à jour internes (start-sdk 2.0.x). Bitcoin atteint désormais Tor à une adresse fixe du pont interne et ne redémarre plus lorsque Tor est installé, mis à jour ou supprimé.',
+    en_US: `Updated Bitcoin Core to 30.3.
+
+- Fixes an issue where the chainstate database repeatedly rewrote large portions of itself, causing excessive disk reads and writes during normal operation.
+- Fixes several wallet bugs: \`removeprunedfunds\` with conflicting transactions, a crash in fee bumping when the combined bump fee is unavailable, and an amount incorrectly computed as a boolean in coin selection.
+- Improves wallet input size estimation and corrects the lifetime of precomputed transaction data during validation.
+- Fixes PSBT and Miniscript edge cases, including MuSig2 pubkey validation.
+- Includes updated translations.
+
+Full release notes: https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-30.3.md`,
+    es_ES: `Actualiza Bitcoin Core a 30.3.
+
+- Corrige un problema por el cual la base de datos del chainstate reescribía repetidamente grandes partes de sí misma, provocando lecturas y escrituras de disco excesivas durante el funcionamiento normal.
+- Corrige varios errores del monedero: \`removeprunedfunds\` con transacciones en conflicto, un fallo al aumentar la comisión cuando la comisión combinada no está disponible, y un importe calculado incorrectamente como booleano en la selección de monedas.
+- Mejora la estimación del tamaño de las entradas del monedero y corrige el tiempo de vida de los datos precalculados de las transacciones durante la validación.
+- Corrige casos límite en PSBT y Miniscript, incluida la validación de claves públicas MuSig2.
+- Incluye traducciones actualizadas.
+
+Notas de la versión completas: https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-30.3.md`,
+    de_DE: `Aktualisiert Bitcoin Core auf 30.3.
+
+- Behebt ein Problem, bei dem die Chainstate-Datenbank wiederholt große Teile von sich selbst neu schrieb und dadurch im normalen Betrieb übermäßige Lese- und Schreibvorgänge auf der Festplatte verursachte.
+- Behebt mehrere Wallet-Fehler: \`removeprunedfunds\` bei kollidierenden Transaktionen, einen Absturz beim Erhöhen der Gebühr, wenn die kombinierte Erhöhungsgebühr nicht verfügbar ist, und einen in der Münzauswahl fälschlich als Boolean berechneten Betrag.
+- Verbessert die Schätzung der Eingabegröße in der Wallet und korrigiert die Lebensdauer der vorberechneten Transaktionsdaten während der Validierung.
+- Behebt Grenzfälle in PSBT und Miniscript, einschließlich der Validierung von MuSig2-Public-Keys.
+- Enthält aktualisierte Übersetzungen.
+
+Vollständige Versionshinweise: https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-30.3.md`,
+    pl_PL: `Aktualizuje Bitcoin Core do 30.3.
+
+- Naprawia problem, w którym baza danych chainstate wielokrotnie zapisywała od nowa duże swoje fragmenty, powodując nadmierny odczyt i zapis dysku podczas normalnej pracy.
+- Naprawia kilka błędów portfela: \`removeprunedfunds\` przy sprzecznych transakcjach, awarię podczas podbijania opłaty, gdy łączna opłata jest niedostępna, oraz kwotę błędnie obliczaną jako wartość logiczna przy wyborze monet.
+- Ulepsza szacowanie rozmiaru wejść w portfelu i poprawia czas życia wstępnie obliczonych danych transakcji podczas walidacji.
+- Naprawia przypadki brzegowe w PSBT i Miniscript, w tym walidację kluczy publicznych MuSig2.
+- Zawiera zaktualizowane tłumaczenia.
+
+Pełne informacje o wydaniu: https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-30.3.md`,
+    fr_FR: `Met à jour Bitcoin Core vers 30.3.
+
+- Corrige un problème où la base de données chainstate réécrivait de façon répétée de grandes parties d'elle-même, provoquant des lectures et écritures disque excessives en fonctionnement normal.
+- Corrige plusieurs bogues du portefeuille : \`removeprunedfunds\` avec des transactions en conflit, un plantage lors de l'augmentation des frais lorsque les frais combinés ne sont pas disponibles, et un montant calculé à tort comme un booléen lors de la sélection des pièces.
+- Améliore l'estimation de la taille des entrées du portefeuille et corrige la durée de vie des données de transaction précalculées lors de la validation.
+- Corrige des cas limites dans PSBT et Miniscript, dont la validation des clés publiques MuSig2.
+- Inclut des traductions mises à jour.
+
+Notes de version complètes : https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-30.3.md`,
   },
   migrations: {
     up: async ({ effects }) => {},
