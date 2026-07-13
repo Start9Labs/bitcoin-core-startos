@@ -2,18 +2,53 @@ import { VersionInfo } from '@start9labs/start-sdk'
 import { rm } from 'fs/promises'
 
 export const current = VersionInfo.of({
-  version: '31.0:15',
+  version: '31.1:0',
   releaseNotes: {
-    en_US:
-      'Internal updates (start-sdk 2.0.x). Bitcoin now reaches Tor at a fixed internal bridge address and no longer restarts when Tor is installed, updated, or removed.',
-    es_ES:
-      'Actualizaciones internas (start-sdk 2.0.x). Bitcoin ahora alcanza Tor en una dirección fija del puente interno y ya no se reinicia cuando Tor se instala, actualiza o elimina.',
-    de_DE:
-      'Interne Aktualisierungen (start-sdk 2.0.x). Bitcoin erreicht Tor jetzt über eine feste interne Bridge-Adresse und startet nicht mehr neu, wenn Tor installiert, aktualisiert oder entfernt wird.',
-    pl_PL:
-      'Aktualizacje wewnętrzne (start-sdk 2.0.x). Bitcoin łączy się teraz z Torem pod stałym adresem wewnętrznego mostka i nie restartuje się już przy instalacji, aktualizacji ani usunięciu Tora.',
-    fr_FR:
-      'Mises à jour internes (start-sdk 2.0.x). Bitcoin atteint désormais Tor à une adresse fixe du pont interne et ne redémarre plus lorsque Tor est installé, mis à jour ou supprimé.',
+    en_US: `Updated Bitcoin Core to 31.1.
+
+- Fixes an IP address leak when using \`-privatebroadcast\`: under certain circumstances connections were made over clearnet instead of the enabled privacy network.
+- Fixes an issue where the chainstate database repeatedly rewrote large portions of itself, causing excessive disk reads and writes during normal operation.
+- Corrects the lifetime of precomputed transaction data during validation, and uses the configured proxy when reconnecting from v2 to v1 transport.
+- Wallet fixes: the final BDB page is now checked during migration, and input size estimation is more accurate.
+- Includes updated translations.
+
+Full release notes: https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-31.1.md`,
+    es_ES: `Actualiza Bitcoin Core a 31.1.
+
+- Corrige una filtración de la dirección IP al usar \`-privatebroadcast\`: en ciertas circunstancias las conexiones se realizaban por clearnet en lugar de por la red de privacidad activada.
+- Corrige un problema por el cual la base de datos del chainstate reescribía repetidamente grandes partes de sí misma, provocando lecturas y escrituras de disco excesivas durante el funcionamiento normal.
+- Corrige el tiempo de vida de los datos precalculados de las transacciones durante la validación y utiliza el proxy configurado al reconectar del transporte v2 al v1.
+- Correcciones del monedero: ahora se comprueba la última página BDB durante la migración y la estimación del tamaño de las entradas es más precisa.
+- Incluye traducciones actualizadas.
+
+Notas de la versión completas: https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-31.1.md`,
+    de_DE: `Aktualisiert Bitcoin Core auf 31.1.
+
+- Behebt ein Leck der IP-Adresse bei Verwendung von \`-privatebroadcast\`: Unter bestimmten Umständen wurden Verbindungen über das Clearnet statt über das aktivierte Privatsphäre-Netzwerk aufgebaut.
+- Behebt ein Problem, bei dem die Chainstate-Datenbank wiederholt große Teile von sich selbst neu schrieb und dadurch im normalen Betrieb übermäßige Lese- und Schreibvorgänge auf der Festplatte verursachte.
+- Korrigiert die Lebensdauer der vorberechneten Transaktionsdaten während der Validierung und verwendet beim Zurückwechseln vom v2- auf den v1-Transport den konfigurierten Proxy.
+- Wallet-Korrekturen: Die letzte BDB-Seite wird bei der Migration geprüft, und die Schätzung der Eingabegröße ist genauer.
+- Enthält aktualisierte Übersetzungen.
+
+Vollständige Versionshinweise: https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-31.1.md`,
+    pl_PL: `Aktualizuje Bitcoin Core do 31.1.
+
+- Naprawia wyciek adresu IP przy korzystaniu z \`-privatebroadcast\`: w pewnych okolicznościach połączenia były nawiązywane przez clearnet zamiast przez włączoną sieć prywatności.
+- Naprawia problem, w którym baza danych chainstate wielokrotnie zapisywała od nowa duże swoje fragmenty, powodując nadmierny odczyt i zapis dysku podczas normalnej pracy.
+- Poprawia czas życia wstępnie obliczonych danych transakcji podczas walidacji oraz używa skonfigurowanego proxy przy ponownym łączeniu z transportu v2 na v1.
+- Poprawki portfela: podczas migracji sprawdzana jest ostatnia strona BDB, a szacowanie rozmiaru wejść jest dokładniejsze.
+- Zawiera zaktualizowane tłumaczenia.
+
+Pełne informacje o wydaniu: https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-31.1.md`,
+    fr_FR: `Met à jour Bitcoin Core vers 31.1.
+
+- Corrige une fuite d'adresse IP lors de l'utilisation de \`-privatebroadcast\` : dans certaines circonstances, les connexions étaient établies via le clearnet au lieu du réseau de confidentialité activé.
+- Corrige un problème où la base de données chainstate réécrivait de façon répétée de grandes parties d'elle-même, provoquant des lectures et écritures disque excessives en fonctionnement normal.
+- Corrige la durée de vie des données de transaction précalculées lors de la validation et utilise le proxy configuré lors d'une reconnexion du transport v2 vers v1.
+- Corrections du portefeuille : la dernière page BDB est vérifiée lors de la migration et l'estimation de la taille des entrées est plus précise.
+- Inclut des traductions mises à jour.
+
+Notes de version complètes : https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-31.1.md`,
   },
   migrations: {
     up: async ({ effects }) => {},
