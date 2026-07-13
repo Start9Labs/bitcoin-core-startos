@@ -1,5 +1,5 @@
 {
-  "name": "bitcoin-core",
+  "name": "bitcoin-core-startos",
   "scripts": {
     "build": "rm -rf ./javascript && ncc build startos/index.ts -o ./javascript",
     "prettier": "prettier --write startos",
