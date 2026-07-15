@@ -62,3 +62,5 @@ Notes de version complètes : https://github.com/bitcoin/bitcoin/blob/master/doc
     },
   },
 })
+  .satisfies('29.4:0')
+  .satisfies('28.4:13')
