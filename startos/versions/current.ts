@@ -48,4 +48,4 @@ Notes de version complètes : https://github.com/bitcoin/bitcoin/blob/master/doc
     up: async ({ effects }) => {},
     down: async ({ effects }) => {},
   },
-})
+}).satisfies('28.4:13')
