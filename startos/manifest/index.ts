@@ -1,11 +1,5 @@
 import { setupManifest } from '@start9labs/start-sdk'
-import {
-  alertRestore,
-  alertUninstall,
-  long,
-  short,
-  torDescription,
-} from './i18n'
+import { long, short, torDescription } from './i18n'
 
 export const manifest = setupManifest({
   id: 'bitcoind',
@@ -23,7 +17,7 @@ export const manifest = setupManifest({
       source: {
         dockerBuild: {
           buildArgs: {
-            VERSION: '30.2',
+            VERSION: '30.3',
           },
         },
       },
@@ -48,10 +42,6 @@ export const manifest = setupManifest({
       arch: ['x86_64', 'aarch64'],
       emulateMissingAs: 'x86_64',
     },
-  },
-  alerts: {
-    uninstall: alertUninstall,
-    restore: alertRestore,
   },
   dependencies: {
     tor: {
