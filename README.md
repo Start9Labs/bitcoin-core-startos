@@ -12,6 +12,8 @@
 
 The reference implementation of the Bitcoin protocol. See the [upstream repo](https://github.com/bitcoin/bitcoin) for general Bitcoin Core documentation.
 
+This package shares the `bitcoind` package ID with [Bitcoin Knots](https://github.com/Start9Labs/bitcoin-knots-startos), allowing users to switch between flavors while preserving blockchain data and dependent service connections. Because the shared datadir also carries bitcoind's persisted per-block validity verdicts across a switch, the package runs a chain-recovery pass at startup so a flavor switch during a BIP-110 (RDTS) chain split lands the node on the chain the running flavor considers valid — see [Chain-Split Recovery](#chain-split-recovery).
+
 ---
 
 ## Table of Contents
@@ -23,6 +25,7 @@ The reference implementation of the Bitcoin protocol. See the [upstream repo](ht
 - [Configuration Management](#configuration-management)
 - [Network Access and Interfaces](#network-access-and-interfaces)
 - [Actions](#actions-startos-ui)
+- [Chain-Split Recovery](#chain-split-recovery)
 - [Backups and Restore](#backups-and-restore)
 - [Health Checks](#health-checks)
 - [Dependencies](#dependencies)
@@ -61,9 +64,9 @@ Three additional containers are used:
 
 StartOS-specific files on the `main` volume:
 
-| File         | Purpose                                                                       |
-| ------------ | ----------------------------------------------------------------------------- |
-| `store.json` | Persistent StartOS state (reindex flags, sync status)             |
+| File         | Purpose                                                                                                                      |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------- |
+| `store.json` | Persistent StartOS state (reindex flags, sync status, chain-recovery flags and the `rdtsEnforcedLastRun` enforcement marker) |
 
 Blockchain data directories (`blocks/`, `chainstate/`, `indexes/`) reside on the `main` volume alongside the standard `bitcoin.conf` and `.cookie` files.
 
@@ -163,19 +166,39 @@ This is transparent to dependent services — port 8332 always serves RPC.
 | **Delete Transaction Index** | Delete corrupted txindex                                          | Stopped only |
 | **Delete Coinstats Index**   | Delete corrupted coinstatsindex                                   | Stopped only |
 
+### Chain Recovery
+
+| Action                        | Purpose                                                                                          | Availability |
+| ----------------------------- | ------------------------------------------------------------------------------------------------ | ------------ |
+| **Reconsider Invalid Blocks** | Clear persisted invalid verdicts on all invalid chain tips (`reconsiderblock` each; prune-aware) | Running only |
+
+See [Chain-Split Recovery](#chain-split-recovery) for the automation around these.
+
 ### Advanced
 
-| Action                                  | Purpose                                                                          | Availability |
-| --------------------------------------- | -------------------------------------------------------------------------------- | ------------ |
-| **Download UTXO Snapshot (assumeutxo)** | Load a UTXO snapshot for fast sync (hidden when fully synced)                    | Running only |
-| **Runtime Information**                 | Display connections, block height, sync progress, softfork info                  | Running only |
+| Action                                  | Purpose                                                         | Availability |
+| --------------------------------------- | --------------------------------------------------------------- | ------------ |
+| **Download UTXO Snapshot (assumeutxo)** | Load a UTXO snapshot for fast sync (hidden when fully synced)   | Running only |
+| **Runtime Information**                 | Display connections, block height, sync progress, softfork info | Running only |
 
 ### Hidden (Dependent Service Automation)
 
-| Action                     | Purpose                                                  | Availability |
-| -------------------------- | -------------------------------------------------------- | ------------ |
-| **Auto-Configure**         | Automatically configure Bitcoin Core for dependent services (prefills all config) | Any |
-| **Create RPC Credentials** | Create RPC credentials with a provided username/password for dependent services   | Any |
+| Action                     | Purpose                                                                           | Availability |
+| -------------------------- | --------------------------------------------------------------------------------- | ------------ |
+| **Auto-Configure**         | Automatically configure Bitcoin Core for dependent services (prefills all config) | Any          |
+| **Create RPC Credentials** | Create RPC credentials with a provided username/password for dependent services   | Any          |
+
+## Chain-Split Recovery
+
+bitcoind persists a validity verdict for every block it has evaluated (`CBlockIndex::nStatus` in `blocks/index/`) and trusts those verdicts verbatim on startup — they are never re-derived, and they don't record _which_ consensus rules produced them. Because all `bitcoind` flavors share one datadir, a flavor switch changes the rules without changing the verdicts. Around a BIP-110 (RDTS) chain split, arriving here from the RDTS-enforcing [Bitcoin Knots](https://github.com/Start9Labs/bitcoin-knots-startos) flavor would otherwise leave RDTS-driven `BLOCK_FAILED_VALID` marks in place and pin this node off the chain it considers best.
+
+Bitcoin Core never enforces RDTS, so this package carries only the non-enforcing half of the recovery machinery (`startos/forkRecovery.ts` + the `chain-recovery` oneshot in `startos/main.ts`; the enforcing half — the RDTS-range replay — lives in the Bitcoin Knots RDTS flavor):
+
+- **A durable enforcement marker.** `store.json` records `rdtsEnforcedLastRun`; this flavor writes `false` each start. A `true` value left by the RDTS-enforcing flavor — or an unknown marker, i.e. a legacy datadir last advanced by a package version that predates it — is treated as an enforcement-regime transition: it materializes the `reconsiderInvalidTips` flag (a free no-op when there are no invalid tips) (before the marker is updated, so a crash between the writes re-detects rather than loses the transition). Cross-flavor migrations (on the Knots side) set the same flag deterministically at switch time as a belt-and-suspenders path.
+- **The remedy.** `reconsiderInvalidTips` — `getchaintips` → `reconsiderblock` every `invalid` tip. Clears the verdict on the block, its ancestors, and descendants (persisted); reconnection re-validates fully, so genuinely-invalid branches re-flag themselves. Idempotent and a no-op when there are no invalid tips. Tips whose fork point lies below `pruneheight` are skipped (reorganizing onto them would hit a fatal disconnect on pruned data) and reported in a warning notification pointing at **Reindex Blockchain** (a full re-download on pruned nodes).
+- **A dormant flag.** `revalidateFromRdts` exists in this flavor's store shape but is never consumed here: it is carried so a flavor switch never strips a pending flag from the shared store, and the RDTS-enforcing flavor consumes it to replay the RDTS-applicable range on its first start.
+
+Notifications accompany every consequential outcome (verdicts cleared, tips skipped on a pruned node, recovery failed). Peering is the one thing the package cannot fix: after verdicts are corrected the node still needs peers serving the intended chain, which the user docs call out.
 
 ## Backups and Restore
 
@@ -304,6 +327,7 @@ actions:
   - delete-rpcauth
   - reindex-blockchain
   - reindex-chainstate
+  - reconsider-invalid-blocks
   - delete-peers
   - delete-txindex
   - delete-coinstats-index
