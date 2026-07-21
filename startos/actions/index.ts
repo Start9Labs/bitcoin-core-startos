@@ -12,6 +12,7 @@ import { deleteTxIndex } from './deleteTxIndex'
 import { generateRpcUser } from './generateRpcUser'
 import { generateRpcUserDependent } from './generateRpcUserDependent'
 import { ipc } from './ipc'
+import { reconsiderInvalidBlocks } from './reconsiderInvalidBlocks'
 import { reindexBlockchain } from './reindexBlockchain'
 import { reindexChainstate } from './reindexChainstate'
 import { runtimeInfo } from './runtimeInfo'
@@ -30,5 +31,6 @@ export const actions = sdk.Actions.of()
   .addAction(ipc)
   .addAction(reindexBlockchain)
   .addAction(reindexChainstate)
+  .addAction(reconsiderInvalidBlocks)
   .addAction(runtimeInfo)
   .addAction(autoconfig)

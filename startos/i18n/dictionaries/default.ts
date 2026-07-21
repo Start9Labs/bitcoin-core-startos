@@ -15,9 +15,9 @@ const dict = {
   'The blockchain is fully synced.': 11,
 
   // interfaces.ts
-  'RPC': 100,
+  RPC: 100,
   'Listens for JSON-RPC commands': 101,
-  'Peer': 102,
+  Peer: 102,
   'Listens for incoming connections from peers on the bitcoin network': 103,
   'ZeroMQ Block': 104,
   'I2P Daemon Console': 105,
@@ -253,7 +253,6 @@ const dict = {
 
   'Full archival': 1741,
 
-
   // actions/config/autoconfig.ts
   'Auto-Configure': 1900,
   'Automatically configure bitcoin.conf for the needs of a another service': 1901,
@@ -272,6 +271,25 @@ const dict = {
   // Common
   Configuration: 1800,
   Default: 2000,
+
+  // Chain Recovery: forkRecovery.ts, main.ts chain-recovery oneshot,
+  // actions/reconsiderInvalidBlocks.ts
+  // (3200 block — ids shared with the Knots RDTS flavor's Chain Recovery
+  // strings; 3220-3225 and 3232-3241 are its RDTS-revalidation strings,
+  // unused in this never-enforcing flavor)
+  'Chain Recovery': 3200,
+  'Reconsider Invalid Blocks': 3214,
+  'Clear the persisted invalid verdict from every invalid chain tip, letting the node re-evaluate those branches under the currently running consensus rules and follow the best chain that is valid under them. Use after switching bitcoind flavors across a chain split, so verdicts inherited from the previous flavor cannot pin the node to the wrong chain. Safe: branches that are invalid under the running rules are re-marked invalid automatically, and the action is a no-op when no invalid tips exist.': 3215,
+  'If a reconsidered branch has more work than the current chain, the node reorganizes onto it after re-validating it, which can take a while. Reaching a branch this node has not downloaded also requires peers that serve it.': 3216,
+  'No invalid chain tips found — there was nothing to reconsider.': 3217,
+  '${count} invalid tip(s) were left alone because this pruned node no longer stores the blocks needed to reorganize onto them; recovering those chains requires Reindex Blockchain (a re-download on pruned nodes).': 3218,
+  'Cleared invalid verdicts on ${count} chain tip(s). The node will now follow the best chain that is valid under its current consensus rules; reorganizing onto a better chain may take a while and requires peers that serve it.': 3219,
+  'Chain Verdicts Reset': 3226,
+  "Cleared invalid-block verdicts inherited from the previously installed bitcoind flavor on ${count} chain tip(s). The node now follows the best chain that is valid under this flavor's rules; reorganizing onto it may take a while and requires peers on that chain.": 3227,
+  'Some Chains Not Recoverable': 3228,
+  '${count} invalid chain branch(es) inherited from the previous bitcoind flavor could not be reconsidered: this pruned node no longer stores the blocks needed to reorganize onto them. If the node appears stuck on the wrong chain, run Reindex Blockchain (on a pruned node this re-downloads the chain).': 3229,
+  'Chain Recovery Failed': 3230,
+  'Clearing invalid-block verdicts inherited from the previous bitcoind flavor failed; it will be retried at the next restart. You can also run the Reconsider Invalid Blocks action manually. Error: ${error}': 3231,
 } as const
 
 /**

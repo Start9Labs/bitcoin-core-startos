@@ -14,6 +14,7 @@ Bitcoin Core begins its Initial Block Download (IBD) — fetching and verifying 
 - **Privacy networking out of the box** — outbound peer connections go over Tor, and a bundled I2P daemon accepts inbound I2P connections, with no setup required.
 - **Disk-aware sizing** — on disks under roughly 900 GB the node prunes automatically (and leaves `txindex` off) to fit; on larger disks it runs as a full archival node. Either way it still behaves like a full node to anything using its RPC — see **Pruned nodes** below. Initial sync also runs with a temporarily larger database cache that reverts to the upstream default once it completes.
 - **Configuration through StartOS actions** instead of hand-editing `bitcoin.conf`.
+- **Shared `bitcoind` package id with Bitcoin Knots** — you can switch flavors without re-syncing the chain. During a BIP-110 (RDTS) chain split, switching additionally adjusts the node's recorded block verdicts automatically so it follows the chain the new flavor considers valid (see [Switching flavors during a chain split](#switching-flavors-during-a-chain-split)).
 
 ## Getting set up
 
@@ -53,6 +54,25 @@ Some options are fixed by the package and not exposed: RPC cookie authentication
 - **Reindex Blockchain** — rebuild blocks and chainstate from scratch (use after on-disk corruption).
 - **Reindex Chainstate** — rebuild just the chainstate from existing blocks (hidden on pruned nodes).
 - **Delete Peer List** / **Delete Transaction Index** / **Delete Coinstats Index** — remove a corrupted `peers.dat`, `txindex`, or `coinstatsindex`. The service must be stopped to run these.
+
+### Chain Recovery
+
+This action manages bitcoind's _persisted_ per-block validity verdicts — the records that survive restarts and flavor switches. It exists for chain-split scenarios; most users never need to run it manually because the package runs it automatically after a flavor switch (see below).
+
+- **Reconsider Invalid Blocks** — clear the invalid verdict from every invalid chain tip so the node re-evaluates those branches under its current consensus rules. Safe: genuinely invalid branches are re-marked automatically; no-op when there is nothing to clear.
+
+### Switching flavors during a chain split
+
+Bitcoin Core and the Bitcoin Knots flavors share the `bitcoind` package id and data volume, so switching flavors keeps the synced chain. However, bitcoind permanently records its verdict on every block it has seen, and those verdicts do not record _which_ rules produced them — a freshly switched binary trusts them as-is and never re-checks buried blocks on its own. If the network splits over BIP-110 (RDTS), that inheritance would silently pin your node to the previous flavor's chain. Bitcoin Core never enforces RDTS, so only one direction needs correcting here, and it happens automatically at the first start after a switch:
+
+- **Arriving at this flavor** (from the RDTS-enforcing Bitcoin Knots flavor): blocks that flavor rejected under RDTS remain marked invalid, which would stop Bitcoin Core from following the majority chain. This package clears those verdicts (`reconsiderblock` on every invalid chain tip) and follows the best chain valid under _its_ rules. You get a "Chain Verdicts Reset" notification when anything was cleared.
+- **Leaving this flavor** (to the RDTS-enforcing Bitcoin Knots flavor) with a chain already synced past the RDTS-applicable range: those blocks were never checked against RDTS here, and that flavor re-validates the affected range itself on its first start — there is nothing to do on this side before switching.
+
+Caveats that apply during an actual split:
+
+- **Pruned nodes.** Reorganizing onto a different chain requires block data your node may have pruned away. If the needed range is gone, the package skips the in-place remedy (with a notification) and directs you to **Reindex Blockchain**, which on a pruned node re-downloads the entire chain. A pruned node also cannot reorganize deeper than its retained window (at least the most recent 288 blocks), so during a split significantly older than ~2 days a pruned node that switched sides may need that full re-download.
+- **Peers matter.** Clearing verdicts lets your node _accept_ the intended chain; actually following it requires peers that serve that chain's blocks. During a contentious split, add a trusted node on your preferred side via **Peer Settings → Add Nodes** if your node does not converge.
+- **Dependent services.** Correcting inherited verdicts can reorganize this node onto a different chain, and during a split that reorg can be deep. Services that depend on this node — especially Lightning (LND, Core Lightning) — are not safe against arbitrarily deep reorgs: a reorg past a channel's funding depth can force-close channels. After switching flavors during a split, verify your dependent services' state.
 
 ### Other actions
 

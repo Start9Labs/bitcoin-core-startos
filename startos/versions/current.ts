@@ -12,7 +12,9 @@ export const current = VersionInfo.of({
 - Wallet fixes: the final BDB page is now checked during migration, and input size estimation is more accurate.
 - Includes updated translations.
 
-Full release notes: https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-31.1.md`,
+Full release notes: https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-31.1.md
+
+Adds chain-split recovery for the BIP-110 (RDTS) era: switching flavors now automatically clears invalid-block verdicts inherited from the RDTS-enforcing flavor, and a new Chain Recovery action group (Reconsider Invalid Blocks) gives manual control.`,
     es_ES: `Actualiza Bitcoin Core a 31.1.
 
 - Corrige una filtración de la dirección IP al usar \`-privatebroadcast\`: en ciertas circunstancias las conexiones se realizaban por clearnet en lugar de por la red de privacidad activada.
@@ -21,7 +23,9 @@ Full release notes: https://github.com/bitcoin/bitcoin/blob/master/doc/release-n
 - Correcciones del monedero: ahora se comprueba la última página BDB durante la migración y la estimación del tamaño de las entradas es más precisa.
 - Incluye traducciones actualizadas.
 
-Notas de la versión completas: https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-31.1.md`,
+Notas de la versión completas: https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-31.1.md
+
+Añade recuperación ante divisiones de cadena para la era BIP-110 (RDTS): cambiar de variante ahora borra automáticamente los veredictos de bloques inválidos heredados de la variante que aplica RDTS, y un nuevo grupo de acciones Recuperación de cadena (Reconsiderar bloques inválidos) ofrece control manual.`,
     de_DE: `Aktualisiert Bitcoin Core auf 31.1.
 
 - Behebt ein Leck der IP-Adresse bei Verwendung von \`-privatebroadcast\`: Unter bestimmten Umständen wurden Verbindungen über das Clearnet statt über das aktivierte Privatsphäre-Netzwerk aufgebaut.
@@ -30,7 +34,9 @@ Notas de la versión completas: https://github.com/bitcoin/bitcoin/blob/master/d
 - Wallet-Korrekturen: Die letzte BDB-Seite wird bei der Migration geprüft, und die Schätzung der Eingabegröße ist genauer.
 - Enthält aktualisierte Übersetzungen.
 
-Vollständige Versionshinweise: https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-31.1.md`,
+Vollständige Versionshinweise: https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-31.1.md
+
+Fügt Chain-Split-Wiederherstellung für die BIP-110-(RDTS-)Ära hinzu: Ein Variantenwechsel löscht jetzt automatisch von der RDTS-durchsetzenden Variante geerbte Ungültigkeits-Urteile, und eine neue Aktionsgruppe Chain-Wiederherstellung (Ungültige Blöcke überdenken) bietet manuelle Kontrolle.`,
     pl_PL: `Aktualizuje Bitcoin Core do 31.1.
 
 - Naprawia wyciek adresu IP przy korzystaniu z \`-privatebroadcast\`: w pewnych okolicznościach połączenia były nawiązywane przez clearnet zamiast przez włączoną sieć prywatności.
@@ -39,7 +45,9 @@ Vollständige Versionshinweise: https://github.com/bitcoin/bitcoin/blob/master/d
 - Poprawki portfela: podczas migracji sprawdzana jest ostatnia strona BDB, a szacowanie rozmiaru wejść jest dokładniejsze.
 - Zawiera zaktualizowane tłumaczenia.
 
-Pełne informacje o wydaniu: https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-31.1.md`,
+Pełne informacje o wydaniu: https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-31.1.md
+
+Dodaje odzyskiwanie po podziale łańcucha na erę BIP-110 (RDTS): zmiana wariantu automatycznie czyści teraz werdykty nieważności bloków odziedziczone po wariancie egzekwującym RDTS, a nowa grupa akcji Odzyskiwanie łańcucha (Rozważ ponownie nieważne bloki) daje ręczną kontrolę.`,
     fr_FR: `Met à jour Bitcoin Core vers 31.1.
 
 - Corrige une fuite d'adresse IP lors de l'utilisation de \`-privatebroadcast\` : dans certaines circonstances, les connexions étaient établies via le clearnet au lieu du réseau de confidentialité activé.
@@ -48,7 +56,9 @@ Pełne informacje o wydaniu: https://github.com/bitcoin/bitcoin/blob/master/doc/
 - Corrections du portefeuille : la dernière page BDB est vérifiée lors de la migration et l'estimation de la taille des entrées est plus précise.
 - Inclut des traductions mises à jour.
 
-Notes de version complètes : https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-31.1.md`,
+Notes de version complètes : https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-31.1.md
+
+Ajoute la récupération après scission de chaîne pour l'ère BIP-110 (RDTS) : changer de variante efface désormais automatiquement les verdicts de blocs invalides hérités de la variante appliquant RDTS, et un nouveau groupe d'actions Récupération de chaîne (Reconsidérer les blocs invalides) offre un contrôle manuel.`,
   },
   migrations: {
     up: async ({ effects }) => {},
