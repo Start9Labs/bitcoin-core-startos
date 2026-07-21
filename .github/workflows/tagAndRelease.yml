@@ -11,7 +11,7 @@ concurrency:
 
 jobs:
   tag:
-    uses: start9labs/shared-workflows/.github/workflows/tagAndRelease.yml@master
+    uses: Start9Labs/start-technologies/.github/workflows/tagAndRelease.yml@master
     with:
       REFERENCE_REGISTRY: ${{ vars.REFERENCE_REGISTRY }}
       # FREE_DISK_SPACE: true

@@ -15,14 +15,16 @@ const dict = {
   'The blockchain is fully synced.': 11,
 
   // interfaces.ts
-  'RPC Interface': 100,
+  'RPC': 100,
   'Listens for JSON-RPC commands': 101,
-  'Peer Interface': 102,
+  'Peer': 102,
   'Listens for incoming connections from peers on the bitcoin network': 103,
-  'ZeroMQ Interface': 104,
+  'ZeroMQ Block': 104,
   'I2P Daemon Console': 105,
   'Interface to access the embedded I2P daemon console': 106,
-  'Streams real-time Bitcoin block and transaction notifications (hashes and raw data)': 107,
+  'Streams real-time Bitcoin block notifications (hashes and raw data)': 107,
+  'ZeroMQ Transaction': 108,
+  'Streams real-time Bitcoin transaction notifications (hashes, raw data, and sequence)': 109,
 
   // actions/generateRpcUser.ts
   Username: 200,

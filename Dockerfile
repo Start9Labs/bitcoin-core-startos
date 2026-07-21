@@ -13,10 +13,12 @@ RUN apt-get update && \
         ca-certificates wget gnupg && \
     rm -rf /var/lib/apt/lists/*
 
-# Pinned Bitcoin Core release signers. Each of these has signed every
-# Core release in the 28.x–31.x range (with the exception of 0xB10C,
-# who signed 29.3, 30.2, 31.0 but not 28.3). Build requires REQUIRED_QUORUM
-# valid signatures from this set.
+# Pinned Bitcoin Core release signers. Signer coverage varies per release — no
+# single signer signs every one — so the build does NOT require all of them: it
+# requires REQUIRED_QUORUM valid signatures from this set. Re-verify the quorum
+# still holds when bumping VERSION (parse the release's SHA256SUMS.asc and count
+# how many of these fingerprints signed it); only rotate the set and refresh
+# assets/release-keys/ if it does not.
 ENV PINNED_FINGERPRINTS="\
 152812300785C96444D3334D17565732E08E5E41 \
 637DB1E23370F84AFF88CCE03152347D07DA627C \

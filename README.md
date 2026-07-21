@@ -114,7 +114,7 @@ Settings **not** managed by StartOS (hardcoded):
 | `bind`          | `0.0.0.0:58333`      | Internal peer listening port       |
 | `listen`        | `1`                  | Always accepting connections       |
 | `assumevalid`   | Hardcoded block hash | Performance optimization           |
-| `-onion`        | `<torIp>:9050`       | StartOS Tor proxy (set at runtime) |
+| `-onion`        | `10.0.3.1:9050`      | Tor SOCKS on the internal bridge (resolved at startup; always set — harmless connection-refused when Tor is absent) |
 
 ### Pruned Node Architecture
 
