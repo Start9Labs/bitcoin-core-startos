@@ -1,6 +1,7 @@
 import { TOML } from '@start9labs/start-sdk'
 import { access, rm, writeFile } from 'fs/promises'
 import { request } from 'node:https'
+import { socksHostId, socksPort } from 'tor-startos/startos/utils'
 import { bitcoinConfFile } from './fileModels/bitcoin.conf'
 import { i2pdConfFile } from './fileModels/i2pd.conf'
 import { storeJson } from './fileModels/store.json'
@@ -9,6 +10,7 @@ import { sdk } from './sdk'
 import {
   bitcoinCliArgs,
   bitcoinMounts,
+  bridgeAddress,
   GetBlockchainInfo,
   i2pControlPort,
   rootDir,
@@ -71,19 +73,28 @@ export const main = sdk.setupMain(async ({ effects }) => {
 
   const { reindexBlockchain, reindexChainstate } = store
 
-  // get Tor container IP (restarts Bitcoin if IP changes, needed for -onion= flag)
-  const torIp = await sdk.getContainerIp(effects, { packageId: 'tor' }).const()
+  // Tor SOCKS over the bridge. The mapped value only changes when the address
+  // itself does — with the 9050 fallback it stays constant across tor
+  // install/update/uninstall, so this .const() never restarts Bitcoin unless
+  // tor lands on a different port (then one healing restart). A dead bridge
+  // address is just connection-refused, so -onion is always safe to pass.
+  const torSocks = await bridgeAddress(effects, {
+    packageId: 'tor',
+    hostId: socksHostId,
+    internalPort: socksPort,
+    fallbackPort: socksPort,
+  }).const()
 
-  // track Tor running status dynamically for health check (no restart needed)
+  // track Tor install/run state dynamically for the health check (no restart)
+  let torInstalled = false
   let torRunning = false
-  if (torIp) {
-    sdk.getStatus(effects, { packageId: 'tor' }).onChange((status) => {
-      torRunning = status?.desired.main === 'running'
-      return { cancel: false }
-    })
-  }
+  sdk.getStatus(effects, { packageId: 'tor' }).onChange((status) => {
+    torInstalled = status !== null
+    torRunning = status?.desired.main === 'running'
+    return { cancel: false }
+  })
 
-  const bitcoinArgs: string[] = torIp ? [`-onion=${torIp}:9050`] : []
+  const bitcoinArgs: string[] = [`-onion=${torSocks}`]
 
   if (reindexBlockchain) {
     bitcoinArgs.push('-reindex')
@@ -93,7 +104,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
     await storeJson.merge(effects, { reindexChainstate: false })
   }
 
-  const bitcoindSub = await sdk.SubContainer.of(
+  const bitcoindSub = await sdk.SubContainer.eager(
     effects,
     { imageId: 'bitcoind' },
     bitcoinMounts,
@@ -129,7 +140,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
   const runI2pd = i2pEnabled && (!onlynetActive || onlynetList.includes('i2p'))
 
   const i2pdSub = runI2pd
-    ? await sdk.SubContainer.of(
+    ? await sdk.SubContainer.eager(
         effects,
         { imageId: 'i2pd' },
         sdk.Mounts.of().mountVolume({
@@ -169,10 +180,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
     .addDaemon('bitcoind', {
       subcontainer: bitcoindSub,
       exec: {
-        command: [
-          'bitcoind',
-          ...bitcoinArgs,
-        ],
+        command: ['bitcoind', ...bitcoinArgs],
         sigtermTimeout: 300_000,
       },
       ready: {
@@ -357,7 +365,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
     ready: {
       display: 'Tor',
       fn: () => {
-        if (!torIp) {
+        if (!torInstalled) {
           return { result: 'disabled', message: i18n('Tor is not installed') }
         }
         if (!torRunning) {
@@ -403,7 +411,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
   return withClearnet.addDaemon('proxy', async () => {
     if (!bitcoinConf.prune) return null
 
-    const subcontainer = await sdk.SubContainer.of(
+    const subcontainer = await sdk.SubContainer.eager(
       effects,
       { imageId: 'proxy' },
       bitcoinMounts,
@@ -418,12 +426,8 @@ export const main = sdk.setupMain(async ({ effects }) => {
         bind_address: '0.0.0.0',
         bind_port: rpcPort,
         cookie_file: rpcCookiePath,
-        ...(torIp
-          ? {
-              tor_proxy: `${torIp}:9050`,
-              tor_only: onlynetList.length === 1 && onlynetList[0] === 'onion',
-            }
-          : {}),
+        tor_proxy: torSocks,
+        tor_only: onlynetList.length === 1 && onlynetList[0] === 'onion',
         passthrough_rpcauth: `${rootDir}/bitcoin.conf`,
         passthrough_rpccookie: rpcCookiePath,
       }),
