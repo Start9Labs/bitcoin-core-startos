@@ -12,7 +12,9 @@ export const current = VersionInfo.of({
 - Fixes PSBT and Miniscript edge cases, including MuSig2 pubkey validation.
 - Includes updated translations.
 
-Full release notes: https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-30.3.md`,
+Full release notes: https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-30.3.md
+
+Adds chain-split recovery for the BIP-110 (RDTS) era: switching flavors now automatically clears invalid-block verdicts inherited from the RDTS-enforcing flavor, and a new Chain Recovery action group (Reconsider Invalid Blocks) gives manual control.`,
     es_ES: `Actualiza Bitcoin Core a 30.3.
 
 - Corrige un problema por el cual la base de datos del chainstate reescribía repetidamente grandes partes de sí misma, provocando lecturas y escrituras de disco excesivas durante el funcionamiento normal.
@@ -21,7 +23,9 @@ Full release notes: https://github.com/bitcoin/bitcoin/blob/master/doc/release-n
 - Corrige casos límite en PSBT y Miniscript, incluida la validación de claves públicas MuSig2.
 - Incluye traducciones actualizadas.
 
-Notas de la versión completas: https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-30.3.md`,
+Notas de la versión completas: https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-30.3.md
+
+Añade recuperación ante divisiones de cadena para la era BIP-110 (RDTS): cambiar de variante ahora borra automáticamente los veredictos de bloques inválidos heredados de la variante que aplica RDTS, y un nuevo grupo de acciones Recuperación de cadena (Reconsiderar bloques inválidos) ofrece control manual.`,
     de_DE: `Aktualisiert Bitcoin Core auf 30.3.
 
 - Behebt ein Problem, bei dem die Chainstate-Datenbank wiederholt große Teile von sich selbst neu schrieb und dadurch im normalen Betrieb übermäßige Lese- und Schreibvorgänge auf der Festplatte verursachte.
@@ -30,7 +34,9 @@ Notas de la versión completas: https://github.com/bitcoin/bitcoin/blob/master/d
 - Behebt Grenzfälle in PSBT und Miniscript, einschließlich der Validierung von MuSig2-Public-Keys.
 - Enthält aktualisierte Übersetzungen.
 
-Vollständige Versionshinweise: https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-30.3.md`,
+Vollständige Versionshinweise: https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-30.3.md
+
+Fügt Chain-Split-Wiederherstellung für die BIP-110-(RDTS-)Ära hinzu: Ein Variantenwechsel löscht jetzt automatisch von der RDTS-durchsetzenden Variante geerbte Ungültigkeits-Urteile, und eine neue Aktionsgruppe Chain-Wiederherstellung (Ungültige Blöcke überdenken) bietet manuelle Kontrolle.`,
     pl_PL: `Aktualizuje Bitcoin Core do 30.3.
 
 - Naprawia problem, w którym baza danych chainstate wielokrotnie zapisywała od nowa duże swoje fragmenty, powodując nadmierny odczyt i zapis dysku podczas normalnej pracy.
@@ -39,7 +45,9 @@ Vollständige Versionshinweise: https://github.com/bitcoin/bitcoin/blob/master/d
 - Naprawia przypadki brzegowe w PSBT i Miniscript, w tym walidację kluczy publicznych MuSig2.
 - Zawiera zaktualizowane tłumaczenia.
 
-Pełne informacje o wydaniu: https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-30.3.md`,
+Pełne informacje o wydaniu: https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-30.3.md
+
+Dodaje odzyskiwanie po podziale łańcucha na erę BIP-110 (RDTS): zmiana wariantu automatycznie czyści teraz werdykty nieważności bloków odziedziczone po wariancie egzekwującym RDTS, a nowa grupa akcji Odzyskiwanie łańcucha (Rozważ ponownie nieważne bloki) daje ręczną kontrolę.`,
     fr_FR: `Met à jour Bitcoin Core vers 30.3.
 
 - Corrige un problème où la base de données chainstate réécrivait de façon répétée de grandes parties d'elle-même, provoquant des lectures et écritures disque excessives en fonctionnement normal.
@@ -48,7 +56,9 @@ Pełne informacje o wydaniu: https://github.com/bitcoin/bitcoin/blob/master/doc/
 - Corrige des cas limites dans PSBT et Miniscript, dont la validation des clés publiques MuSig2.
 - Inclut des traductions mises à jour.
 
-Notes de version complètes : https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-30.3.md`,
+Notes de version complètes : https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-30.3.md
+
+Ajoute la récupération après scission de chaîne pour l'ère BIP-110 (RDTS) : changer de variante efface désormais automatiquement les verdicts de blocs invalides hérités de la variante appliquant RDTS, et un nouveau groupe d'actions Récupération de chaîne (Reconsidérer les blocs invalides) offre un contrôle manuel.`,
   },
   migrations: {
     up: async ({ effects }) => {},
