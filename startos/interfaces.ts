@@ -2,14 +2,20 @@ import { bitcoinConfFile } from './fileModels/bitcoin.conf'
 import { i2pdConfFile } from './fileModels/i2pd.conf'
 import { sdk } from './sdk'
 import {
+  i2pConsoleHostId,
   i2pUiPort,
+  peerHostId,
   peerInterfaceId,
   peerPortExternal,
   peerPortInternal,
+  rpcHostId,
   rpcInterfaceId,
   rpcPort,
-  zmqInterfaceId,
+  zmqBlockInterfaceId,
+  zmqHostId,
+  zmqTxInterfaceId,
   zmqPortBlock,
+  zmqPortTransaction,
 } from './utils'
 import { i18n } from './i18n'
 
@@ -19,13 +25,13 @@ export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
   if (!bitcoinConf) return []
 
   // RPC
-  const rpcMulti = sdk.MultiHost.of(effects, 'rpc')
+  const rpcMulti = sdk.MultiHost.of(effects, rpcHostId)
   const rpcMultiOrigin = await rpcMulti.bindPort(rpcPort, {
     protocol: 'http',
     preferredExternalPort: rpcPort,
   })
   const rpc = sdk.createInterface(effects, {
-    name: i18n('RPC Interface'),
+    name: i18n('RPC'),
     id: rpcInterfaceId,
     description: i18n('Listens for JSON-RPC commands'),
     type: 'api',
@@ -40,7 +46,7 @@ export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
   const receipts = [rpcReceipt]
 
   // Peer
-  const peerMulti = sdk.MultiHost.of(effects, 'peer')
+  const peerMulti = sdk.MultiHost.of(effects, peerHostId)
   const peerMultiOrigin = await peerMulti.bindPort(peerPortInternal, {
     protocol: null,
     preferredExternalPort: peerPortExternal,
@@ -48,7 +54,7 @@ export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
     secure: { ssl: false },
   })
   const peer = sdk.createInterface(effects, {
-    name: i18n('Peer Interface'),
+    name: i18n('Peer'),
     id: peerInterfaceId,
     description: i18n(
       'Listens for incoming connections from peers on the bitcoin network',
@@ -64,20 +70,23 @@ export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
 
   receipts.push(peerReceipt)
 
-  // ZMQ (conditional)
+  // ZMQ (conditional). Block (28332) and transaction (28333) are exposed as
+  // separate interfaces so a dependent (e.g. LND) can resolve each one's bridge
+  // address independently — bitcoind publishes the two on distinct ports.
   if (bitcoinConf.zmqEnabled) {
-    const zmqMulti = sdk.MultiHost.of(effects, 'zmq')
-    const zmqMultiOrigin = await zmqMulti.bindPort(zmqPortBlock, {
+    const zmqMulti = sdk.MultiHost.of(effects, zmqHostId)
+
+    const zmqBlockOrigin = await zmqMulti.bindPort(zmqPortBlock, {
       preferredExternalPort: zmqPortBlock,
       addSsl: null,
       secure: { ssl: false },
       protocol: null,
     })
-    const zmq = sdk.createInterface(effects, {
-      name: i18n('ZeroMQ Interface'),
-      id: zmqInterfaceId,
+    const zmqBlock = sdk.createInterface(effects, {
+      name: i18n('ZeroMQ Block'),
+      id: zmqBlockInterfaceId,
       description: i18n(
-        'Streams real-time Bitcoin block and transaction notifications (hashes and raw data)',
+        'Streams real-time Bitcoin block notifications (hashes and raw data)',
       ),
       type: 'api',
       masked: false,
@@ -86,9 +95,28 @@ export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
       path: '',
       query: {},
     })
-    const zmqReceipt = await zmqMultiOrigin.export([zmq])
+    receipts.push(await zmqBlockOrigin.export([zmqBlock]))
 
-    receipts.push(zmqReceipt)
+    const zmqTxOrigin = await zmqMulti.bindPort(zmqPortTransaction, {
+      preferredExternalPort: zmqPortTransaction,
+      addSsl: null,
+      secure: { ssl: false },
+      protocol: null,
+    })
+    const zmqTx = sdk.createInterface(effects, {
+      name: i18n('ZeroMQ Transaction'),
+      id: zmqTxInterfaceId,
+      description: i18n(
+        'Streams real-time Bitcoin transaction notifications (hashes, raw data, and sequence)',
+      ),
+      type: 'api',
+      masked: false,
+      schemeOverride: null,
+      username: null,
+      path: '',
+      query: {},
+    })
+    receipts.push(await zmqTxOrigin.export([zmqTx]))
   }
 
   // I2P (conditional)
@@ -97,7 +125,7 @@ export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
     .const(effects)
 
   if (bitcoinConf.raw?.i2psam && i2pConsoleEnabled) {
-    const i2pMulti = sdk.MultiHost.of(effects, 'i2p-console')
+    const i2pMulti = sdk.MultiHost.of(effects, i2pConsoleHostId)
     const i2pConsoleOrigin = await i2pMulti.bindPort(i2pUiPort, {
       protocol: 'http',
     })
