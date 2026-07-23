@@ -252,7 +252,6 @@ export default {
     1740: 'Editar más valores en bitcoin.conf',
     1741: 'Archivo completo',
 
-
     // actions/config/autoconfig.ts
     1900: 'Auto-Configurar',
     1901: 'Configurar automáticamente bitcoin.conf para las necesidades de otro servicio',
@@ -275,6 +274,14 @@ export default {
     2002: 'Transmisión privada',
     2003: 'Cuando está habilitado, las transacciones enviadas mediante el RPC sendrawtransaction se transmiten a través de una conexión Tor o I2P separada por transacción, ocultando la IP del remitente a los pares y desvinculando múltiples transacciones del mismo remitente. Solo afecta a sendrawtransaction; los envíos desde la billetera interna no se ven afectados.',
     2004: 'Requiere que Tor o I2P estén activos. Bitcoin Core se negará a iniciar si ninguno está disponible.',
+
+    // Chain Recovery (3200 block)
+    3226: 'Veredictos de cadena restablecidos',
+    3227: 'Se borraron los veredictos de bloques inválidos heredados de la variante de bitcoind instalada anteriormente en ${count} punta(s) de cadena. El nodo ahora sigue la mejor cadena válida bajo las reglas de esta variante; reorganizarse hacia ella puede tardar un tiempo y requiere pares en esa cadena.',
+    3228: 'Algunas cadenas no recuperables',
+    3229: '${count} rama(s) de cadena inválida(s) heredada(s) de la variante anterior de bitcoind no pudieron reconsiderarse: este nodo podado ya no almacena los bloques necesarios para reorganizarse hacia ellas. Si el nodo parece atascado en la cadena equivocada, ejecute Reindexar blockchain (en un nodo podado esto vuelve a descargar la cadena).',
+    3230: 'Recuperación de cadena fallida',
+    3231: 'El borrado de los veredictos de bloques inválidos heredados de la variante anterior de bitcoind falló; se reintentará en el próximo reinicio. Error: ${error}',
   } satisfies LangDict,
   de_DE: {
     // main.ts
@@ -527,7 +534,6 @@ export default {
     1740: 'Weitere Werte in bitcoin.conf bearbeiten',
     1741: 'Vollständiges Archiv',
 
-
     // actions/config/autoconfig.ts
     1900: 'Auto-Konfiguration',
     1901: 'bitcoin.conf automatisch für die Anforderungen eines anderen Dienstes konfigurieren',
@@ -550,6 +556,14 @@ export default {
     2002: 'Privater Broadcast',
     2003: 'Wenn aktiviert, werden über den sendrawtransaction-RPC übermittelte Transaktionen pro Transaktion über eine separate Tor- oder I2P-Verbindung übertragen. Dadurch wird die IP des Absenders vor Peers verborgen und mehrere Transaktionen desselben Absenders werden nicht mehr verknüpfbar. Betrifft nur sendrawtransaction; interne Wallet-Sendungen bleiben unberührt.',
     2004: 'Erfordert aktives Tor oder I2P. Bitcoin Core verweigert den Start, wenn keines verfügbar ist.',
+
+    // Chain Recovery (3200 block)
+    3226: 'Chain-Urteile zurückgesetzt',
+    3227: 'Von der zuvor installierten bitcoind-Variante geerbte Ungültigkeits-Urteile auf ${count} Chain-Spitze(n) gelöscht. Der Knoten folgt jetzt der besten Chain, die unter den Regeln dieser Variante gültig ist; die Reorganisation dorthin kann eine Weile dauern und braucht Peers auf dieser Chain.',
+    3228: 'Einige Chains nicht wiederherstellbar',
+    3229: '${count} von der vorherigen bitcoind-Variante geerbte(r) ungültige(r) Chain-Zweig(e) konnten nicht überdacht werden: Dieser beschnittene Knoten speichert die für eine Reorganisation dorthin nötigen Blöcke nicht mehr. Wirkt der Knoten auf der falschen Chain festgefahren, führen Sie „Blockchain neu indizieren" aus (auf einem beschnittenen Knoten lädt dies die Chain neu herunter).',
+    3230: 'Chain-Wiederherstellung fehlgeschlagen',
+    3231: 'Das Löschen der von der vorherigen bitcoind-Variante geerbten Ungültigkeits-Urteile ist fehlgeschlagen; beim nächsten Neustart wird es erneut versucht. Fehler: ${error}',
   } satisfies LangDict,
   pl_PL: {
     // main.ts
@@ -802,7 +816,6 @@ export default {
     1740: 'Edytuj więcej wartości w bitcoin.conf',
     1741: 'Pełne archiwum',
 
-
     // actions/config/autoconfig.ts
     1900: 'Auto-Konfiguracja',
     1901: 'Automatycznie skonfiguruj bitcoin.conf dla potrzeb innej usługi',
@@ -825,6 +838,14 @@ export default {
     2002: 'Prywatne rozgłaszanie',
     2003: 'Gdy włączone, transakcje przesyłane przez RPC sendrawtransaction są rozgłaszane przez osobne połączenie Tor lub I2P na każdą transakcję, ukrywając IP nadawcy przed peerami i uniemożliwiając powiązanie wielu transakcji tego samego nadawcy. Dotyczy wyłącznie sendrawtransaction; wewnętrzne wysyłki z portfela nie są zmieniane.',
     2004: 'Wymaga aktywnego Tora lub I2P. Bitcoin Core odmówi uruchomienia, jeśli żadne z nich nie jest dostępne.',
+
+    // Chain Recovery (3200 block)
+    3226: 'Werdykty łańcucha zresetowane',
+    3227: 'Wyczyszczono werdykty nieważności bloków odziedziczone po poprzednio zainstalowanym wariancie bitcoind na ${count} wierzchołku(ach) łańcucha. Węzeł podąża teraz za najlepszym łańcuchem ważnym według reguł tego wariantu; reorganizacja może chwilę potrwać i wymaga peerów na tym łańcuchu.',
+    3228: 'Niektóre łańcuchy nie do odzyskania',
+    3229: '${count} nieważna(e) gałąź(zie) łańcucha odziedziczona(e) po poprzednim wariancie bitcoind nie mogły zostać ponownie rozważone: ten przycięty węzeł nie przechowuje już bloków potrzebnych do reorganizacji na nie. Jeśli węzeł wydaje się utknięty na niewłaściwym łańcuchu, uruchom „Przeindeksuj blockchain" (na przyciętym węźle oznacza to ponowne pobranie łańcucha).',
+    3230: 'Odzyskiwanie łańcucha nie powiodło się',
+    3231: 'Czyszczenie werdyktów nieważności bloków odziedziczonych po poprzednim wariancie bitcoind nie powiodło się; próba zostanie ponowiona przy następnym restarcie. Błąd: ${error}',
   } satisfies LangDict,
   fr_FR: {
     // main.ts
@@ -1077,7 +1098,6 @@ export default {
     1740: 'Modifier plus de valeurs dans bitcoin.conf',
     1741: 'Archive complète',
 
-
     // actions/config/autoconfig.ts
     1900: 'Auto-Configuration',
     1901: "Configurer automatiquement bitcoin.conf pour les besoins d'un autre service",
@@ -1100,5 +1120,13 @@ export default {
     2002: 'Diffusion privée',
     2003: "Lorsqu'activée, les transactions soumises via le RPC sendrawtransaction sont diffusées via une connexion Tor ou I2P distincte par transaction, masquant l'IP de l'expéditeur aux pairs et empêchant la corrélation de plusieurs transactions du même expéditeur. N'affecte que sendrawtransaction ; les envois depuis le portefeuille interne ne sont pas modifiés.",
     2004: "Nécessite que Tor ou I2P soit actif. Bitcoin Core refusera de démarrer si aucun des deux n'est disponible.",
+
+    // Chain Recovery (3200 block)
+    3226: 'Verdicts de chaîne réinitialisés',
+    3227: 'Verdicts de blocs invalides hérités de la variante bitcoind précédemment installée effacés sur ${count} pointe(s) de chaîne. Le nœud suit désormais la meilleure chaîne valide selon les règles de cette variante ; la réorganisation peut prendre un certain temps et nécessite des pairs sur cette chaîne.',
+    3228: 'Certaines chaînes non récupérables',
+    3229: "${count} branche(s) de chaîne invalide(s) héritée(s) de la variante bitcoind précédente n'ont pas pu être reconsidérées : ce nœud élagué ne stocke plus les blocs nécessaires pour se réorganiser vers elles. Si le nœud semble bloqué sur la mauvaise chaîne, exécutez « Réindexer la blockchain » (sur un nœud élagué cela retélécharge la chaîne).",
+    3230: 'Échec de la récupération de chaîne',
+    3231: "L'effacement des verdicts de blocs invalides hérités de la variante bitcoind précédente a échoué ; nouvelle tentative au prochain redémarrage. Erreur : ${error}",
   } satisfies LangDict,
 }
