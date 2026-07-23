@@ -14,7 +14,7 @@ export const current = VersionInfo.of({
 
 Full release notes: https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-30.3.md
 
-Adds chain-split recovery for the BIP-110 (RDTS) era: switching flavors now automatically clears invalid-block verdicts inherited from the RDTS-enforcing flavor, and a new Chain Recovery action group (Reconsider Invalid Blocks) gives manual control.`,
+Adds chain-split recovery for the BIP-110 (RDTS) era: switching flavors now automatically clears invalid-block verdicts inherited from the RDTS-enforcing flavor.`,
     es_ES: `Actualiza Bitcoin Core a 30.3.
 
 - Corrige un problema por el cual la base de datos del chainstate reescribía repetidamente grandes partes de sí misma, provocando lecturas y escrituras de disco excesivas durante el funcionamiento normal.
@@ -25,7 +25,7 @@ Adds chain-split recovery for the BIP-110 (RDTS) era: switching flavors now auto
 
 Notas de la versión completas: https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-30.3.md
 
-Añade recuperación ante divisiones de cadena para la era BIP-110 (RDTS): cambiar de variante ahora borra automáticamente los veredictos de bloques inválidos heredados de la variante que aplica RDTS, y un nuevo grupo de acciones Recuperación de cadena (Reconsiderar bloques inválidos) ofrece control manual.`,
+Añade recuperación ante divisiones de cadena para la era BIP-110 (RDTS): cambiar de variante ahora borra automáticamente los veredictos de bloques inválidos heredados de la variante que aplica RDTS.`,
     de_DE: `Aktualisiert Bitcoin Core auf 30.3.
 
 - Behebt ein Problem, bei dem die Chainstate-Datenbank wiederholt große Teile von sich selbst neu schrieb und dadurch im normalen Betrieb übermäßige Lese- und Schreibvorgänge auf der Festplatte verursachte.
@@ -36,7 +36,7 @@ Añade recuperación ante divisiones de cadena para la era BIP-110 (RDTS): cambi
 
 Vollständige Versionshinweise: https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-30.3.md
 
-Fügt Chain-Split-Wiederherstellung für die BIP-110-(RDTS-)Ära hinzu: Ein Variantenwechsel löscht jetzt automatisch von der RDTS-durchsetzenden Variante geerbte Ungültigkeits-Urteile, und eine neue Aktionsgruppe Chain-Wiederherstellung (Ungültige Blöcke überdenken) bietet manuelle Kontrolle.`,
+Fügt Chain-Split-Wiederherstellung für die BIP-110-(RDTS-)Ära hinzu: Ein Variantenwechsel löscht jetzt automatisch von der RDTS-durchsetzenden Variante geerbte Ungültigkeits-Urteile.`,
     pl_PL: `Aktualizuje Bitcoin Core do 30.3.
 
 - Naprawia problem, w którym baza danych chainstate wielokrotnie zapisywała od nowa duże swoje fragmenty, powodując nadmierny odczyt i zapis dysku podczas normalnej pracy.
@@ -47,7 +47,7 @@ Fügt Chain-Split-Wiederherstellung für die BIP-110-(RDTS-)Ära hinzu: Ein Vari
 
 Pełne informacje o wydaniu: https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-30.3.md
 
-Dodaje odzyskiwanie po podziale łańcucha na erę BIP-110 (RDTS): zmiana wariantu automatycznie czyści teraz werdykty nieważności bloków odziedziczone po wariancie egzekwującym RDTS, a nowa grupa akcji Odzyskiwanie łańcucha (Rozważ ponownie nieważne bloki) daje ręczną kontrolę.`,
+Dodaje odzyskiwanie po podziale łańcucha na erę BIP-110 (RDTS): zmiana wariantu automatycznie czyści teraz werdykty nieważności bloków odziedziczone po wariancie egzekwującym RDTS.`,
     fr_FR: `Met à jour Bitcoin Core vers 30.3.
 
 - Corrige un problème où la base de données chainstate réécrivait de façon répétée de grandes parties d'elle-même, provoquant des lectures et écritures disque excessives en fonctionnement normal.
@@ -58,7 +58,7 @@ Dodaje odzyskiwanie po podziale łańcucha na erę BIP-110 (RDTS): zmiana warian
 
 Notes de version complètes : https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-30.3.md
 
-Ajoute la récupération après scission de chaîne pour l'ère BIP-110 (RDTS) : changer de variante efface désormais automatiquement les verdicts de blocs invalides hérités de la variante appliquant RDTS, et un nouveau groupe d'actions Récupération de chaîne (Reconsidérer les blocs invalides) offre un contrôle manuel.`,
+Ajoute la récupération après scission de chaîne pour l'ère BIP-110 (RDTS) : changer de variante efface désormais automatiquement les verdicts de blocs invalides hérités de la variante appliquant RDTS.`,
   },
   migrations: {
     up: async ({ effects }) => {},

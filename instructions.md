@@ -55,12 +55,6 @@ Some options are fixed by the package and not exposed: RPC cookie authentication
 - **Reindex Chainstate** — rebuild just the chainstate from existing blocks (hidden on pruned nodes).
 - **Delete Peer List** / **Delete Transaction Index** / **Delete Coinstats Index** — remove a corrupted `peers.dat`, `txindex`, or `coinstatsindex`. The service must be stopped to run these.
 
-### Chain Recovery
-
-This action manages bitcoind's _persisted_ per-block validity verdicts — the records that survive restarts and flavor switches. It exists for chain-split scenarios; most users never need to run it manually because the package runs it automatically after a flavor switch (see below).
-
-- **Reconsider Invalid Blocks** — clear the invalid verdict from every invalid chain tip so the node re-evaluates those branches under its current consensus rules. Safe: genuinely invalid branches are re-marked automatically; no-op when there is nothing to clear.
-
 ### Switching flavors during a chain split
 
 Bitcoin Core and the Bitcoin Knots flavors share the `bitcoind` package id and data volume, so switching flavors keeps the synced chain. However, bitcoind permanently records its verdict on every block it has seen, and those verdicts do not record _which_ rules produced them — a freshly switched binary trusts them as-is and never re-checks buried blocks on its own. If the network splits over BIP-110 (RDTS), that inheritance would silently pin your node to the previous flavor's chain. Bitcoin Core never enforces RDTS, so only one direction needs correcting here, and it happens automatically at the first start after a switch:
