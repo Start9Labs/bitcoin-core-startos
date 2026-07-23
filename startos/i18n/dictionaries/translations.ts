@@ -276,19 +276,12 @@ export default {
     2004: 'Requiere que Tor o I2P estén activos. Bitcoin Core se negará a iniciar si ninguno está disponible.',
 
     // Chain Recovery (3200 block)
-    3200: 'Recuperación de cadena',
-    3214: 'Reconsiderar bloques inválidos',
-    3215: 'Borra el veredicto de invalidez persistido de cada punta de cadena inválida, permitiendo que el nodo reevalúe esas ramas bajo las reglas de consenso actualmente en ejecución y siga la mejor cadena válida bajo ellas. Úselo después de cambiar de variante de bitcoind durante una división de la cadena, para que los veredictos heredados de la variante anterior no puedan fijar el nodo a la cadena equivocada. Seguro: las ramas inválidas bajo las reglas en ejecución se vuelven a marcar como inválidas automáticamente, y la acción no hace nada cuando no existen puntas inválidas.',
-    3216: 'Si una rama reconsiderada tiene más trabajo que la cadena actual, el nodo se reorganiza hacia ella tras revalidarla, lo que puede tardar un tiempo. Alcanzar una rama que este nodo no ha descargado también requiere pares que la sirvan.',
-    3217: 'No se encontraron puntas de cadena inválidas — no había nada que reconsiderar.',
-    3218: '${count} punta(s) inválida(s) se dejaron intactas porque este nodo podado ya no almacena los bloques necesarios para reorganizarse hacia ellas; recuperar esas cadenas requiere Reindexar blockchain (una nueva descarga en nodos podados).',
-    3219: 'Se borraron los veredictos de invalidez en ${count} punta(s) de cadena. El nodo ahora seguirá la mejor cadena válida bajo sus reglas de consenso actuales; reorganizarse hacia una cadena mejor puede tardar un tiempo y requiere pares que la sirvan.',
     3226: 'Veredictos de cadena restablecidos',
     3227: 'Se borraron los veredictos de bloques inválidos heredados de la variante de bitcoind instalada anteriormente en ${count} punta(s) de cadena. El nodo ahora sigue la mejor cadena válida bajo las reglas de esta variante; reorganizarse hacia ella puede tardar un tiempo y requiere pares en esa cadena.',
     3228: 'Algunas cadenas no recuperables',
     3229: '${count} rama(s) de cadena inválida(s) heredada(s) de la variante anterior de bitcoind no pudieron reconsiderarse: este nodo podado ya no almacena los bloques necesarios para reorganizarse hacia ellas. Si el nodo parece atascado en la cadena equivocada, ejecute Reindexar blockchain (en un nodo podado esto vuelve a descargar la cadena).',
     3230: 'Recuperación de cadena fallida',
-    3231: 'El borrado de los veredictos de bloques inválidos heredados de la variante anterior de bitcoind falló; se reintentará en el próximo reinicio. También puede ejecutar la acción Reconsiderar bloques inválidos manualmente. Error: ${error}',
+    3231: 'El borrado de los veredictos de bloques inválidos heredados de la variante anterior de bitcoind falló; se reintentará en el próximo reinicio. Error: ${error}',
   } satisfies LangDict,
   de_DE: {
     // main.ts
@@ -565,19 +558,12 @@ export default {
     2004: 'Erfordert aktives Tor oder I2P. Bitcoin Core verweigert den Start, wenn keines verfügbar ist.',
 
     // Chain Recovery (3200 block)
-    3200: 'Chain-Wiederherstellung',
-    3214: 'Ungültige Blöcke überdenken',
-    3215: 'Löscht das persistierte Ungültigkeits-Urteil von jeder ungültigen Chain-Spitze, sodass der Knoten diese Zweige unter den aktuell laufenden Konsensregeln neu bewertet und der besten darunter gültigen Chain folgt. Nach einem Wechsel der bitcoind-Variante über eine Chain-Spaltung hinweg verwenden, damit von der vorherigen Variante geerbte Urteile den Knoten nicht auf der falschen Chain festhalten. Sicher: Unter den laufenden Regeln ungültige Zweige werden automatisch wieder als ungültig markiert, und die Aktion tut nichts, wenn keine ungültigen Spitzen existieren.',
-    3216: 'Hat ein überdachter Zweig mehr Arbeit als die aktuelle Chain, reorganisiert sich der Knoten nach erneuter Validierung auf ihn, was eine Weile dauern kann. Um einen Zweig zu erreichen, den dieser Knoten nicht heruntergeladen hat, braucht es außerdem Peers, die ihn bereitstellen.',
-    3217: 'Keine ungültigen Chain-Spitzen gefunden — es gab nichts zu überdenken.',
-    3218: '${count} ungültige Spitze(n) wurden unangetastet gelassen, weil dieser beschnittene Knoten die Blöcke für eine Reorganisation dorthin nicht mehr speichert; die Wiederherstellung dieser Chains erfordert „Blockchain neu indizieren" (auf beschnittenen Knoten ein erneuter Download).',
-    3219: 'Ungültigkeits-Urteile auf ${count} Chain-Spitze(n) gelöscht. Der Knoten folgt jetzt der besten Chain, die unter seinen aktuellen Konsensregeln gültig ist; die Reorganisation auf eine bessere Chain kann eine Weile dauern und braucht Peers, die sie bereitstellen.',
     3226: 'Chain-Urteile zurückgesetzt',
     3227: 'Von der zuvor installierten bitcoind-Variante geerbte Ungültigkeits-Urteile auf ${count} Chain-Spitze(n) gelöscht. Der Knoten folgt jetzt der besten Chain, die unter den Regeln dieser Variante gültig ist; die Reorganisation dorthin kann eine Weile dauern und braucht Peers auf dieser Chain.',
     3228: 'Einige Chains nicht wiederherstellbar',
     3229: '${count} von der vorherigen bitcoind-Variante geerbte(r) ungültige(r) Chain-Zweig(e) konnten nicht überdacht werden: Dieser beschnittene Knoten speichert die für eine Reorganisation dorthin nötigen Blöcke nicht mehr. Wirkt der Knoten auf der falschen Chain festgefahren, führen Sie „Blockchain neu indizieren" aus (auf einem beschnittenen Knoten lädt dies die Chain neu herunter).',
     3230: 'Chain-Wiederherstellung fehlgeschlagen',
-    3231: 'Das Löschen der von der vorherigen bitcoind-Variante geerbten Ungültigkeits-Urteile ist fehlgeschlagen; beim nächsten Neustart wird es erneut versucht. Sie können auch die Aktion „Ungültige Blöcke überdenken" manuell ausführen. Fehler: ${error}',
+    3231: 'Das Löschen der von der vorherigen bitcoind-Variante geerbten Ungültigkeits-Urteile ist fehlgeschlagen; beim nächsten Neustart wird es erneut versucht. Fehler: ${error}',
   } satisfies LangDict,
   pl_PL: {
     // main.ts
@@ -854,19 +840,12 @@ export default {
     2004: 'Wymaga aktywnego Tora lub I2P. Bitcoin Core odmówi uruchomienia, jeśli żadne z nich nie jest dostępne.',
 
     // Chain Recovery (3200 block)
-    3200: 'Odzyskiwanie łańcucha',
-    3214: 'Rozważ ponownie nieważne bloki',
-    3215: 'Czyści utrwalony werdykt nieważności z każdego nieważnego wierzchołka łańcucha, pozwalając węzłowi ponownie ocenić te gałęzie według aktualnie obowiązujących reguł konsensusu i podążać za najlepszym ważnym według nich łańcuchem. Użyj po zmianie wariantu bitcoind w trakcie podziału łańcucha, aby werdykty odziedziczone po poprzednim wariancie nie przypięły węzła do niewłaściwego łańcucha. Bezpieczne: gałęzie nieważne według obowiązujących reguł zostaną automatycznie ponownie oznaczone jako nieważne, a akcja nic nie robi, gdy nie ma nieważnych wierzchołków.',
-    3216: 'Jeśli ponownie rozważona gałąź ma więcej pracy niż bieżący łańcuch, węzeł po ponownej weryfikacji reorganizuje się na nią, co może chwilę potrwać. Dotarcie do gałęzi, której ten węzeł nie pobrał, wymaga też peerów, którzy ją udostępniają.',
-    3217: 'Nie znaleziono nieważnych wierzchołków łańcucha — nie było nic do ponownego rozważenia.',
-    3218: '${count} nieważny(e) wierzchołek(ki) pozostawiono bez zmian, ponieważ ten przycięty węzeł nie przechowuje już bloków potrzebnych do reorganizacji na nie; odzyskanie tych łańcuchów wymaga akcji „Przeindeksuj blockchain" (na przyciętych węzłach ponowne pobranie).',
-    3219: 'Wyczyszczono werdykty nieważności na ${count} wierzchołku(ach) łańcucha. Węzeł będzie teraz podążał za najlepszym łańcuchem ważnym według jego bieżących reguł konsensusu; reorganizacja na lepszy łańcuch może chwilę potrwać i wymaga peerów, którzy go udostępniają.',
     3226: 'Werdykty łańcucha zresetowane',
     3227: 'Wyczyszczono werdykty nieważności bloków odziedziczone po poprzednio zainstalowanym wariancie bitcoind na ${count} wierzchołku(ach) łańcucha. Węzeł podąża teraz za najlepszym łańcuchem ważnym według reguł tego wariantu; reorganizacja może chwilę potrwać i wymaga peerów na tym łańcuchu.',
     3228: 'Niektóre łańcuchy nie do odzyskania',
     3229: '${count} nieważna(e) gałąź(zie) łańcucha odziedziczona(e) po poprzednim wariancie bitcoind nie mogły zostać ponownie rozważone: ten przycięty węzeł nie przechowuje już bloków potrzebnych do reorganizacji na nie. Jeśli węzeł wydaje się utknięty na niewłaściwym łańcuchu, uruchom „Przeindeksuj blockchain" (na przyciętym węźle oznacza to ponowne pobranie łańcucha).',
     3230: 'Odzyskiwanie łańcucha nie powiodło się',
-    3231: 'Czyszczenie werdyktów nieważności bloków odziedziczonych po poprzednim wariancie bitcoind nie powiodło się; próba zostanie ponowiona przy następnym restarcie. Możesz też ręcznie uruchomić akcję „Rozważ ponownie nieważne bloki". Błąd: ${error}',
+    3231: 'Czyszczenie werdyktów nieważności bloków odziedziczonych po poprzednim wariancie bitcoind nie powiodło się; próba zostanie ponowiona przy następnym restarcie. Błąd: ${error}',
   } satisfies LangDict,
   fr_FR: {
     // main.ts
@@ -1143,18 +1122,11 @@ export default {
     2004: "Nécessite que Tor ou I2P soit actif. Bitcoin Core refusera de démarrer si aucun des deux n'est disponible.",
 
     // Chain Recovery (3200 block)
-    3200: 'Récupération de chaîne',
-    3214: 'Reconsidérer les blocs invalides',
-    3215: "Efface le verdict d'invalidité persistant de chaque pointe de chaîne invalide, permettant au nœud de réévaluer ces branches selon les règles de consensus en vigueur et de suivre la meilleure chaîne valide selon elles. À utiliser après un changement de variante de bitcoind pendant une scission de chaîne, afin que les verdicts hérités de la variante précédente ne puissent pas épingler le nœud à la mauvaise chaîne. Sûr : les branches invalides selon les règles en vigueur sont automatiquement re-marquées comme invalides, et l'action ne fait rien quand aucune pointe invalide n'existe.",
-    3216: "Si une branche reconsidérée a plus de travail que la chaîne actuelle, le nœud se réorganise vers elle après l'avoir revalidée, ce qui peut prendre un certain temps. Atteindre une branche que ce nœud n'a pas téléchargée nécessite aussi des pairs qui la servent.",
-    3217: "Aucune pointe de chaîne invalide trouvée — il n'y avait rien à reconsidérer.",
-    3218: '${count} pointe(s) invalide(s) ont été laissées telles quelles car ce nœud élagué ne stocke plus les blocs nécessaires pour se réorganiser vers elles ; récupérer ces chaînes nécessite « Réindexer la blockchain » (un retéléchargement sur les nœuds élagués).',
-    3219: "Verdicts d'invalidité effacés sur ${count} pointe(s) de chaîne. Le nœud suivra désormais la meilleure chaîne valide selon ses règles de consensus actuelles ; se réorganiser vers une meilleure chaîne peut prendre un certain temps et nécessite des pairs qui la servent.",
     3226: 'Verdicts de chaîne réinitialisés',
     3227: 'Verdicts de blocs invalides hérités de la variante bitcoind précédemment installée effacés sur ${count} pointe(s) de chaîne. Le nœud suit désormais la meilleure chaîne valide selon les règles de cette variante ; la réorganisation peut prendre un certain temps et nécessite des pairs sur cette chaîne.',
     3228: 'Certaines chaînes non récupérables',
     3229: "${count} branche(s) de chaîne invalide(s) héritée(s) de la variante bitcoind précédente n'ont pas pu être reconsidérées : ce nœud élagué ne stocke plus les blocs nécessaires pour se réorganiser vers elles. Si le nœud semble bloqué sur la mauvaise chaîne, exécutez « Réindexer la blockchain » (sur un nœud élagué cela retélécharge la chaîne).",
     3230: 'Échec de la récupération de chaîne',
-    3231: "L'effacement des verdicts de blocs invalides hérités de la variante bitcoind précédente a échoué ; nouvelle tentative au prochain redémarrage. Vous pouvez aussi exécuter manuellement l'action « Reconsidérer les blocs invalides ». Erreur : ${error}",
+    3231: "L'effacement des verdicts de blocs invalides hérités de la variante bitcoind précédente a échoué ; nouvelle tentative au prochain redémarrage. Erreur : ${error}",
   } satisfies LangDict,
 }

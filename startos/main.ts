@@ -367,7 +367,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
                 level: 'error',
                 title: i18n('Chain Recovery Failed'),
                 message: i18n(
-                  'Clearing invalid-block verdicts inherited from the previous bitcoind flavor failed; it will be retried at the next restart. You can also run the Reconsider Invalid Blocks action manually. Error: ${error}',
+                  'Clearing invalid-block verdicts inherited from the previous bitcoind flavor failed; it will be retried at the next restart. Error: ${error}',
                   { error: String(e) },
                 ),
               })
