@@ -166,14 +166,6 @@ This is transparent to dependent services — port 8332 always serves RPC.
 | **Delete Transaction Index** | Delete corrupted txindex                                          | Stopped only |
 | **Delete Coinstats Index**   | Delete corrupted coinstatsindex                                   | Stopped only |
 
-### Chain Recovery
-
-| Action                        | Purpose                                                                                          | Availability |
-| ----------------------------- | ------------------------------------------------------------------------------------------------ | ------------ |
-| **Reconsider Invalid Blocks** | Clear persisted invalid verdicts on all invalid chain tips (`reconsiderblock` each; prune-aware) | Running only |
-
-See [Chain-Split Recovery](#chain-split-recovery) for the automation around these.
-
 ### Advanced
 
 | Action                                  | Purpose                                                         | Availability |
@@ -327,7 +319,6 @@ actions:
   - delete-rpcauth
   - reindex-blockchain
   - reindex-chainstate
-  - reconsider-invalid-blocks
   - delete-peers
   - delete-txindex
   - delete-coinstats-index
