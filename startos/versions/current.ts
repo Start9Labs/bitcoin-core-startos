@@ -2,7 +2,7 @@ import { VersionInfo } from '@start9labs/start-sdk'
 import { rm } from 'fs/promises'
 
 export const current = VersionInfo.of({
-  version: '31.1:0',
+  version: '31.1:1',
   releaseNotes: {
     en_US: `Updated Bitcoin Core to 31.1.
 
@@ -71,6 +71,6 @@ Ajoute la récupération après scission de chaîne pour l'ère BIP-110 (RDTS) :
     },
   },
 })
-  .satisfies('30.3:0')
-  .satisfies('29.4:0')
-  .satisfies('28.4:13')
+  .satisfies('30.3:1')
+  .satisfies('29.4:1')
+  .satisfies('28.4:14')
