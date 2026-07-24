@@ -1,7 +1,7 @@
 import { VersionInfo } from '@start9labs/start-sdk'
 
 export const current = VersionInfo.of({
-  version: '29.4:0',
+  version: '29.4:1',
   releaseNotes: {
     en_US: `Updated Bitcoin Core to 29.4.
 
@@ -58,4 +58,4 @@ Ajoute la récupération après scission de chaîne pour l'ère BIP-110 (RDTS) :
     up: async ({ effects }) => {},
     down: async ({ effects }) => {},
   },
-}).satisfies('28.4:13')
+}).satisfies('28.4:14')
