@@ -1,23 +1,23 @@
 import { IMPOSSIBLE, VersionInfo } from '@start9labs/start-sdk'
 
 export const current = VersionInfo.of({
-  version: '28.4:16',
+  version: '28.4:17',
   releaseNotes: {
-    en_US: `Resolves the addresses of connected services more reliably.
+    en_US: `Gives local services a dedicated, trusted connection for downloading blocks.
 
-Bitcoin Core looked up where to reach its dependencies through a field that only applies to one of the two ways a service can publish a port. It now reads the address itself, so a dependency changing how it serves TLS can no longer leave Bitcoin Core unable to find it. Nothing changes in normal operation.`,
-    es_ES: `Resuelve de forma más fiable las direcciones de los servicios conectados.
+Services on this server that pull blocks from Bitcoin Core over the peer protocol — Electrs, for instance — were connecting on the same port as anonymous peers from the internet, and were treated with the same suspicion: liable to be dropped to make room for another peer, and subject to the limits that protect your upload bandwidth. They now connect on a separate, local-only port that Bitcoin Core trusts, so a busy wallet query can no longer get them disconnected. Connections from the internet are unaffected and still arrive on the public port.`,
+    es_ES: `Ofrece a los servicios locales una conexión dedicada y de confianza para descargar bloques.
 
-Bitcoin Core localizaba sus dependencias mediante un campo que solo se aplica a una de las dos formas en que un servicio puede publicar un puerto. Ahora lee la dirección en sí, de modo que si una dependencia cambia su forma de servir TLS, Bitcoin Core seguirá encontrándola. En funcionamiento normal no cambia nada.`,
-    de_DE: `Ermittelt die Adressen verbundener Dienste zuverlässiger.
+Los servicios de este servidor que obtienen bloques de Bitcoin Core mediante el protocolo entre pares —Electrs, por ejemplo— se conectaban por el mismo puerto que los pares anónimos de internet y recibían el mismo trato receloso: podían ser desconectados para dejar sitio a otro par y estaban sujetos a los límites que protegen tu ancho de banda de subida. Ahora se conectan por un puerto aparte, solo local, en el que Bitcoin Core confía, de modo que una consulta intensa de una cartera ya no puede provocar su desconexión. Las conexiones desde internet no cambian y siguen llegando al puerto público.`,
+    de_DE: `Gibt lokalen Diensten eine eigene, vertrauenswürdige Verbindung zum Herunterladen von Blöcken.
 
-Bitcoin Core suchte seine Abhängigkeiten über ein Feld, das nur für eine der beiden Arten gilt, auf die ein Dienst einen Port veröffentlichen kann. Jetzt wird die Adresse selbst gelesen, sodass eine Abhängigkeit, die ihre TLS-Bereitstellung ändert, für Bitcoin Core auffindbar bleibt. Im normalen Betrieb ändert sich nichts.`,
-    pl_PL: `Pewniej ustala adresy połączonych usług.
+Dienste auf diesem Server, die Blöcke über das Peer-Protokoll von Bitcoin Core beziehen — etwa Electrs —, verbanden sich über denselben Port wie anonyme Gegenstellen aus dem Internet und wurden ebenso misstrauisch behandelt: Sie konnten getrennt werden, um Platz für eine andere Gegenstelle zu schaffen, und unterlagen den Limits, die deine Upload-Bandbreite schützen. Jetzt verbinden sie sich über einen separaten, rein lokalen Port, dem Bitcoin Core vertraut, sodass eine intensive Wallet-Abfrage sie nicht mehr trennen kann. Verbindungen aus dem Internet bleiben unverändert und laufen weiterhin über den öffentlichen Port.`,
+    pl_PL: `Daje lokalnym usługom dedykowane, zaufane połączenie do pobierania bloków.
 
-Bitcoin Core wyszukiwał swoje zależności przez pole, które dotyczy tylko jednego z dwóch sposobów publikowania portu przez usługę. Teraz odczytuje sam adres, więc zależność zmieniająca sposób udostępniania TLS nadal pozostanie odnajdywalna dla Bitcoin Core. W normalnej pracy nic się nie zmienia.`,
-    fr_FR: `Détermine plus fiablement les adresses des services connectés.
+Usługi na tym serwerze, które pobierają bloki z Bitcoin Core przez protokół peer-to-peer — na przykład Electrs — łączyły się tym samym portem co anonimowe węzły z internetu i były traktowane równie nieufnie: mogły zostać rozłączone, by zrobić miejsce innemu węzłowi, i podlegały limitom chroniącym twoje pasmo wysyłania. Teraz łączą się osobnym, wyłącznie lokalnym portem, któremu Bitcoin Core ufa, więc intensywne zapytanie portfela nie może już ich rozłączyć. Połączenia z internetu nie zmieniają się i nadal trafiają na port publiczny.`,
+    fr_FR: `Donne aux services locaux une connexion dédiée et de confiance pour télécharger les blocs.
 
-Bitcoin Core localisait ses dépendances via un champ qui ne s'applique qu'à l'un des deux modes de publication d'un port par un service. Il lit désormais l'adresse elle-même : une dépendance qui change sa façon de servir TLS reste donc trouvable par Bitcoin Core. Rien ne change en fonctionnement normal.`,
+Les services de ce serveur qui récupèrent des blocs auprès de Bitcoin Core via le protocole pair-à-pair — Electrs, par exemple — se connectaient sur le même port que les pairs anonymes d'internet et étaient traités avec la même méfiance : susceptibles d'être déconnectés pour laisser la place à un autre pair, et soumis aux limites qui protègent votre bande passante montante. Ils se connectent désormais sur un port distinct, uniquement local, auquel Bitcoin Core fait confiance, de sorte qu'une requête de portefeuille intensive ne peut plus provoquer leur déconnexion. Les connexions venues d'internet sont inchangées et arrivent toujours sur le port public.`,
   },
   migrations: {
     up: async ({ effects }) => {},
