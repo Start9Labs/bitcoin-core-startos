@@ -7,6 +7,18 @@ export const peerHostId = 'peer'
 export const zmqHostId = 'zmq'
 export const i2pConsoleHostId = 'i2p-console'
 
+/**
+ * The whitelisted p2p listener, for services on the LXC bridge. Bound without
+ * an exported interface, so it is reachable only over the bridge — a dependent
+ * resolves it with `sdk.host.getBridgeAddress({ hostId: peerLocalHostId,
+ * internalPort: peerPortLocal })`.
+ *
+ * A dependent that fetches blocks over p2p (electrs, NBXplorer) must use this
+ * host rather than `peerHostId`: the latter maps onto the plain `bind`, where
+ * it lands with no permissions alongside public inbound peers.
+ */
+export const peerLocalHostId = 'peer-local'
+
 // Interface ids (the exported service interfaces on the hosts above).
 export const rpcInterfaceId = 'rpc'
 export const peerInterfaceId = 'peer'
@@ -16,8 +28,12 @@ export const zmqTxInterfaceId = 'zmq-tx'
 export const zmqPortBlock = 28332
 export const zmqPortTransaction = 28333
 
+/** Host-side port the public `peer` binding prefers — the canonical p2p port. */
 export const peerPortExternal = 8333
+/** Container port bitcoind plain-binds (`bind`); the `peer` binding maps here. */
 export const peerPortInternal = 58333
+/** Container port bitcoind whitelists (`whitebind`); the `peer-local` binding maps here. */
+export const peerPortLocal = 58334
 
 export const rpcPort = 8332
 export const rpcPortPruned = 58332
