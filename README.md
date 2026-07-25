@@ -39,11 +39,11 @@ This package shares the `bitcoind` package ID with [Bitcoin Knots](https://githu
 
 ## Image and Container Runtime
 
-| Property      | Value                                                                       |
-| ------------- | --------------------------------------------------------------------------- |
-| Image         | Debian-based Dockerfile that downloads upstream Guix-built binaries         |
-| Architectures | x86_64, aarch64, riscv64                                                    |
-| Entrypoint    | `bitcoind` (or `/opt/bitcoin/libexec/bitcoin-node` when IPC is enabled)     |
+| Property      | Value                                                                   |
+| ------------- | ----------------------------------------------------------------------- |
+| Image         | Debian-based Dockerfile that downloads upstream Guix-built binaries     |
+| Architectures | x86_64, aarch64, riscv64                                                |
+| Entrypoint    | `bitcoind` (or `/opt/bitcoin/libexec/bitcoin-node` when IPC is enabled) |
 
 The Dockerfile fetches the upstream Bitcoin Core release tarball from `bitcoincore.org`, verifies `SHA256SUMS.asc` against a pinned 5-of-7 quorum of release signers, and copies `bitcoind`, `bitcoin-cli`, and `libexec/bitcoin-node` into a slim Debian runtime alongside `curl`, `yq`, `jq`, `tini`, and `e2fsprogs`. ZMQ and IPC support come from the upstream binary.
 
@@ -84,12 +84,12 @@ Blockchain data directories (`blocks/`, `chainstate/`, `indexes/`) reside on the
 
 Out of the box, Bitcoin Core on StartOS connects to the Bitcoin network over multiple transports with no user configuration required:
 
-| Transport     | Default                                   | Inbound                             | How to change                                       |
-| ------------- | ----------------------------------------- | ----------------------------------- | --------------------------------------------------- |
-| **I2P**       | Enabled (embedded `i2pd` SAM proxy)       | Accepted (`i2pacceptincoming=true`) | Peer Settings → I2P SAM Proxy → Disabled            |
-| **Tor**       | Outbound via StartOS Tor proxy (`-onion`) | No (no onion address advertised)    | Add an onion address on the peer interface           |
-| **IPv4/IPv6** | Enabled (clearnet peer discovery)         | No (`externalip` not set)           | Publish an IP address on the peer interface          |
-| **BIP324 v2** | Enabled (`v2transport=true`)              | —                                   | Peer Settings → Use V2 P2P Transport Protocol       |
+| Transport     | Default                                   | Inbound                             | How to change                                 |
+| ------------- | ----------------------------------------- | ----------------------------------- | --------------------------------------------- |
+| **I2P**       | Enabled (embedded `i2pd` SAM proxy)       | Accepted (`i2pacceptincoming=true`) | Peer Settings → I2P SAM Proxy → Disabled      |
+| **Tor**       | Outbound via StartOS Tor proxy (`-onion`) | No (no onion address advertised)    | Add an onion address on the peer interface    |
+| **IPv4/IPv6** | Enabled (clearnet peer discovery)         | No (`externalip` not set)           | Publish an IP address on the peer interface   |
+| **BIP324 v2** | Enabled (`v2transport=true`)              | —                                   | Peer Settings → Use V2 P2P Transport Protocol |
 
 To restrict outbound connections to specific networks only, use the **onlynet** setting in Peer Settings.
 
@@ -101,22 +101,22 @@ Bitcoin Core is configured through **StartOS actions** that write to `bitcoin.co
 
 ### Configuration Actions
 
-| Action               | Settings                                                                                                                                                                                         |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Mempool Settings** | persistmempool, maxmempool, mempoolexpiry, permitbaremultisig, OP_RETURN (datacarrier/datacarriersize), blocksonly                                                                               |
-| **Peer Settings**    | onlynet (ipv4/ipv6/onion/i2p), BIP324 v2transport, I2P SAM proxy (enabled/disabled), connect/addnode peers, maxconnections                                                                       |
-| **RPC Settings**     | rpcservertimeout, rpcthreads, rpcworkqueue                                                                                                                                                       |
+| Action               | Settings                                                                                                                                                                     |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Mempool Settings** | persistmempool, maxmempool, mempoolexpiry, permitbaremultisig, OP_RETURN (datacarrier/datacarriersize), blocksonly                                                           |
+| **Peer Settings**    | onlynet (ipv4/ipv6/onion/i2p), BIP324 v2transport, I2P SAM proxy (enabled/disabled), connect/addnode peers, maxconnections                                                   |
+| **RPC Settings**     | rpcservertimeout, rpcthreads, rpcworkqueue                                                                                                                                   |
 | **Other Settings**   | ZMQ, txindex, blocknotify, coinstatsindex, wallet settings (enable/avoidpartialspends/discardfee), pruning, dbcache, dbbatchsize, BIP158/BIP157 block filters, bloom filters |
 
 Settings **not** managed by StartOS (hardcoded):
 
-| Setting         | Value                | Reason                             |
-| --------------- | -------------------- | ---------------------------------- |
-| `rpccookiefile` | `.cookie`            | Fixed RPC authentication           |
-| `whitebind`     | `0.0.0.0:8333`       | Required for peer connections      |
-| `bind`          | `0.0.0.0:58333`      | Internal peer listening port       |
-| `listen`        | `1`                  | Always accepting connections       |
-| `assumevalid`   | Hardcoded block hash | Performance optimization           |
+| Setting         | Value                | Reason                                                                                                              |
+| --------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `rpccookiefile` | `.cookie`            | Fixed RPC authentication                                                                                            |
+| `whitebind`     | `0.0.0.0:8333`       | Required for peer connections                                                                                       |
+| `bind`          | `0.0.0.0:58333`      | Internal peer listening port                                                                                        |
+| `listen`        | `1`                  | Always accepting connections                                                                                        |
+| `assumevalid`   | Hardcoded block hash | Performance optimization                                                                                            |
 | `-onion`        | `10.0.3.1:9050`      | Tor SOCKS on the internal bridge (resolved at startup; always set — harmless connection-refused when Tor is absent) |
 
 ### Pruned Node Architecture
@@ -130,25 +130,25 @@ This is transparent to dependent services — port 8332 always serves RPC.
 
 ## Network Access and Interfaces
 
-| Interface   | Port  | Protocol | Purpose                          | Condition                                  |
-| ----------- | ----- | -------- | -------------------------------- | ------------------------------------------ |
-| RPC         | 8332  | HTTP     | JSON-RPC commands                | Always                                     |
-| Peer        | 8333  | TCP      | Bitcoin peer-to-peer connections | Always                                     |
-| ZeroMQ      | 28332 | TCP      | Block notifications (rawblock, hashblock)  | When ZMQ enabled                           |
-| ZeroMQ      | 28333 | TCP      | Transaction notifications (rawtx, hashtx, sequence) | When ZMQ enabled                |
-| I2P Console | 7070  | HTTP     | I2P daemon web console           | When embedded I2P enabled with web console |
+| Interface   | Port  | Protocol | Purpose                                             | Condition                                  |
+| ----------- | ----- | -------- | --------------------------------------------------- | ------------------------------------------ |
+| RPC         | 8332  | HTTP     | JSON-RPC commands                                   | Always                                     |
+| Peer        | 8333  | TCP      | Bitcoin peer-to-peer connections                    | Always                                     |
+| ZeroMQ      | 28332 | TCP      | Block notifications (rawblock, hashblock)           | When ZMQ enabled                           |
+| ZeroMQ      | 28333 | TCP      | Transaction notifications (rawtx, hashtx, sequence) | When ZMQ enabled                           |
+| I2P Console | 7070  | HTTP     | I2P daemon web console                              | When embedded I2P enabled with web console |
 
 ## Actions (StartOS UI)
 
 ### Configuration
 
-| Action               | Purpose                                                                  | Availability |
-| -------------------- | ------------------------------------------------------------------------ | ------------ |
-| **Mempool Settings** | Configure mempool behavior                                               | Any          |
-| **Peer Settings**    | Configure networking, I2P, peer connections                              | Any          |
-| **RPC Settings**     | Configure RPC server parameters                                          | Any          |
-| **Other Settings**   | Configure ZMQ, indexes, wallets, pruning, performance tuning             | Any          |
-| **Enable IPC**       | Toggle inter-process communication via Unix socket (experimental)        | Any          |
+| Action               | Purpose                                                           | Availability |
+| -------------------- | ----------------------------------------------------------------- | ------------ |
+| **Mempool Settings** | Configure mempool behavior                                        | Any          |
+| **Peer Settings**    | Configure networking, I2P, peer connections                       | Any          |
+| **RPC Settings**     | Configure RPC server parameters                                   | Any          |
+| **Other Settings**   | Configure ZMQ, indexes, wallets, pruning, performance tuning      | Any          |
+| **Enable IPC**       | Toggle inter-process communication via Unix socket (experimental) | Any          |
 
 ### RPC Users
 
@@ -218,13 +218,13 @@ Notifications accompany every consequential outcome (verdicts cleared, tips skip
 
 ### Tor (optional, conditional)
 
-| Property | Value |
-|----------|-------|
-| Version constraint | `>= 0.4.9.5` |
-| Required state | Running |
-| Health checks | None |
-| Mounted volumes | None |
-| Purpose | Tor SOCKS proxy for outbound connections and onion address advertisement |
+| Property           | Value                                                                    |
+| ------------------ | ------------------------------------------------------------------------ |
+| Version constraint | `>= 0.4.9.5`                                                             |
+| Required state     | Running                                                                  |
+| Health checks      | None                                                                     |
+| Mounted volumes    | None                                                                     |
+| Purpose            | Tor SOCKS proxy for outbound connections and onion address advertisement |
 
 Required when `externalip` contains a `.onion` address or `onlynet` includes `onion`. When a Tor onion address is added to the peer interface, it is automatically set as `externalip` in `bitcoin.conf` and advertised to peers. Other StartOS services (LND, Core Lightning, Electrs, etc.) depend on Bitcoin Core.
 
@@ -234,16 +234,16 @@ Only settings that **diverge from upstream Bitcoin Core defaults** are seeded in
 
 ### Seeded overrides (written to `bitcoin.conf` on install)
 
-| Setting | Upstream Default | Our Default | Reason |
-| --- | --- | --- | --- |
-| `dbcache` | 450 MiB | 25% of system RAM (max 5120 MiB) | Faster IBD; reset to upstream default automatically after initial sync completes |
-| `dbbatchsize` | 16777216 (16 MiB) | RAM-scaled (16–33 MiB) | Faster UTXO writes during sync; reset to upstream default after initial sync |
-| `blockfilterindex` | off | `basic` | Required by dependent services (Electrs, etc.) for BIP158 filters |
-| `zmqpubrawblock`, `zmqpubhashblock` | off | `tcp://0.0.0.0:28332` | Required by dependent services (LND, etc.) |
-| `zmqpubrawtx`, `zmqpubhashtx`, `zmqpubsequence` | off | `tcp://0.0.0.0:28333` | Required by dependent services (LND, etc.) |
-| `i2psam` | off | `127.0.0.1:7656` | Embedded I2P daemon for peer-to-peer privacy |
-| `assumevalid` | built-in block hash | custom block hash | Performance optimization for IBD |
-| `prune` (disk < 900 GB only) | 0 (off) | 550 MiB | Automatic pruning on smaller disks |
+| Setting                                         | Upstream Default    | Our Default                      | Reason                                                                           |
+| ----------------------------------------------- | ------------------- | -------------------------------- | -------------------------------------------------------------------------------- |
+| `dbcache`                                       | 450 MiB             | 25% of system RAM (max 5120 MiB) | Faster IBD; reset to upstream default automatically after initial sync completes |
+| `dbbatchsize`                                   | 16777216 (16 MiB)   | RAM-scaled (16–33 MiB)           | Faster UTXO writes during sync; reset to upstream default after initial sync     |
+| `blockfilterindex`                              | off                 | `basic`                          | Required by dependent services (Electrs, etc.) for BIP158 filters                |
+| `zmqpubrawblock`, `zmqpubhashblock`             | off                 | `tcp://0.0.0.0:28332`            | Required by dependent services (LND, etc.)                                       |
+| `zmqpubrawtx`, `zmqpubhashtx`, `zmqpubsequence` | off                 | `tcp://0.0.0.0:28333`            | Required by dependent services (LND, etc.)                                       |
+| `i2psam`                                        | off                 | `127.0.0.1:7656`                 | Embedded I2P daemon for peer-to-peer privacy                                     |
+| `assumevalid`                                   | built-in block hash | custom block hash                | Performance optimization for IBD                                                 |
+| `prune` (disk < 900 GB only)                    | 0 (off)             | 550 MiB                          | Automatic pruning on smaller disks                                               |
 
 ### Form defaults and footnotes
 
