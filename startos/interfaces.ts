@@ -6,8 +6,10 @@ import {
   i2pUiPort,
   peerHostId,
   peerInterfaceId,
+  peerLocalHostId,
   peerPortExternal,
   peerPortInternal,
+  peerPortLocal,
   rpcHostId,
   rpcInterfaceId,
   rpcPort,
@@ -69,6 +71,19 @@ export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
   const peerReceipt = await peerMultiOrigin.export([peer])
 
   receipts.push(peerReceipt)
+
+  // Whitelisted p2p for services on the bridge. bitcoind whitebinds this port,
+  // so a peer arriving on it gets noban + download + mempool — which a
+  // dependent that pulls historical blocks needs to avoid inbound eviction and
+  // the upload-target cutoff. No exported interface: an unexported binding
+  // stays off the LAN and lands only on lo/lxcbr0, so a public peer can't reach
+  // the permissions and keeps arriving on `peer`'s plain `bind`.
+  await sdk.MultiHost.of(effects, peerLocalHostId).bindPort(peerPortLocal, {
+    protocol: null,
+    preferredExternalPort: peerPortLocal,
+    addSsl: null,
+    secure: { ssl: false },
+  })
 
   // ZMQ (conditional). Block (28332) and transaction (28333) are exposed as
   // separate interfaces so a dependent (e.g. LND) can resolve each one's bridge
