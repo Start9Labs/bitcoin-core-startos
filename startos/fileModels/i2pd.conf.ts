@@ -41,7 +41,12 @@ export const shape = z.object({
       port: iniNumber.catch(i2pUiPort),
       strictheaders: iniBoolean.catch(false),
     })
-    .catch({ enabled: false, address: '0.0.0.0', port: i2pUiPort, strictheaders: false }),
+    .catch({
+      enabled: false,
+      address: '0.0.0.0',
+      port: i2pUiPort,
+      strictheaders: false,
+    }),
   httpproxy: z
     .object({
       enabled: iniBoolean.catch(false),
@@ -64,7 +69,12 @@ export const shape = z.object({
       port: iniNumber.catch(7650),
       password: z.string().catch('itoopie'),
     })
-    .catch({ enabled: true, address: '127.0.0.1', port: 7650, password: 'itoopie' }),
+    .catch({
+      enabled: true,
+      address: '127.0.0.1',
+      port: 7650,
+      password: 'itoopie',
+    }),
   upnp: z
     .object({
       enabled: iniBoolean.catch(false),
