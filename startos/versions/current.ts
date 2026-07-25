@@ -1,58 +1,23 @@
 import { VersionInfo } from '@start9labs/start-sdk'
 
 export const current = VersionInfo.of({
-  version: '29.4:1',
+  version: '29.4:2',
   releaseNotes: {
-    en_US: `Updated Bitcoin Core to 29.4.
+    en_US: `Resolves the addresses of connected services more reliably.
 
-- Fixes an issue where the chainstate database repeatedly rewrote large portions of itself, causing excessive disk reads and writes during normal operation.
-- Corrects the lifetime of precomputed transaction data during validation.
-- Improves wallet input size estimation, making fee calculation more accurate.
-- Includes updated translations.
+Bitcoin Core looked up where to reach its dependencies through a field that only applies to one of the two ways a service can publish a port. It now reads the address itself, so a dependency changing how it serves TLS can no longer leave Bitcoin Core unable to find it. Nothing changes in normal operation.`,
+    es_ES: `Resuelve de forma más fiable las direcciones de los servicios conectados.
 
-Full release notes: https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-29.4.md
+Bitcoin Core localizaba sus dependencias mediante un campo que solo se aplica a una de las dos formas en que un servicio puede publicar un puerto. Ahora lee la dirección en sí, de modo que si una dependencia cambia su forma de servir TLS, Bitcoin Core seguirá encontrándola. En funcionamiento normal no cambia nada.`,
+    de_DE: `Ermittelt die Adressen verbundener Dienste zuverlässiger.
 
-Adds chain-split recovery for the BIP-110 (RDTS) era: switching flavors now automatically clears invalid-block verdicts inherited from the RDTS-enforcing flavor.`,
-    es_ES: `Actualiza Bitcoin Core a 29.4.
+Bitcoin Core suchte seine Abhängigkeiten über ein Feld, das nur für eine der beiden Arten gilt, auf die ein Dienst einen Port veröffentlichen kann. Jetzt wird die Adresse selbst gelesen, sodass eine Abhängigkeit, die ihre TLS-Bereitstellung ändert, für Bitcoin Core auffindbar bleibt. Im normalen Betrieb ändert sich nichts.`,
+    pl_PL: `Pewniej ustala adresy połączonych usług.
 
-- Corrige un problema por el cual la base de datos del chainstate reescribía repetidamente grandes partes de sí misma, provocando lecturas y escrituras de disco excesivas durante el funcionamiento normal.
-- Corrige el tiempo de vida de los datos precalculados de las transacciones durante la validación.
-- Mejora la estimación del tamaño de las entradas del monedero, haciendo más precisos los cálculos de comisiones.
-- Incluye traducciones actualizadas.
+Bitcoin Core wyszukiwał swoje zależności przez pole, które dotyczy tylko jednego z dwóch sposobów publikowania portu przez usługę. Teraz odczytuje sam adres, więc zależność zmieniająca sposób udostępniania TLS nadal pozostanie odnajdywalna dla Bitcoin Core. W normalnej pracy nic się nie zmienia.`,
+    fr_FR: `Détermine plus fiablement les adresses des services connectés.
 
-Notas de la versión completas: https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-29.4.md
-
-Añade recuperación ante divisiones de cadena para la era BIP-110 (RDTS): cambiar de variante ahora borra automáticamente los veredictos de bloques inválidos heredados de la variante que aplica RDTS.`,
-    de_DE: `Aktualisiert Bitcoin Core auf 29.4.
-
-- Behebt ein Problem, bei dem die Chainstate-Datenbank wiederholt große Teile von sich selbst neu schrieb und dadurch im normalen Betrieb übermäßige Lese- und Schreibvorgänge auf der Festplatte verursachte.
-- Korrigiert die Lebensdauer der vorberechneten Transaktionsdaten während der Validierung.
-- Verbessert die Schätzung der Eingabegröße in der Wallet und macht die Gebührenberechnung dadurch genauer.
-- Enthält aktualisierte Übersetzungen.
-
-Vollständige Versionshinweise: https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-29.4.md
-
-Fügt Chain-Split-Wiederherstellung für die BIP-110-(RDTS-)Ära hinzu: Ein Variantenwechsel löscht jetzt automatisch von der RDTS-durchsetzenden Variante geerbte Ungültigkeits-Urteile.`,
-    pl_PL: `Aktualizuje Bitcoin Core do 29.4.
-
-- Naprawia problem, w którym baza danych chainstate wielokrotnie zapisywała od nowa duże swoje fragmenty, powodując nadmierny odczyt i zapis dysku podczas normalnej pracy.
-- Poprawia czas życia wstępnie obliczonych danych transakcji podczas walidacji.
-- Ulepsza szacowanie rozmiaru wejść w portfelu, dzięki czemu obliczanie opłat jest dokładniejsze.
-- Zawiera zaktualizowane tłumaczenia.
-
-Pełne informacje o wydaniu: https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-29.4.md
-
-Dodaje odzyskiwanie po podziale łańcucha na erę BIP-110 (RDTS): zmiana wariantu automatycznie czyści teraz werdykty nieważności bloków odziedziczone po wariancie egzekwującym RDTS.`,
-    fr_FR: `Met à jour Bitcoin Core vers 29.4.
-
-- Corrige un problème où la base de données chainstate réécrivait de façon répétée de grandes parties d'elle-même, provoquant des lectures et écritures disque excessives en fonctionnement normal.
-- Corrige la durée de vie des données de transaction précalculées lors de la validation.
-- Améliore l'estimation de la taille des entrées du portefeuille, rendant le calcul des frais plus précis.
-- Inclut des traductions mises à jour.
-
-Notes de version complètes : https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-29.4.md
-
-Ajoute la récupération après scission de chaîne pour l'ère BIP-110 (RDTS) : changer de variante efface désormais automatiquement les verdicts de blocs invalides hérités de la variante appliquant RDTS.`,
+Bitcoin Core localisait ses dépendances via un champ qui ne s'applique qu'à l'un des deux modes de publication d'un port par un service. Il lit désormais l'adresse elle-même : une dépendance qui change sa façon de servir TLS reste donc trouvable par Bitcoin Core. Rien ne change en fonctionnement normal.`,
   },
   migrations: {
     up: async ({ effects }) => {},
