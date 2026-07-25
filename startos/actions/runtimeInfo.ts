@@ -96,7 +96,6 @@ function getConnections(networkInfoRaw: GetNetworkInfo): T.ActionResultMember {
   }
 }
 
-
 function getBlockchainInfo(
   blockchainInfoRaw: GetBlockchainInfo,
 ): T.ActionResultMember {
