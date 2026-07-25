@@ -5,8 +5,8 @@ import { i18n } from '../i18n'
 import { sdk } from '../sdk'
 import {
   i2PSamAddress,
-  peerPortExternal,
   peerPortInternal,
+  peerPortLocal,
   rpcallowip,
   rpcallowipPruned,
   rpcbind,
@@ -65,8 +65,8 @@ export const shape = z.object({
     .literal(`0.0.0.0:${peerPortInternal}`)
     .catch(`0.0.0.0:${peerPortInternal}`),
   whitebind: z
-    .literal(`0.0.0.0:${peerPortExternal}`)
-    .catch(`0.0.0.0:${peerPortExternal}`),
+    .literal(`0.0.0.0:${peerPortLocal}`)
+    .catch(`0.0.0.0:${peerPortLocal}`),
   // Mempool enforced
   mempoolfullrbf: z.undefined().optional().catch(undefined),
 
@@ -648,7 +648,7 @@ function formToFile(
     rpccookiefile: '.cookie',
     listen: true,
     bind: `0.0.0.0:${peerPortInternal}`,
-    whitebind: `0.0.0.0:${peerPortExternal}`,
+    whitebind: `0.0.0.0:${peerPortLocal}`,
     rpcauth: raw?.rpcauth?.filter((a) => !!a) as string[] | undefined,
     whitelist: raw?.whitelist?.filter((a) => !!a) as string[] | undefined,
     externalip: raw?.externalip?.filter((a) => !!a) as string[] | undefined,
