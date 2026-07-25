@@ -7,7 +7,10 @@ const { InputSpec, Value } = sdk
 export async function getRpcUsers(effects: T.Effects) {
   const rpcauth = await getRpcAuth(effects)
   if (!rpcauth) return
-  return [rpcauth].flat().filter((e): e is string => !!e).map((e) => e.split(':', 2)[0])
+  return [rpcauth]
+    .flat()
+    .filter((e): e is string => !!e)
+    .map((e) => e.split(':', 2)[0])
 }
 
 export async function getRpcAuth(effects: T.Effects) {
@@ -62,7 +65,10 @@ export const deleteRpcAuth = sdk.Action.withInput(
     const rpcauth = (await getRpcAuth(effects))!
     const filtered = [rpcauth]
       .flat()
-      .filter((auth): auth is string => !!auth && !input.deletedRpcUsers.includes(auth.split(':', 2)[0]))
+      .filter(
+        (auth): auth is string =>
+          !!auth && !input.deletedRpcUsers.includes(auth.split(':', 2)[0]),
+      )
     await bitcoinConfFile.merge(effects, { raw: { rpcauth: filtered } })
   },
 )
