@@ -6,6 +6,4 @@ import { manifest } from './manifest'
  *
  * The exported "sdk" const will be imported and used throughout the package codebase.
  */
-export const sdk = StartSdk.of()
-  .withManifest(manifest)
-  .build(true)
+export const sdk = StartSdk.of().withManifest(manifest).build(true)
