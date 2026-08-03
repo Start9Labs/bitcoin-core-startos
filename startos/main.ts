@@ -526,6 +526,19 @@ export const main = sdk.setupMain(async ({ effects }) => {
         cookie_file: rpcCookiePath,
         tor_proxy: torSocks,
         tor_only: onlynetList.length === 1 && onlynetList[0] === 'onion',
+        // Users derived from the two passthrough sources carry no explicit
+        // fetch_blocks, so this global switch is what grants them on-demand
+        // fetching of pruned blocks over p2p. Without it the proxy forwards
+        // every getblock straight to bitcoind.
+        default_fetch_blocks: true,
+        // Unset, the proxy asks every eligible peer for the same block at once
+        // and keeps the first valid answer — N copies of every fetch.
+        max_peer_concurrency: 3,
+        // Peers reachable only over I2P need i2pd's SOCKS proxy; the fetcher
+        // reaches clearnet and .onion peers on its own.
+        ...(runI2pd && i2pdConf?.socksproxy.enabled
+          ? { i2p_proxy: `127.0.0.1:${i2pdConf.socksproxy.port}` }
+          : {}),
         passthrough_rpcauth: `${rootDir}/bitcoin.conf`,
         passthrough_rpccookie: rpcCookiePath,
       }),
