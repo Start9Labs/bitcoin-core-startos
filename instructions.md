@@ -70,7 +70,7 @@ Caveats that apply during an actual split:
 
 ### Other actions
 
-- **Download UTXO Snapshot (assumeutxo)** — fast-sync from a recent UTXO snapshot; available while running, hidden once fully synced.
+- **Download UTXO Snapshot (assumeutxo)** — fast-sync from a recent UTXO snapshot; available while running, hidden once fully synced. The URL must be a direct link to a `.dat` snapshot file, which can be one you serve from your own machine over the LAN.
 - **Runtime Information** — connection count, block height, sync progress, soft-fork status, and (when enabled) the IPC socket path.
 - **Enable IPC** — toggle Bitcoin Core's experimental multiprocess IPC socket. Toggling switches the running binary and the action restarts Bitcoin Core to apply the change; leave it off unless an integration you're using calls for it.
 
