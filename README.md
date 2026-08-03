@@ -51,7 +51,7 @@ Three additional containers are used:
 
 | Container | Image                              | Purpose                                       |
 | --------- | ---------------------------------- | --------------------------------------------- |
-| `proxy`   | `ghcr.io/start9labs/btc-rpc-proxy` | RPC proxy for pruned nodes                    |
+| `proxy`   | `ghcr.io/start9labs/btc-rpc-proxy:v0.5.0` | RPC proxy for pruned nodes                    |
 | `python`  | `python` (Alpine)                  | Runs `rpcauth.py` to generate RPC credentials |
 | `i2pd`    | `purplei2p/i2pd`                   | Embedded I2P daemon (when enabled)            |
 
@@ -124,9 +124,15 @@ Settings **not** managed by StartOS (hardcoded):
 When pruning is enabled, the RPC architecture changes automatically:
 
 - **Unpruned**: bitcoind binds RPC directly to `0.0.0.0:8332`
-- **Pruned**: bitcoind binds RPC to `127.0.0.1:18332` and the `btc-rpc-proxy` container runs on port 8332, proxying requests to bitcoind
+- **Pruned**: bitcoind binds RPC to `127.0.0.1:58332` and the `btc-rpc-proxy` container runs on port 8332, proxying requests to bitcoind
 
 This is transparent to dependent services — port 8332 always serves RPC.
+
+The proxy also serves blocks bitcoind has already pruned. Its config sets `default_fetch_blocks`, which is what grants that capability to clients authenticated through the `passthrough_rpcauth` / `passthrough_rpccookie` sources — the only credentials this package issues, since it defines no explicit proxy users. On a `getblock` the proxy asks bitcoind first and reaches out to the P2P network only when bitcoind reports the block pruned, verifying the fetched block against its hash, merkle root, and witness commitment before returning it. Three bounds are worth knowing:
+
+- Only `getblock` verbosity 0 and 1 are intercepted; verbosity 2 is forwarded unchanged and still fails on a pruned block. It could not be answered faithfully anyway — the per-input `fee` fields need undo data a pruned node no longer has.
+- Peers are dialed directly on clearnet, through `tor_proxy` for `.onion`, and through `i2p_proxy` for `.b32.i2p`. That last one points at i2pd's SOCKS proxy, which `i2pd.conf` enables on loopback by default; when the i2pd daemon isn't running the key is omitted and I2P-only peers are unusable.
+- `max_peer_concurrency` caps how many peers are asked for the same block at once. The first valid answer wins, so leaving it unset pulls every block from every eligible peer.
 
 ## Network Access and Interfaces
 
@@ -295,7 +301,7 @@ Build and development workflow follow the StartOS packaging guide: <https://docs
 package_id: bitcoind
 image: custom Dockerfile (copies upstream Guix-built binaries from bitcoincore.org)
 additional_images:
-  - ghcr.io/start9labs/btc-rpc-proxy (pruned node RPC proxy)
+  - ghcr.io/start9labs/btc-rpc-proxy:v0.5.0 (pruned node RPC proxy)
   - python (Alpine, RPC credential generation)
   - purplei2p/i2pd (embedded I2P)
 architectures: [x86_64, aarch64, riscv64]
