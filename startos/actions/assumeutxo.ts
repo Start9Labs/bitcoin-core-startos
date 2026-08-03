@@ -92,7 +92,7 @@ export const assumeutxo = sdk.Action.withInput(
         })
 
         await assumeutxoSubc.execFail(
-          ['wget', '-O', snapshotTempFile, input.snapshotUrl.trim()],
+          ['curl', '-fsSL', '-o', snapshotTempFile, input.snapshotUrl.trim()],
           {},
           null,
         )
