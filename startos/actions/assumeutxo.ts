@@ -21,8 +21,15 @@ const assumeutxoInputSpec = sdk.InputSpec.of({
     name: i18n('UTXO Snapshot URL'),
     description: i18n('URL of UTXO Snapshot to bootstrap bitcoin'),
     required: true,
-    default: null, // @TODO update to start9 hosted and placeholder
-    // @TODO add pattern for url ending in .dat
+    default: null, // @TODO default to a Start9-hosted snapshot once one exists
+    placeholder: 'https://example.com/utxo-840000.dat',
+    inputmode: 'url',
+    patterns: [
+      {
+        regex: '^https?://\\S+\\.dat(\\?\\S*)?$',
+        description: i18n('Must be an http(s) URL ending in .dat'),
+      },
+    ],
   }),
 })
 
@@ -81,21 +88,42 @@ export const assumeutxo = sdk.Action.withInput(
     )
 
     assumeutxoPromise = (async () => {
-      const conf = (await bitcoinConfFile.read().once())!
+      const rootfs = await assumeutxoSubc.rootfs
 
       try {
-        const rootfs = await assumeutxoSubc.rootfs
+        const conf = (await bitcoinConfFile.read().once())!
         await fs.mkdir(`${rootfs}/tmp/snap`, { recursive: true })
         await fs.rm(`${rootfs}${snapshotTempFile}`, {
           force: true,
         })
 
+        // No overall timeout — a full snapshot legitimately takes hours — so
+        // the speed floor is what bounds a wedged transfer.
         await assumeutxoSubc.execFail(
-          ['curl', '-fsSL', '-o', snapshotTempFile, input.snapshotUrl.trim()],
+          [
+            'curl',
+            '-fsSL',
+            '--connect-timeout',
+            '30',
+            '--speed-limit',
+            '1024',
+            '--speed-time',
+            '120',
+            '--retry',
+            '5',
+            '--retry-delay',
+            '10',
+            '--continue-at',
+            '-',
+            '-o',
+            snapshotTempFile,
+            input.snapshotUrl.trim(),
+          ],
           {},
           null,
         )
 
+        const headersDeadline = Date.now() + 6 * 60 * 60 * 1000
         do {
           const getBlockHeaderRes = await assumeutxoSubc.exec([
             ...bitcoinCliArgs({ prune: !!conf.prune }),
@@ -103,6 +131,10 @@ export const assumeutxo = sdk.Action.withInput(
             block_840_000,
           ])
           if (getBlockHeaderRes.exitCode !== 0) {
+            if (Date.now() > headersDeadline)
+              throw new Error(
+                `headers never reached the snapshot height: ${String(getBlockHeaderRes.stderr)}`,
+              )
             await new Promise((resolve) => setTimeout(resolve, 10_000))
             continue
           }
@@ -123,9 +155,19 @@ export const assumeutxo = sdk.Action.withInput(
       } catch (e) {
         console.log('Error downloading snapshot:\n', e)
         await sdk.action.createOwnTask(effects, assumeutxo, 'important', {
-          reason: 'Previous attempt to download Snapshot failed.',
+          reason: i18n(
+            'Previous attempt to download Snapshot failed: ${error}',
+            {
+              error: e instanceof Error ? e.message : String(e),
+            },
+          ),
         })
       } finally {
+        // loadtxoutset consumes the snapshot, and a failed attempt re-downloads
+        // from scratch, so nothing here is worth the disk it occupies.
+        await fs
+          .rm(`${rootfs}/tmp/snap`, { recursive: true, force: true })
+          .catch(console.error)
         await assumeutxoSubc.destroy()
         assumeutxoSubc = null
         assumeutxoPromise = null
