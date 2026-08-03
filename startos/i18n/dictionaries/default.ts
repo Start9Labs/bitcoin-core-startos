@@ -99,6 +99,8 @@ const dict = {
   'Download in progress...': 1005,
   'Snapshot in use': 1006,
   'Snapshot download in progress. Upon successful download the snapshot will be loaded as the active chainstate and any blocks between the snapshot blockheight and tip will be downloaded and verified. Blocks from genesis to the snapshot blockheight will continue to be verfied in the background. Once the IBD catches up to the snapshot height the chain will have been fully validated': 1007,
+  'Must be an http(s) URL ending in .dat': 1008,
+  'Previous attempt to download Snapshot failed: ${error}': 1009,
 
   // actions/runtimeInfo.ts
   'Runtime Information': 1100,
