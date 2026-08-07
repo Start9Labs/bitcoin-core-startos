@@ -72,6 +72,8 @@ ENV BITCOIN_DATA=/root/.bitcoin
 ENV BITCOIN_PREFIX=/opt/bitcoin
 ENV PATH=${BITCOIN_PREFIX}/bin:$PATH
 
+# curl is load-bearing: the assumeutxo action shells out to it in this image
+# to download the UTXO snapshot.
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         ca-certificates curl e2fsprogs jq tini yq && \
