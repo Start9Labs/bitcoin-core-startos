@@ -70,7 +70,7 @@ Caveats that apply during an actual split:
 
 ### Other actions
 
-- **Download UTXO Snapshot (assumeutxo)** — fast-sync from a recent UTXO snapshot; available while running, hidden once fully synced.
+- **Download UTXO Snapshot (assumeutxo)** — fast-sync from a recent UTXO snapshot; available while running, hidden once fully synced. The URL must be a direct link to a `.dat` snapshot file, which can be one you serve from your own machine over the LAN.
 - **Runtime Information** — connection count, block height, sync progress, and soft-fork status.
 
 ## Limitations
