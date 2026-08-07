@@ -290,8 +290,8 @@ export const main = sdk.setupMain(async ({ effects }) => {
      * (BIP-110), so only the "leaving the enforcing flavor" half applies:
      * record the durable rdtsEnforcedLastRun=false marker each start and
      * clear invalid-block verdicts inherited from the RDTS-enforcing
-     * flavor. revalidateFromRdts stays dormant here — it is carried in the
-     * store shape for the enforcing flavor to consume after a switch back.
+     * flavor. The opposite direction needs nothing from the package — the
+     * enforcing flavor's own binary re-validates on arrival.
      * Runs once per start as soon as RPC answers; nothing depends on it, so
      * it never blocks the service.
      */
