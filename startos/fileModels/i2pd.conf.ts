@@ -1,6 +1,6 @@
 import { FileHelper, z } from '@start9labs/start-sdk'
 import { sdk } from '../sdk'
-import { i2pUiPort } from '../utils'
+import { i2pSocksPort, i2pUiPort } from '../utils'
 
 const iniNumber = z.union([z.string().transform(Number), z.number()])
 
@@ -52,11 +52,16 @@ export const shape = z.object({
       enabled: iniBoolean.catch(false),
     })
     .catch({ enabled: false }),
+  // The block-fetch proxy dials .b32.i2p peers through this; it has no I2P
+  // transport of its own and Tor cannot resolve them. Loopback-only, so it
+  // stays inside the service's network namespace.
   socksproxy: z
     .object({
-      enabled: iniBoolean.catch(false),
+      enabled: iniBoolean.catch(true),
+      address: z.literal('127.0.0.1').catch('127.0.0.1'),
+      port: iniNumber.catch(i2pSocksPort),
     })
-    .catch({ enabled: false }),
+    .catch({ enabled: true, address: '127.0.0.1', port: i2pSocksPort }),
   sam: z
     .object({
       enabled: iniBoolean.catch(true),
