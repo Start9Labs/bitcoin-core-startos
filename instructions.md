@@ -36,7 +36,7 @@ The JSON-RPC API listens on port 8332. Dependent StartOS services connect and co
 
 On a small disk Bitcoin Core runs **pruned** — it keeps validating every block but discards old block files once they're checked, so on-disk usage stays around a few hundred MB of recent blocks instead of the full multi-hundred-GB chain. Pruning is on by default below roughly 900 GB of disk; you can also toggle it under **Other Settings**.
 
-So that a pruned node is still useful to wallets and services that occasionally need an old block, a bundled proxy — `btc-rpc-proxy` — runs in front of it on port 8332. When something requests a block the node has pruned, the proxy fetches that block from the peer-to-peer network on the spot and serves it back over the normal RPC. To anything using the RPC — a Lightning node rescanning, an Electrum server, a block explorer — the node looks like a full archival node and works with no special configuration. The only cost is a little latency the first time a given historical block is requested.
+So that a pruned node is still useful to wallets and services that occasionally need an old block, a bundled proxy — `btc-rpc-proxy` — runs in front of it on port 8332. When something requests a block the node has pruned, the proxy fetches that block from the peer-to-peer network on the spot and serves it back over the normal RPC. To anything using the RPC — a Lightning node rescanning, an Electrum server, a block explorer — the node looks like a full archival node and works with no special configuration. The only cost is a little latency whenever an old block is needed, since it comes over the network rather than off your disk.
 
 ### Configuration
 
