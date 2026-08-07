@@ -49,11 +49,11 @@ The Dockerfile fetches the upstream Bitcoin Core release tarball from `bitcoinco
 
 Three additional containers are used:
 
-| Container | Image                              | Purpose                                       |
-| --------- | ---------------------------------- | --------------------------------------------- |
+| Container | Image                                     | Purpose                                       |
+| --------- | ----------------------------------------- | --------------------------------------------- |
 | `proxy`   | `ghcr.io/start9labs/btc-rpc-proxy:v0.5.0` | RPC proxy for pruned nodes                    |
-| `python`  | `python` (Alpine)                  | Runs `rpcauth.py` to generate RPC credentials |
-| `i2pd`    | `purplei2p/i2pd`                   | Embedded I2P daemon (when enabled)            |
+| `python`  | `python` (Alpine)                         | Runs `rpcauth.py` to generate RPC credentials |
+| `i2pd`    | `purplei2p/i2pd`                          | Embedded I2P daemon (when enabled)            |
 
 ## Volume and Data Layout
 
@@ -64,9 +64,9 @@ Three additional containers are used:
 
 StartOS-specific files on the `main` volume:
 
-| File         | Purpose                                                                                                                                  |
-| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `store.json` | Persistent StartOS state (reindex flags, sync status, IPC toggle, chain-recovery flags and the `rdtsEnforcedLastRun` enforcement marker) |
+| File         | Purpose                                                                                                                                     |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `store.json` | Persistent StartOS state (reindex flags, sync status, IPC toggle, the chain-recovery flag and the `rdtsEnforcedLastRun` enforcement marker) |
 
 Blockchain data directories (`blocks/`, `chainstate/`, `indexes/`) reside on the `main` volume alongside the standard `bitcoin.conf` and `.cookie` files.
 
@@ -193,11 +193,10 @@ A further binding, `peer-local`, publishes bitcoind's whitelisted p2p listener (
 
 bitcoind persists a validity verdict for every block it has evaluated (`CBlockIndex::nStatus` in `blocks/index/`) and trusts those verdicts verbatim on startup — they are never re-derived, and they don't record _which_ consensus rules produced them. Because all `bitcoind` flavors share one datadir, a flavor switch changes the rules without changing the verdicts. Around a BIP-110 (RDTS) chain split, arriving here from the RDTS-enforcing [Bitcoin Knots](https://github.com/Start9Labs/bitcoin-knots-startos) flavor would otherwise leave RDTS-driven `BLOCK_FAILED_VALID` marks in place and pin this node off the chain it considers best.
 
-Bitcoin Core never enforces RDTS, so this package carries only the non-enforcing half of the recovery machinery (`startos/forkRecovery.ts` + the `chain-recovery` oneshot in `startos/main.ts`; the enforcing half — the RDTS-range replay — lives in the Bitcoin Knots RDTS flavor):
+The enforcing half of that problem needs no package code at all — the Knots release the RDTS flavor pins re-validates the RDTS-applicable range itself when it starts on a datadir that advanced without enforcement. Bitcoin Core never enforces RDTS, so this package carries only the non-enforcing half (`startos/forkRecovery.ts` + the `chain-recovery` oneshot in `startos/main.ts`):
 
 - **A durable enforcement marker.** `store.json` records `rdtsEnforcedLastRun`; this flavor writes `false` each start. A `true` value left by the RDTS-enforcing flavor — or an unknown marker, i.e. a legacy datadir last advanced by a package version that predates it — is treated as an enforcement-regime transition: it materializes the `reconsiderInvalidTips` flag (a free no-op when there are no invalid tips) (before the marker is updated, so a crash between the writes re-detects rather than loses the transition). Cross-flavor migrations (on the Knots side) set the same flag deterministically at switch time as a belt-and-suspenders path.
 - **The remedy.** `reconsiderInvalidTips` — `getchaintips` → `reconsiderblock` every `invalid` tip. Clears the verdict on the block, its ancestors, and descendants (persisted); reconnection re-validates fully, so genuinely-invalid branches re-flag themselves. Idempotent and a no-op when there are no invalid tips. Tips whose fork point lies below `pruneheight` are skipped (reorganizing onto them would hit a fatal disconnect on pruned data) and reported in a warning notification pointing at **Reindex Blockchain** (a full re-download on pruned nodes).
-- **A dormant flag.** `revalidateFromRdts` exists in this flavor's store shape but is never consumed here: it is carried so a flavor switch never strips a pending flag from the shared store, and the RDTS-enforcing flavor consumes it to replay the RDTS-applicable range on its first start.
 
 Notifications accompany every consequential outcome (verdicts cleared, tips skipped on a pruned node, recovery failed). Peering is the one thing the package cannot fix: after verdicts are corrected the node still needs peers serving the intended chain, which the user docs call out.
 
