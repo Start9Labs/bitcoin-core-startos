@@ -10,9 +10,9 @@ Work this package's `TODO.md` from top to bottom. Keep `README.md` (architecture
 
 ## This repo
 
-- **Multi-branch package.** Bitcoin Core ships parallel major-version lines as git worktrees — `28.x`, `29.x`, `30.x`, `31.x` — grouped under the parent dir. Any change must be considered for every maintained worktree. Run `git worktree list` to enumerate.
+- **Multi-branch package.** Bitcoin Core ships parallel major-version lines as git worktrees — `28.x`, `29.x`, `30.x`, `31.x` — grouped under the parent dir. Any change (version bump, dependency refresh, SDK migration) must be considered for _every_ maintained worktree, not just the one you're in. Run `git worktree list` to enumerate.
 - **Package id is `bitcoind`** (not `bitcoin-core`); dependents and `effects` calls reference it by that id.
 
 ## Inspecting a running install
 
-To run a command inside the service's container, use `start-cli package attach bitcoind -n <subcontainer-name> -- <cmd>`. Select the subcontainer by **name** with `-n` (the name passed to `SubContainer.of` in `main.ts`) or by image with `-i`. `-s/--subcontainer` matches the internal Guid, not the name.
+To run a command inside the service's container (read its generated config, grep `debug.log`), use `start-cli package attach bitcoind -n <subcontainer-name> -- <cmd>`. Select the subcontainer by **name** with `-n` (the name passed to `SubContainer.of` in `main.ts`) or by image with `-i`. Note: `-s/--subcontainer` matches the internal **Guid**, not the name. A service with more than one subcontainer requires a selector.
