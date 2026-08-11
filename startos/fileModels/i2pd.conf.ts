@@ -12,9 +12,13 @@ const iniBoolean = z.union([
 
 export const shape = z.object({
   log: z.literal('stdout').catch('stdout'),
-  loglevel: z
-    .enum(['none', 'critical', 'error', 'warn', 'info', 'debug'])
-    .catch('critical'),
+  // Enforced, not defaulted: nothing exposes this setting, so a value already
+  // on disk would stand forever. `critical` suppressed even bind and startup
+  // failures, which is how an unreachable SAM bridge ended up with no trace in
+  // the log at all (#261). `warn` is i2pd's own default and carries
+  // critical/error/warn; seedFiles merges this file on every init, so existing
+  // installs pick it up on update.
+  loglevel: z.literal('warn').catch('warn'),
   port: iniNumber.catch(14096),
   ipv4: iniBoolean.catch(true),
   ipv6: iniBoolean.catch(false),
