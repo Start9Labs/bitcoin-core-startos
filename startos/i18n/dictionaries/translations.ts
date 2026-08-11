@@ -178,6 +178,9 @@ export default {
     1257: 'ilimitado',
     1258: 'Solo bloques',
     1259: 'Reducir el ancho de banda al no retransmitir transacciones. Los bloques se seguirán descargando y validando normalmente. Desactiva el mempool, la transmisión de transacciones de la billetera y la estimación de comisiones.',
+    1260: 'Configuración de pares no válida',
+    1261: 'Bitcoin se niega a arrancar con Transmisión privada activada y Conectar par establecido en Conectar. La transmisión privada abre sus propias conexiones a pares de Tor o I2P elegidos al azar, algo que Conectar impide. Elige Agregar nodo en su lugar, o desactiva la Transmisión privada.',
+    1262: 'Bitcoin se niega a arrancar con la Transmisión privada activada mientras Onlynet excluye tanto Tor como I2P. Añade onion o i2p a Onlynet, o desactiva la Transmisión privada.',
 
     // actions/config/mempool.ts
     1500: 'Persistir Mempool',
@@ -274,8 +277,8 @@ export default {
     2000: 'Por defecto',
     2001: '1024 MiB en sistemas con ≥ 4 GiB de RAM; 450 MiB en caso contrario',
     2002: 'Transmisión privada',
-    2003: 'Cuando está habilitado, las transacciones enviadas mediante el RPC sendrawtransaction se transmiten a través de una conexión Tor o I2P separada por transacción, ocultando la IP del remitente a los pares y desvinculando múltiples transacciones del mismo remitente. Solo afecta a sendrawtransaction; los envíos desde la billetera interna no se ven afectados.',
-    2004: 'Requiere que Tor o I2P estén activos. Bitcoin Core se negará a iniciar si ninguno está disponible.',
+    2003: 'Difunde las transacciones enviadas mediante el RPC sendrawtransaction a través de una conexión Tor o I2P efímera e independiente para cada una, ocultando la IP del remitente a los pares y desvinculando múltiples transacciones del mismo remitente. Esas transacciones no pasan por tu propio mempool, así que no aparecen en getrawmempool. Solo afecta a sendrawtransaction; los envíos desde la billetera no se ven afectados.',
+    2004: 'Requiere que Tor o I2P sean realmente alcanzables: I2P está activado de forma predeterminada, mientras que Tor requiere que el servicio Tor esté instalado y en ejecución. Mientras ninguno lo esté, las transacciones enviadas por esta vía se reintentan pero nunca llegan a la red.',
 
     // Chain Recovery (3200 block)
     3226: 'Veredictos de cadena restablecidos',
@@ -462,6 +465,9 @@ export default {
     1257: 'unbegrenzt',
     1258: 'Nur Blöcke',
     1259: 'Bandbreite reduzieren, indem keine Transaktionen weitergeleitet werden. Blöcke werden weiterhin normal heruntergeladen und validiert. Deaktiviert den Mempool, die Wallet-Transaktionsübertragung und die Gebührenschätzung.',
+    1260: 'Ungültige Peer-Einstellungen',
+    1261: 'Bitcoin verweigert den Start, wenn Privater Broadcast aktiviert und Peer verbinden auf Verbinden gesetzt ist. Privater Broadcast öffnet eigene Verbindungen zu zufällig gewählten Tor- oder I2P-Peers, was Verbinden unterbindet. Wähle stattdessen Knoten hinzufügen oder schalte Privater Broadcast aus.',
+    1262: 'Bitcoin verweigert den Start, wenn Privater Broadcast aktiviert ist, während Onlynet sowohl Tor als auch I2P ausschließt. Füge onion oder i2p zu Onlynet hinzu oder schalte Privater Broadcast aus.',
 
     // actions/config/mempool.ts
     1500: 'Mempool behalten',
@@ -558,8 +564,8 @@ export default {
     2000: 'Standard',
     2001: '1024 MiB auf Systemen mit ≥ 4 GiB RAM; andernfalls 450 MiB',
     2002: 'Privater Broadcast',
-    2003: 'Wenn aktiviert, werden über den sendrawtransaction-RPC übermittelte Transaktionen pro Transaktion über eine separate Tor- oder I2P-Verbindung übertragen. Dadurch wird die IP des Absenders vor Peers verborgen und mehrere Transaktionen desselben Absenders werden nicht mehr verknüpfbar. Betrifft nur sendrawtransaction; interne Wallet-Sendungen bleiben unberührt.',
-    2004: 'Erfordert aktives Tor oder I2P. Bitcoin Core verweigert den Start, wenn keines verfügbar ist.',
+    2003: 'Überträgt Transaktionen, die über den sendrawtransaction-RPC eingereicht werden, jeweils über eine eigene kurzlebige Tor- oder I2P-Verbindung. Das verbirgt die IP des Absenders vor Peers und macht mehrere Transaktionen desselben Absenders nicht mehr verknüpfbar. Solche Transaktionen umgehen den eigenen Mempool und tauchen daher nicht in getrawmempool auf. Betrifft nur sendrawtransaction; Wallet-Sendungen bleiben unberührt.',
+    2004: 'Setzt voraus, dass Tor oder I2P tatsächlich erreichbar ist: I2P ist standardmäßig aktiviert, Tor erfordert den installierten und laufenden Tor-Dienst. Solange keines von beiden erreichbar ist, werden so eingereichte Transaktionen zwar wiederholt versucht, erreichen das Netzwerk aber nie.',
 
     // Chain Recovery (3200 block)
     3226: 'Chain-Urteile zurückgesetzt',
@@ -746,6 +752,9 @@ export default {
     1257: 'nieograniczony',
     1258: 'Tylko bloki',
     1259: 'Zmniejsz zużycie pasma, nie przekazując transakcji. Bloki będą nadal pobierane i walidowane normalnie. Wyłącza mempool, transmisję transakcji portfela i szacowanie opłat.',
+    1260: 'Nieprawidłowe ustawienia peerów',
+    1261: 'Bitcoin odmawia uruchomienia, gdy Prywatne rozgłaszanie jest włączone, a Połącz peera ustawiono na Połącz. Prywatne rozgłaszanie otwiera własne połączenia do losowo wybranych peerów Tor lub I2P, czego Połącz zabrania. Wybierz zamiast tego Dodaj węzeł albo wyłącz Prywatne rozgłaszanie.',
+    1262: 'Bitcoin odmawia uruchomienia, gdy Prywatne rozgłaszanie jest włączone, a Onlynet wyklucza zarówno Tora, jak i I2P. Dodaj onion lub i2p do Onlynet albo wyłącz Prywatne rozgłaszanie.',
 
     // actions/config/mempool.ts
     1500: 'Zachowaj Mempool',
@@ -842,8 +851,8 @@ export default {
     2000: 'Domyślnie',
     2001: '1024 MiB na systemach z ≥ 4 GiB RAM; 450 MiB w przeciwnym razie',
     2002: 'Prywatne rozgłaszanie',
-    2003: 'Gdy włączone, transakcje przesyłane przez RPC sendrawtransaction są rozgłaszane przez osobne połączenie Tor lub I2P na każdą transakcję, ukrywając IP nadawcy przed peerami i uniemożliwiając powiązanie wielu transakcji tego samego nadawcy. Dotyczy wyłącznie sendrawtransaction; wewnętrzne wysyłki z portfela nie są zmieniane.',
-    2004: 'Wymaga aktywnego Tora lub I2P. Bitcoin Core odmówi uruchomienia, jeśli żadne z nich nie jest dostępne.',
+    2003: 'Rozgłasza transakcje przesłane przez RPC sendrawtransaction, każdą osobnym, krótkotrwałym połączeniem Tor lub I2P, ukrywając IP nadawcy przed peerami i uniemożliwiając powiązanie wielu transakcji tego samego nadawcy. Takie transakcje omijają twój własny mempool, więc nie pojawiają się w getrawmempool. Dotyczy wyłącznie sendrawtransaction; wysyłki z portfela nie są zmieniane.',
+    2004: 'Wymaga, aby Tor lub I2P był faktycznie osiągalny: I2P jest włączone domyślnie, natomiast Tor wymaga zainstalowanej i działającej usługi Tor. Dopóki żadne z nich nie jest osiągalne, transakcje przesłane tą drogą są ponawiane, ale nigdy nie trafiają do sieci.',
 
     // Chain Recovery (3200 block)
     3226: 'Werdykty łańcucha zresetowane',
@@ -1030,6 +1039,9 @@ export default {
     1257: 'illimité',
     1258: 'Blocs uniquement',
     1259: "Réduire la bande passante en ne relayant pas les transactions. Les blocs seront toujours téléchargés et validés normalement. Désactive le mempool, la diffusion des transactions du portefeuille et l'estimation des frais.",
+    1260: 'Paramètres des pairs invalides',
+    1261: 'Bitcoin refuse de démarrer lorsque Diffusion privée est activée et que Connecter un pair est réglé sur Connecter. La diffusion privée ouvre ses propres connexions vers des pairs Tor ou I2P choisis au hasard, ce que Connecter interdit. Choisissez plutôt Ajouter un nœud, ou désactivez la Diffusion privée.',
+    1262: "Bitcoin refuse de démarrer lorsque Diffusion privée est activée alors qu'Onlynet exclut à la fois Tor et I2P. Ajoutez onion ou i2p à Onlynet, ou désactivez la Diffusion privée.",
 
     // actions/config/mempool.ts
     1500: 'Conserver le Mempool',
@@ -1126,8 +1138,8 @@ export default {
     2000: 'Par défaut',
     2001: '1024 Mio sur les systèmes avec ≥ 4 Gio de RAM ; 450 Mio sinon',
     2002: 'Diffusion privée',
-    2003: "Lorsqu'activée, les transactions soumises via le RPC sendrawtransaction sont diffusées via une connexion Tor ou I2P distincte par transaction, masquant l'IP de l'expéditeur aux pairs et empêchant la corrélation de plusieurs transactions du même expéditeur. N'affecte que sendrawtransaction ; les envois depuis le portefeuille interne ne sont pas modifiés.",
-    2004: "Nécessite que Tor ou I2P soit actif. Bitcoin Core refusera de démarrer si aucun des deux n'est disponible.",
+    2003: "Diffuse les transactions soumises via le RPC sendrawtransaction chacune sur une connexion Tor ou I2P éphémère distincte, masquant l'IP de l'expéditeur aux pairs et empêchant la corrélation de plusieurs transactions du même expéditeur. Ces transactions contournent votre propre mempool et n'apparaissent donc pas dans getrawmempool. N'affecte que sendrawtransaction ; les envois depuis le portefeuille ne sont pas modifiés.",
+    2004: "Nécessite que Tor ou I2P soit réellement joignable : I2P est activé par défaut, tandis que Tor exige que le service Tor soit installé et en cours d'exécution. Tant qu'aucun des deux ne l'est, les transactions soumises par ce biais sont réessayées mais n'atteignent jamais le réseau.",
 
     // Chain Recovery (3200 block)
     3226: 'Verdicts de chaîne réinitialisés',

@@ -174,6 +174,9 @@ const dict = {
   unlimited: 1257,
   'Peer Settings': 1253,
   'Edit the Peer settings in bitcoin.conf': 1254,
+  'Invalid Peer Settings': 1260,
+  'Bitcoin refuses to start with both Private Broadcast and Connect Peer set to Connect. Private broadcast opens its own connections to randomly chosen Tor or I2P peers, which Connect forbids. Choose Add Node instead, or turn off Private Broadcast.': 1261,
+  'Bitcoin refuses to start with Private Broadcast enabled while Onlynet excludes both Tor and I2P. Add onion or i2p to Onlynet, or turn off Private Broadcast.': 1262,
 
   // actions/config/mempool.ts
   'Persist Mempool': 1500,
@@ -232,8 +235,8 @@ const dict = {
   'How much RAM to allocate for caching the TXO set. Higher values improve syncing performance, but may result in some re-work in the event of an ungraceful shutdown. 4-7GB is high enough to get most of the peformance benefit during IBD. Consider reducing this setting for lower resource devices (or a device with less available RAM)': 1723,
   '1024 MiB on systems with ≥ 4 GiB RAM; 450 MiB otherwise': 2001,
   'Private Broadcast': 2002,
-  'When enabled, transactions submitted via the sendrawtransaction RPC are broadcast over a separate Tor or I2P connection per transaction, hiding the originator IP from peers and unlinking multiple transactions from the same sender. Only affects sendrawtransaction; internal wallet sends are unaffected.': 2003,
-  'Requires Tor or I2P to be active. Bitcoin Core will refuse to start if neither is available.': 2004,
+  'Broadcast transactions submitted via the sendrawtransaction RPC over a separate short-lived Tor or I2P connection each, hiding the originator IP from peers and unlinking multiple transactions from the same sender. Such transactions bypass your own mempool, so they do not appear in getrawmempool. Only affects sendrawtransaction; wallet sends are unaffected.': 2003,
+  'Requires Tor or I2P to actually be reachable: I2P is enabled by default, while Tor requires the Tor service to be installed and running. While neither is reachable, transactions submitted this way are retried but never reach the network.': 2004,
   'Database Batch': 1724,
   'Maximum database write batch size in bytes. Higher values will speed up the critical sections when the utxo set is written to disk from memory in big batches.': 1725,
   Bytes: 1726,

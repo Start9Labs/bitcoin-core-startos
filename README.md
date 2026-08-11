@@ -93,6 +93,8 @@ Out of the box, Bitcoin Core on StartOS connects to the Bitcoin network over mul
 
 To restrict outbound connections to specific networks only, use the **onlynet** setting in Peer Settings.
 
+**Private broadcast** (`privatebroadcast`, Core 31+, off by default) is also in Peer Settings: `sendrawtransaction` submissions go out over short-lived Tor or I2P connections opened per transaction and never enter the local mempool. Two package-specific consequences. Because `-onion` is always set, bitcoind counts Tor as reachable and starts even when the Tor service isn't installed or running — with I2P also off, such transactions are then retried every few minutes but never delivered, and the pending set is in-memory only. And the two combinations bitcoind refuses to start with — `connect` peers, and an `onlynet` excluding both `onion` and `i2p` — are rejected by the action rather than written to `bitcoin.conf`.
+
 Advanced i2pd-daemon tuning (log level, bandwidth class, transit share, floodfill, web console, transit-tunnel limits) is **not** exposed in the StartOS UI. Those values are baked as defaults in the bundled `i2pd.conf` schema; users who need to change them can edit `i2pd.conf` directly on the `i2pd` volume.
 
 ## Configuration Management
@@ -104,7 +106,7 @@ Bitcoin Core is configured through **StartOS actions** that write to `bitcoin.co
 | Action               | Settings                                                                                                                                                                     |
 | -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Mempool Settings** | persistmempool, maxmempool, mempoolexpiry, permitbaremultisig, OP_RETURN (datacarrier/datacarriersize), blocksonly                                                           |
-| **Peer Settings**    | onlynet (ipv4/ipv6/onion/i2p), BIP324 v2transport, I2P SAM proxy (enabled/disabled), connect/addnode peers, maxconnections                                                   |
+| **Peer Settings**    | onlynet (ipv4/ipv6/onion/i2p), BIP324 v2transport, privatebroadcast, I2P SAM proxy (enabled/disabled), connect/addnode peers, maxconnections                                 |
 | **RPC Settings**     | rpcservertimeout, rpcthreads, rpcworkqueue                                                                                                                                   |
 | **Other Settings**   | ZMQ, txindex, blocknotify, coinstatsindex, wallet settings (enable/avoidpartialspends/discardfee), pruning, dbcache, dbbatchsize, BIP158/BIP157 block filters, bloom filters |
 

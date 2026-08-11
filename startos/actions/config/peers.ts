@@ -25,6 +25,7 @@ export const peerConfig = sdk.Action.withInput(
     .filter({
       onlynet: true,
       v2transport: true,
+      privatebroadcast: true,
       i2psam: true,
       connectpeer: true,
       maxconnections: true,
@@ -80,6 +81,31 @@ export const peerConfig = sdk.Action.withInput(
   // the execution function
   async ({ effects, input }) => {
     const { i2psam, ...confInput } = input
+
+    const { privatebroadcast, onlynet, connectpeer } = confInput
+
+    const conflict = !privatebroadcast
+      ? null
+      : connectpeer.selection === 'connect'
+        ? i18n(
+            'Bitcoin refuses to start with both Private Broadcast and Connect Peer set to Connect. Private broadcast opens its own connections to randomly chosen Tor or I2P peers, which Connect forbids. Choose Add Node instead, or turn off Private Broadcast.',
+          )
+        : onlynet.length &&
+            !onlynet.includes('onion') &&
+            !onlynet.includes('i2p')
+          ? i18n(
+              'Bitcoin refuses to start with Private Broadcast enabled while Onlynet excludes both Tor and I2P. Add onion or i2p to Onlynet, or turn off Private Broadcast.',
+            )
+          : null
+
+    if (conflict) {
+      return {
+        version: '1',
+        title: i18n('Invalid Peer Settings'),
+        message: conflict,
+        result: null,
+      }
+    }
 
     await bitcoinConfFile.merge(effects, {
       raw: {
