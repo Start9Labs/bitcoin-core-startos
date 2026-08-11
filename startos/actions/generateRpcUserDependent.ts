@@ -28,6 +28,10 @@ export const inputSpec = InputSpec.of({
       required: true,
       default: null,
       masked: true,
+      // The dependent supplies this and the user cannot correct it, so the
+      // floor is the only thing keeping a careless dependent from putting a
+      // guessable credential on an RPC port that listens on 0.0.0.0.
+      minLength: 20,
       patterns: [
         {
           regex: '^[A-Za-z0-9_-]+$',
