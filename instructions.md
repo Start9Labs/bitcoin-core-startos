@@ -42,10 +42,10 @@ So that a pruned node is still useful to wallets and services that occasionally 
 
 Four actions write to `bitcoin.conf` for you. Only values that differ from upstream defaults are stored, and each field shows its upstream default.
 
-- **Mempool Settings** — mempool size and expiry, persistence, bare-multisig and `OP_RETURN` relay policy, blocks-only mode.
+- **Mempool Settings** — mempool size and expiry, persistence, bare-multisig and `OP_RETURN` relay policy, the minimum relay fee rate, sigop weighting, blocks-only mode.
 - **Peer Settings** — which networks to use (`onlynet`: IPv4/IPv6/Tor/I2P), BIP324 v2 transport, private broadcast, the embedded I2P SAM proxy, and manual `addnode`/`connect` peers.
 - **RPC Settings** — RPC server timeout, thread count, and work-queue depth.
-- **Other Settings** — ZeroMQ, `txindex`, coinstats index, BIP158/BIP157 block filters, bloom filters, wallet options, pruning, and database cache tuning.
+- **Other Settings** — ZeroMQ, `txindex`, coinstats index, BIP158/BIP157 block filters, bloom filters, wallet options, pruning, database cache tuning, compact-block reconstruction memory, NAT-PMP/PCP port mapping, and a daily upload limit.
 
 Some options are fixed by the package and not exposed: RPC cookie authentication, the peer listen ports, `assumevalid`, and the Tor proxy. Advanced i2pd-daemon tuning isn't in the UI either — edit `i2pd.conf` on the `i2pd` volume if you need it.
 
