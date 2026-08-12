@@ -274,6 +274,10 @@ const dict = {
   'Excluded by onlynet': 1956,
   'Tor is not running': 1958,
   'Tor is not installed': 1959,
+  'Starting the I2P router': 1962,
+  'Building the network database': 1963,
+  'No peers found. The router could not reach a reseed server, which usually means this server cannot resolve DNS. Check System > DNS Servers.': 1964,
+  'The I2P router reported error status ${status}': 1965,
 
   // Common
   Configuration: 1800,
