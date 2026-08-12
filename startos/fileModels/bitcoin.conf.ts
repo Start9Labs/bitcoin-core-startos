@@ -83,6 +83,8 @@ export const shape = z.object({
   datacarrier: iniBoolean,
   datacarriersize: iniNumber,
   permitbaremultisig: iniBoolean,
+  minrelaytxfee: iniNumber,
+  bytespersigop: iniNumber,
 
   // Peers
   onlynet: z
@@ -114,6 +116,7 @@ export const shape = z.object({
   // Performance Tuning
   dbcache: iniNumber,
   dbbatchsize: iniNumber,
+  blockreconstructionextratxn: iniNumber,
   assumevalid: iniString,
 
   // Other
@@ -141,6 +144,8 @@ export const shape = z.object({
     .optional()
     .catch(undefined),
   peerblockfilters: iniBoolean,
+  natpmp: iniBoolean,
+  maxuploadtarget: iniNumber,
 })
 
 function stringifyPrimitives(a: unknown): any {
@@ -219,10 +224,34 @@ export const fullConfigSpec = sdk.InputSpec.of({
     required: false,
     default: null,
     min: 0,
-    max: 100_000,
+    max: 10_000,
     integer: true,
     units: i18n('bytes'),
-    footnote: `${i18n('Default')}: 100000 bytes`,
+    footnote: `${i18n('Default')}: 83 bytes`,
+  }),
+  minrelaytxfee: Value.number({
+    name: i18n('Min Transaction Relay Fee'),
+    description: i18n(
+      'Fee rates (in BTC/kvB) smaller than this are considered zero fee for relaying, mining and transaction creation',
+    ),
+    required: false,
+    default: null,
+    min: 0,
+    integer: false,
+    units: 'BTC/kvB',
+    footnote: `${i18n('Default')}: 0.000001 BTC/kvB`,
+  }),
+  bytespersigop: Value.number({
+    name: i18n('Bytes Per Sigop'),
+    description: i18n(
+      'Equivalent bytes per sigop in transactions for relay and mining',
+    ),
+    required: false,
+    default: null,
+    min: 0,
+    integer: true,
+    units: i18n('bytes'),
+    footnote: `${i18n('Default')}: 20 bytes`,
   }),
   zmqEnabled: Value.triState({
     name: i18n('ZeroMQ Enabled'),
@@ -252,6 +281,17 @@ export const fullConfigSpec = sdk.InputSpec.of({
     description: i18n(
       'Execute an arbitrary command when the best block changes',
     ),
+  }),
+  blockreconstructionextratxn: Value.number({
+    name: i18n('Block Reconstruction Extra TXN'),
+    description: i18n(
+      'Extra transactions to keep in memory for compact block reconstructions',
+    ),
+    required: false,
+    default: null,
+    min: 0,
+    integer: true,
+    footnote: `${i18n('Default')}: 100`,
   }),
   coinstatsindex: Value.triState({
     name: i18n('Coinstats Index'),
@@ -374,6 +414,24 @@ export const fullConfigSpec = sdk.InputSpec.of({
     ),
     default: null,
     footnote: `${i18n('Default')}: false`,
+  }),
+  natpmp: Value.triState({
+    name: i18n('NAT-PMP'),
+    description: i18n('Use NAT-PMP to map the listening port.'),
+    default: null,
+    footnote: `${i18n('Default')}: false`,
+  }),
+  maxuploadtarget: Value.number({
+    name: i18n('Max Upload Target'),
+    description: i18n(
+      "Tries to keep outbound traffic under the given target in MiB per 24h. Limit does not apply to peers with 'download' permission or blocks created within past week. 0 = no limit.",
+    ),
+    required: false,
+    default: null,
+    min: 0,
+    integer: true,
+    units: 'MiB',
+    footnote: `${i18n('Default')}: 0 MiB`,
   }),
   onlynet: Value.multiselect({
     name: i18n('Onlynet'),
@@ -523,6 +581,8 @@ function fileToForm(
     permitbaremultisig,
     datacarrier,
     datacarriersize,
+    minrelaytxfee,
+    bytespersigop,
     zmqpubhashblock,
     zmqpubhashtx,
     zmqpubrawblock,
@@ -534,12 +594,15 @@ function fileToForm(
     avoidpartialspends,
     discardfee,
     blocknotify,
+    blockreconstructionextratxn,
     prune,
     dbcache,
     dbbatchsize,
     blockfilterindex,
     peerblockfilters,
     peerbloomfilters,
+    natpmp,
+    maxuploadtarget,
     onlynet,
     v2transport,
     connect,
@@ -559,6 +622,8 @@ function fileToForm(
     permitbaremultisig,
     datacarrier,
     datacarriersize,
+    minrelaytxfee,
+    bytespersigop,
     zmqEnabled: !!(
       zmqpubhashblock &&
       zmqpubhashtx &&
@@ -574,6 +639,7 @@ function fileToForm(
       discardfee,
     },
     blocknotify,
+    blockreconstructionextratxn,
     prune,
     dbcache: dbcache ?? null,
     dbbatchsize: dbbatchsize ?? null,
@@ -582,6 +648,8 @@ function fileToForm(
       peerblockfilters,
     },
     peerbloomfilters,
+    natpmp,
+    maxuploadtarget,
     onlynet: onlynet
       ? [onlynet]
           .flat()
@@ -622,6 +690,8 @@ function formToFile(
     permitbaremultisig,
     datacarrier,
     datacarriersize,
+    minrelaytxfee,
+    bytespersigop,
     prune,
     wallet,
     txindex,
@@ -629,8 +699,11 @@ function formToFile(
     peerbloomfilters,
     blockfilters,
     blocknotify,
+    blockreconstructionextratxn,
     dbcache,
     dbbatchsize,
+    natpmp,
+    maxuploadtarget,
     zmqEnabled,
     v2transport,
     onlynet,
@@ -660,6 +733,8 @@ function formToFile(
     permitbaremultisig: permitbaremultisig ?? undefined,
     datacarrier: datacarrier ?? undefined,
     datacarriersize: datacarriersize ?? undefined,
+    minrelaytxfee: minrelaytxfee ?? undefined,
+    bytespersigop: bytespersigop ?? undefined,
 
     // RPC
     rpcbind: prune ? rpcbindPruned : rpcbind,
@@ -682,9 +757,12 @@ function formToFile(
           ? 'basic'
           : false,
     blocknotify: blocknotify || undefined,
+    blockreconstructionextratxn: blockreconstructionextratxn ?? undefined,
     prune: prune ?? 0,
     dbcache: dbcache ?? undefined,
     dbbatchsize: dbbatchsize ?? undefined,
+    natpmp: natpmp ?? undefined,
+    maxuploadtarget: maxuploadtarget ?? undefined,
     // ZMQ
     ...(zmqEnabled === true
       ? zmqBundle
