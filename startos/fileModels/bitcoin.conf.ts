@@ -221,10 +221,10 @@ export const fullConfigSpec = sdk.InputSpec.of({
     required: false,
     default: null,
     min: 0,
-    max: 100_000,
+    max: 10_000,
     integer: true,
     units: i18n('bytes'),
-    footnote: `${i18n('Default')}: 100000 bytes`,
+    footnote: `${i18n('Default')}: 83 bytes`,
   }),
   minrelaytxfee: Value.number({
     name: i18n('Min Transaction Relay Fee'),
