@@ -24,6 +24,8 @@ export const mempoolConfig = sdk.Action.withInput(
     permitbaremultisig: true,
     datacarrier: true,
     datacarriersize: true,
+    minrelaytxfee: true,
+    bytespersigop: true,
     blocksonly: true,
   }),
 

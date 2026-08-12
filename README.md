@@ -105,10 +105,10 @@ Bitcoin Core is configured through **StartOS actions** that write to `bitcoin.co
 
 | Action               | Settings                                                                                                                                                                     |
 | -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Mempool Settings** | persistmempool, maxmempool, mempoolexpiry, permitbaremultisig, OP_RETURN (datacarrier/datacarriersize), blocksonly                                                           |
+| **Mempool Settings** | persistmempool, maxmempool, mempoolexpiry, permitbaremultisig, OP_RETURN (datacarrier/datacarriersize), minrelaytxfee, bytespersigop, blocksonly                             |
 | **Peer Settings**    | onlynet (ipv4/ipv6/onion/i2p), BIP324 v2transport, privatebroadcast, I2P SAM proxy (enabled/disabled), connect/addnode peers, maxconnections                                 |
 | **RPC Settings**     | rpcservertimeout, rpcthreads, rpcworkqueue                                                                                                                                   |
-| **Other Settings**   | ZMQ, txindex, blocknotify, coinstatsindex, wallet settings (enable/avoidpartialspends/discardfee), pruning, dbcache, dbbatchsize, BIP158/BIP157 block filters, bloom filters |
+| **Other Settings**   | ZMQ, txindex, blocknotify, blockreconstructionextratxn, coinstatsindex, wallet settings (enable/avoidpartialspends/discardfee), pruning, dbcache, dbbatchsize, BIP158/BIP157 block filters, bloom filters, natpmp, maxuploadtarget |
 
 Settings **not** managed by StartOS (hardcoded):
 
