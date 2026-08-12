@@ -297,6 +297,10 @@ export default {
     3229: '${count} rama(s) de cadena inválida(s) heredada(s) de la variante anterior de bitcoind no pudieron reconsiderarse: este nodo podado ya no almacena los bloques necesarios para reorganizarse hacia ellas. Si el nodo parece atascado en la cadena equivocada, ejecute Reindexar blockchain (en un nodo podado esto vuelve a descargar la cadena).',
     3230: 'Recuperación de cadena fallida',
     3231: 'El borrado de los veredictos de bloques inválidos heredados de la variante anterior de bitcoind falló; se reintentará en el próximo reinicio. Error: ${error}',
+    1962: 'Iniciando el enrutador I2P',
+    1963: 'Construyendo la base de datos de la red',
+    1964: 'No se encontraron pares. El enrutador no pudo contactar con ningún servidor de resiembra, lo que suele significar que este servidor no puede resolver DNS. Revise Sistema > Servidores DNS.',
+    1965: 'El enrutador I2P informó del estado de error ${status}',
   } satisfies LangDict,
   de_DE: {
     // main.ts
@@ -594,6 +598,10 @@ export default {
     3229: '${count} von der vorherigen bitcoind-Variante geerbte(r) ungültige(r) Chain-Zweig(e) konnten nicht überdacht werden: Dieser beschnittene Knoten speichert die für eine Reorganisation dorthin nötigen Blöcke nicht mehr. Wirkt der Knoten auf der falschen Chain festgefahren, führen Sie „Blockchain neu indizieren" aus (auf einem beschnittenen Knoten lädt dies die Chain neu herunter).',
     3230: 'Chain-Wiederherstellung fehlgeschlagen',
     3231: 'Das Löschen der von der vorherigen bitcoind-Variante geerbten Ungültigkeits-Urteile ist fehlgeschlagen; beim nächsten Neustart wird es erneut versucht. Fehler: ${error}',
+    1962: 'I2P-Router wird gestartet',
+    1963: 'Netzwerkdatenbank wird aufgebaut',
+    1964: 'Keine Peers gefunden. Der Router konnte keinen Reseed-Server erreichen, was in der Regel bedeutet, dass dieser Server keine DNS-Namen auflösen kann. Prüfen Sie System > DNS-Server.',
+    1965: 'Der I2P-Router meldete den Fehlerstatus ${status}',
   } satisfies LangDict,
   pl_PL: {
     // main.ts
@@ -891,6 +899,10 @@ export default {
     3229: '${count} nieważna(e) gałąź(zie) łańcucha odziedziczona(e) po poprzednim wariancie bitcoind nie mogły zostać ponownie rozważone: ten przycięty węzeł nie przechowuje już bloków potrzebnych do reorganizacji na nie. Jeśli węzeł wydaje się utknięty na niewłaściwym łańcuchu, uruchom „Przeindeksuj blockchain" (na przyciętym węźle oznacza to ponowne pobranie łańcucha).',
     3230: 'Odzyskiwanie łańcucha nie powiodło się',
     3231: 'Czyszczenie werdyktów nieważności bloków odziedziczonych po poprzednim wariancie bitcoind nie powiodło się; próba zostanie ponowiona przy następnym restarcie. Błąd: ${error}',
+    1962: 'Uruchamianie routera I2P',
+    1963: 'Budowanie bazy danych sieci',
+    1964: 'Nie znaleziono węzłów. Router nie mógł połączyć się z żadnym serwerem reseed, co zwykle oznacza, że ten serwer nie rozwiązuje nazw DNS. Sprawdź System > Serwery DNS.',
+    1965: 'Router I2P zgłosił status błędu ${status}',
   } satisfies LangDict,
   fr_FR: {
     // main.ts
@@ -1188,5 +1200,9 @@ export default {
     3229: "${count} branche(s) de chaîne invalide(s) héritée(s) de la variante bitcoind précédente n'ont pas pu être reconsidérées : ce nœud élagué ne stocke plus les blocs nécessaires pour se réorganiser vers elles. Si le nœud semble bloqué sur la mauvaise chaîne, exécutez « Réindexer la blockchain » (sur un nœud élagué cela retélécharge la chaîne).",
     3230: 'Échec de la récupération de chaîne',
     3231: "L'effacement des verdicts de blocs invalides hérités de la variante bitcoind précédente a échoué ; nouvelle tentative au prochain redémarrage. Erreur : ${error}",
+    1962: 'Démarrage du routeur I2P',
+    1963: 'Construction de la base de données du réseau',
+    1964: "Aucun pair trouvé. Le routeur n'a pu joindre aucun serveur de réamorçage, ce qui signifie généralement que ce serveur ne peut pas résoudre les noms DNS. Vérifiez Système > Serveurs DNS.",
+    1965: "Le routeur I2P a signalé le statut d'erreur ${status}",
   } satisfies LangDict,
 }

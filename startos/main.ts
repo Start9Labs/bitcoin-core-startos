@@ -402,6 +402,12 @@ export const main = sdk.setupMain(async ({ effects }) => {
         },
         ready: {
           display: 'I2P',
+          // A router that can never bootstrap used to be indistinguishable
+          // from one still starting: every branch below returned a bare
+          // `starting` with no message, forever. Past the grace period the
+          // states that will not resolve on their own now report `failure`
+          // and say what is wrong.
+          gracePeriod: 5 * 60 * 1000,
           fn: async () => {
             try {
               const auth = await i2pControlRpc('Authenticate', {
@@ -410,21 +416,55 @@ export const main = sdk.setupMain(async ({ effects }) => {
               })
               const token = auth?.result?.Token
               if (!token) {
-                return { result: 'starting' as const, message: '' }
+                return {
+                  result: 'starting' as const,
+                  message: i18n('Starting the I2P router'),
+                }
               }
 
               const info = await i2pControlRpc('RouterInfo', {
                 Token: token,
                 'i2p.router.net.status': null,
+                'i2p.router.netdb.knownpeers': null,
                 'i2p.router.netdb.activepeers': null,
               })
               const netStatus = info?.result?.['i2p.router.net.status']
+              const knownPeers = info?.result?.['i2p.router.netdb.knownpeers']
               const activePeers = info?.result?.['i2p.router.netdb.activepeers']
+
+              // An empty netDb means reseed never landed — the router has
+              // nothing to connect to and will not recover on its own. It
+              // reseeds over HTTPS by hostname, so the usual cause is that
+              // the server cannot resolve names at all.
+              if (knownPeers <= 1) {
+                return {
+                  result: 'failure' as const,
+                  message: i18n(
+                    'No peers found. The router could not reach a reseed server, which usually means this server cannot resolve DNS. Check System > DNS Servers.',
+                  ),
+                }
+              }
 
               // net.status 0-7 are operational (OK, testing, firewalled, hidden, warnings)
               // net.status 8+ are errors (I2CP, clock skew, no peers, etc.)
-              if (netStatus >= 8 || activePeers === 0) {
-                return { result: 'starting' as const, message: '' }
+              if (netStatus >= 8) {
+                return {
+                  result: 'failure' as const,
+                  message: i18n(
+                    'The I2P router reported error status ${status}',
+                    {
+                      status: String(netStatus),
+                    },
+                  ),
+                }
+              }
+
+              // Reseeded, but no tunnels yet — this one does resolve itself.
+              if (activePeers === 0) {
+                return {
+                  result: 'starting' as const,
+                  message: i18n('Building the network database'),
+                }
               }
 
               return {
@@ -435,7 +475,10 @@ export const main = sdk.setupMain(async ({ effects }) => {
                     : i18n('Outbound connections only'),
               }
             } catch {
-              return { result: 'starting' as const, message: '' }
+              return {
+                result: 'starting' as const,
+                message: i18n('Starting the I2P router'),
+              }
             }
           },
         },
