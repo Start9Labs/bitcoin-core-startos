@@ -576,10 +576,14 @@ export const main = sdk.setupMain(async ({ effects }) => {
     return {
       subcontainer,
       exec: {
-        command: ['/usr/bin/btc_rpc_proxy', '--conf', '/config.toml'] as [
-          string,
-          ...string[],
-        ],
+        // The verbosity counter starts at Critical, a level the proxy has no
+        // call sites for, so unraised it cannot report a failure at all.
+        command: [
+          '/usr/bin/btc_rpc_proxy',
+          '--conf',
+          '/config.toml',
+          '-vv',
+        ] as [string, ...string[]],
       },
       ready: {
         display: i18n('RPC Proxy'),
