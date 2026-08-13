@@ -410,20 +410,9 @@ export const main = sdk.setupMain(async ({ effects }) => {
           gracePeriod: 5 * 60 * 1000,
           fn: async () => {
             try {
-              const auth = await i2pControlRpc('Authenticate', {
-                API: 1,
-                Password: 'itoopie',
-              })
-              const token = auth?.result?.Token
-              if (!token) {
-                return {
-                  result: 'starting' as const,
-                  message: i18n('Starting the I2P router'),
-                }
-              }
-
+              // i2pd never validates the I2PControl token (PurpleI2P/i2pd#2138)
+              // and logs an error for `Token` as an unknown RouterInfo field.
               const info = await i2pControlRpc('RouterInfo', {
-                Token: token,
                 'i2p.router.net.status': null,
                 'i2p.router.netdb.knownpeers': null,
                 'i2p.router.netdb.activepeers': null,

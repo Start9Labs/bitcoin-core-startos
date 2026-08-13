@@ -2,43 +2,23 @@ import { VersionInfo } from '@start9labs/start-sdk'
 import { rm } from 'fs/promises'
 
 export const current = VersionInfo.of({
-  version: '31.1:7',
+  version: '31.1:8',
   releaseNotes: {
-    en_US: `Fixes a serious fault in the two previous revisions: on a pruned node, every request for a block failed — including for blocks your node still had on disk.
+    en_US: `Stops the embedded I2P router logging an error every thirty seconds.
 
-Those revisions switched on the on-demand fetching of pruned blocks. On Bitcoin Core 31 that broke the ordinary case along with it. Anything reading blocks through this node was affected: a Lightning node stopped seeing new blocks and reported itself out of sync, and Electrum servers, block explorers and mining software would have failed the same way. Unpruned nodes were never affected — they do not run the proxy that does the fetching.
+The health check that reports I2P status logged in before each query and handed the token it received back with that query. i2pd reads the token as a request it does not recognise and records an error for it — twice a minute, for as long as I2P is switched on. Nothing was actually wrong: I2P connectivity was unaffected and the check itself always reported correctly. The check now asks the router directly without logging in, which i2pd accepts because it never verifies the token it issues.`,
+    es_ES: `Evita que el router I2P integrado registre un error cada treinta segundos.
 
-Underneath, the proxy could no longer read the list of peers your node is connected to, because Bitcoin Core 31 stopped reporting a field the proxy insisted on. It asked for that list before checking whether your own node still had the block, so that one failure took every request down with it. The proxy now asks your node first and turns to the network only for blocks that were genuinely pruned away, it no longer depends on fields Bitcoin Core may stop sending, and it writes its own errors to the service log instead of failing silently.
+La comprobación de estado que informa del estado de I2P iniciaba sesión antes de cada consulta y devolvía junto a ella el token recibido. i2pd interpreta ese token como una petición que no reconoce y registra un error por él: dos veces por minuto, mientras I2P esté activado. En realidad no pasaba nada: la conectividad I2P no se veía afectada y la propia comprobación siempre informaba correctamente. Ahora la comprobación consulta al router directamente, sin iniciar sesión, algo que i2pd acepta porque nunca verifica el token que emite.`,
+    de_DE: `Verhindert, dass der eingebettete I2P-Router alle dreißig Sekunden einen Fehler protokolliert.
 
-If you run a pruned node with Lightning, update as soon as you can. While affected, the node cannot see new blocks, and a Lightning node that cannot see new blocks cannot react to a channel being closed against it.`,
-    es_ES: `Corrige un fallo grave de las dos revisiones anteriores: en un nodo podado, toda petición de un bloque fallaba, incluidos los bloques que tu nodo aún conservaba en disco.
+Die Zustandsprüfung, die den I2P-Status meldet, meldete sich vor jeder Abfrage an und reichte das erhaltene Token mit der Abfrage zurück. i2pd liest dieses Token als Anfrage, die es nicht kennt, und protokolliert dafür einen Fehler — zweimal pro Minute, solange I2P eingeschaltet ist. Tatsächlich war nichts kaputt: Die I2P-Verbindung war nicht betroffen, und die Prüfung selbst meldete stets korrekt. Die Prüfung fragt den Router jetzt direkt ab, ohne sich anzumelden; i2pd akzeptiert das, weil es das ausgegebene Token ohnehin nie überprüft.`,
+    pl_PL: `Sprawia, że wbudowany router I2P przestaje zapisywać błąd co trzydzieści sekund.
 
-Esas revisiones activaron la descarga bajo demanda de bloques podados. En Bitcoin Core 31 eso rompió de paso el caso corriente. Se vio afectado todo lo que lee bloques a través de este nodo: un nodo Lightning dejó de ver bloques nuevos y se declaraba fuera de sincronía, y los servidores Electrum, los exploradores de bloques y el software de minería habrían fallado igual. Los nodos sin podar nunca se vieron afectados: no ejecutan el proxy que hace la descarga.
+Kontrola stanu raportująca status I2P logowała się przed każdym zapytaniem i odsyłała otrzymany token razem z tym zapytaniem. i2pd odczytuje ten token jako żądanie, którego nie rozpoznaje, i zapisuje z jego powodu błąd — dwa razy na minutę, dopóki I2P jest włączone. W rzeczywistości nic nie było nie tak: łączność I2P pozostawała nienaruszona, a sama kontrola zawsze raportowała poprawnie. Kontrola odpytuje teraz router bezpośrednio, bez logowania, co i2pd akceptuje, ponieważ i tak nigdy nie weryfikuje wydawanego tokenu.`,
+    fr_FR: `Empêche le routeur I2P intégré de consigner une erreur toutes les trente secondes.
 
-Por debajo, el proxy ya no podía leer la lista de pares a los que está conectado tu nodo, porque Bitcoin Core 31 dejó de informar de un campo que el proxy exigía. Pedía esa lista antes de comprobar si tu propio nodo todavía tenía el bloque, así que ese único fallo se llevaba por delante todas las peticiones. Ahora el proxy pregunta primero a tu nodo y solo recurre a la red para los bloques realmente podados, ya no depende de campos que Bitcoin Core pueda dejar de enviar, y escribe sus propios errores en el registro del servicio en lugar de fallar en silencio.
-
-Si tienes un nodo podado con Lightning, actualiza cuanto antes. Mientras esté afectado, el nodo no puede ver bloques nuevos, y un nodo Lightning que no ve bloques nuevos no puede reaccionar a que le cierren un canal en su contra.`,
-    de_DE: `Behebt einen schwerwiegenden Fehler der beiden vorigen Revisionen: Auf einem beschnittenen Knoten schlug jede Anfrage nach einem Block fehl — auch nach Blöcken, die dein Knoten noch auf der Festplatte hatte.
-
-Diese Revisionen schalteten das bedarfsweise Nachladen beschnittener Blöcke ein. Unter Bitcoin Core 31 zerbrach damit auch der gewöhnliche Fall. Betroffen war alles, was Blöcke über diesen Knoten liest: Ein Lightning-Knoten sah keine neuen Blöcke mehr und meldete sich als nicht mehr synchron, und Electrum-Server, Block-Explorer und Mining-Software wären genauso gescheitert. Unbeschnittene Knoten waren nie betroffen — sie starten den Proxy, der das Nachladen erledigt, gar nicht erst.
-
-Darunter lag: Der Proxy konnte die Liste der Gegenstellen, mit denen dein Knoten verbunden ist, nicht mehr lesen, weil Bitcoin Core 31 ein Feld nicht mehr meldet, auf dem der Proxy bestand. Er forderte diese Liste an, bevor er prüfte, ob dein eigener Knoten den Block noch hat — dieser eine Fehler riss deshalb jede Anfrage mit. Der Proxy fragt nun zuerst deinen Knoten und wendet sich nur für tatsächlich beschnittene Blöcke ans Netz, er hängt nicht mehr an Feldern, die Bitcoin Core einstellen kann, und er schreibt seine eigenen Fehler ins Dienstprotokoll, statt stumm zu scheitern.
-
-Wenn du einen beschnittenen Knoten mit Lightning betreibst, aktualisiere so bald wie möglich. Solange er betroffen ist, sieht der Knoten keine neuen Blöcke — und ein Lightning-Knoten, der keine neuen Blöcke sieht, kann nicht darauf reagieren, dass ein Kanal gegen ihn geschlossen wird.`,
-    pl_PL: `Naprawia poważną usterkę dwóch poprzednich rewizji: na węźle z przycinaniem każde żądanie bloku kończyło się błędem — także dla bloków, które twój węzeł wciąż miał na dysku.
-
-Te rewizje włączyły pobieranie przyciętych bloków na żądanie. W Bitcoin Core 31 zepsuło to przy okazji przypadek zwyczajny. Ucierpiało wszystko, co czyta bloki przez ten węzeł: węzeł Lightning przestał widzieć nowe bloki i zgłaszał się jako niezsynchronizowany, a serwery Electrum, eksploratory bloków i oprogramowanie górnicze zawiodłyby tak samo. Węzłów bez przycinania to nigdy nie dotyczyło — nie uruchamiają proxy, które pobiera bloki.
-
-Pod spodem proxy nie potrafiło już odczytać listy węzłów, z którymi łączy się twój węzeł, ponieważ Bitcoin Core 31 przestał podawać pole, którego proxy wymagało. Pytało o tę listę, zanim sprawdziło, czy twój własny węzeł nadal ma dany blok, więc ta jedna awaria pociągała za sobą każde żądanie. Teraz proxy pyta najpierw twój węzeł, a do sieci zwraca się wyłącznie po bloki faktycznie przycięte, nie zależy już od pól, których Bitcoin Core może przestać wysyłać, i zapisuje własne błędy w dzienniku usługi zamiast milczeć.
-
-Jeśli prowadzisz węzeł z przycinaniem razem z Lightning, zaktualizuj jak najszybciej. Dopóki usterka trwa, węzeł nie widzi nowych bloków, a węzeł Lightning, który nie widzi nowych bloków, nie może zareagować na zamknięcie kanału na jego niekorzyść.`,
-    fr_FR: `Corrige une panne grave des deux révisions précédentes : sur un nœud élagué, toute demande de bloc échouait — y compris pour les blocs que votre nœud avait encore sur disque.
-
-Ces révisions ont activé la récupération à la demande des blocs élagués. Sous Bitcoin Core 31, cela a cassé du même coup le cas ordinaire. Tout ce qui lit des blocs à travers ce nœud était touché : un nœud Lightning ne voyait plus les nouveaux blocs et se déclarait désynchronisé, et les serveurs Electrum, les explorateurs de blocs et les logiciels de minage auraient échoué de la même façon. Les nœuds non élagués n'ont jamais été concernés : ils n'exécutent pas le proxy qui effectue la récupération.
-
-En dessous, le proxy ne parvenait plus à lire la liste des pairs auxquels votre nœud est connecté, parce que Bitcoin Core 31 a cessé de publier un champ que le proxy exigeait. Il demandait cette liste avant de vérifier si votre propre nœud avait encore le bloc : cette seule panne emportait donc toutes les demandes. Le proxy interroge maintenant votre nœud d'abord et ne se tourne vers le réseau que pour les blocs réellement élagués, il ne dépend plus de champs que Bitcoin Core peut cesser d'envoyer, et il consigne ses propres erreurs dans le journal du service au lieu d'échouer en silence.
-
-Si vous exploitez un nœud élagué avec Lightning, mettez à jour dès que possible. Tant qu'il est touché, le nœud ne voit pas les nouveaux blocs, et un nœud Lightning qui ne voit pas les nouveaux blocs ne peut pas réagir à la fermeture d'un canal à son encontre.`,
+La vérification d'état qui rapporte le statut d'I2P s'authentifiait avant chaque requête et renvoyait avec celle-ci le jeton obtenu. i2pd lit ce jeton comme une requête qu'il ne reconnaît pas et consigne une erreur à son sujet — deux fois par minute, tant qu'I2P est activé. En réalité rien n'était en panne : la connectivité I2P n'était pas affectée et la vérification elle-même rapportait toujours correctement. La vérification interroge désormais le routeur directement, sans s'authentifier, ce que i2pd accepte puisqu'il ne vérifie jamais le jeton qu'il délivre.`,
   },
   migrations: {
     up: async ({ effects }) => {},
@@ -51,6 +31,6 @@ Si vous exploitez un nœud élagué avec Lightning, mettez à jour dès que poss
     },
   },
 })
-  .satisfies('30.3:7')
-  .satisfies('29.4:7')
-  .satisfies('28.4:20')
+  .satisfies('30.3:8')
+  .satisfies('29.4:8')
+  .satisfies('28.4:21')
