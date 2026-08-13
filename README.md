@@ -216,7 +216,7 @@ Notifications accompany every consequential outcome (verdicts cleared, tips skip
 | ------------------- | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
 | **RPC**             | Waits for `.cookie` file, then port-listening check on `8332` (or `58332` when pruned) | Ready: "The Bitcoin RPC Interface is ready"                                                    |
 | **Blockchain Sync** | `bitcoin-cli getblockchaininfo` (polled every 30 s; 5 s during startup/failure)        | Shows percentage during IBD; "Bitcoin is fully synced" when complete                           |
-| **I2P**             | I2PControl API (auth + router info)                                                    | "Inbound and outbound connections" or "Outbound connections only" based on `i2pacceptincoming` |
+| **I2P**             | I2PControl `RouterInfo` API (unauthenticated)                                          | "Inbound and outbound connections" or "Outbound connections only" based on `i2pacceptincoming` |
 | **Tor**             | Tor install/running status                                                             | "Inbound and outbound" when an onion address is published; otherwise "Outbound only"           |
 | **Clearnet**        | Checks published IP addresses                                                          | "Inbound and outbound" when an IP address is published; otherwise "Outbound only"              |
 | **RPC Proxy**       | Port listening (when pruned)                                                           | Ready: "The Bitcoin RPC Proxy is ready"                                                        |
