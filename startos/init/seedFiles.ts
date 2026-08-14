@@ -32,6 +32,12 @@ export const seedFiles = sdk.setupOnInit(async (effects, kind) => {
       },
     })
   } else {
-    await bitcoinConfFile.merge(effects, {})
+    await bitcoinConfFile.merge(effects, {
+      // Boxes that switched from Bitcoin Knots (RDTS) before its
+      // Core-bound migrations cleared `consensusrules` still carry the
+      // key, and this build warns about it on every start. Knots removes
+      // it on the way out now; this heals installs that crossed earlier.
+      raw: { consensusrules: undefined },
+    })
   }
 })

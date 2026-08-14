@@ -146,6 +146,11 @@ export const shape = z.object({
     .catch(undefined),
   peerblockfilters: iniBoolean,
   natpmp: iniBoolean,
+  // Known only so init can clear it when left behind by a Bitcoin Knots
+  // (RDTS) switch — this build logs "Ignoring unknown configuration value"
+  // for it on every start. Not in `fullConfigSpec` — Bitcoin Core doesn't
+  // expose RDTS to the UI.
+  consensusrules: z.literal('rdts').optional().catch(undefined),
   maxuploadtarget: iniNumber,
 })
 

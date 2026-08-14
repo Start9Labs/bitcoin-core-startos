@@ -390,6 +390,11 @@ export const main = sdk.setupMain(async ({ effects }) => {
       await i2pdSub.execFail(['rm', '-rf', '/home/i2pd/data/certificates'], {
         user: 'root',
       })
+      // i2pd warns on every start if the client-tunnels file is absent; we
+      // ship no client tunnels, so seed an empty one (chown below owns it)
+      await i2pdSub.execFail(['touch', '/home/i2pd/data/tunnels.conf'], {
+        user: 'root',
+      })
       // Fix volume ownership for the non-root i2pd user
       await i2pdSub.execFail(['chown', '-R', 'i2pd', '/home/i2pd'], {
         user: 'root',
@@ -420,6 +425,17 @@ export const main = sdk.setupMain(async ({ effects }) => {
               const netStatus = info?.result?.['i2p.router.net.status']
               const knownPeers = info?.result?.['i2p.router.netdb.knownpeers']
               const activePeers = info?.result?.['i2p.router.netdb.activepeers']
+
+              // A reply without a usable `result` (e.g. a JSON-RPC error
+              // object) used to slip through every guard below — undefined
+              // compares false against numbers — and report success. Fail
+              // toward `starting` instead.
+              if (info?.result == null || netStatus == null) {
+                return {
+                  result: 'starting' as const,
+                  message: i18n('Starting the I2P router'),
+                }
+              }
 
               // An empty netDb means reseed never landed — the router has
               // nothing to connect to and will not recover on its own. It
