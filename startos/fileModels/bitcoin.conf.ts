@@ -145,6 +145,10 @@ export const shape = z.object({
     .catch(undefined),
   peerblockfilters: iniBoolean,
   natpmp: iniBoolean,
+  // Must-be-absent, like the credential pair above: a Bitcoin Knots (RDTS)
+  // switch can leave this behind, and this build logs "Ignoring unknown
+  // configuration value" for it on every start.
+  consensusrules: z.undefined().optional().catch(undefined),
   maxuploadtarget: iniNumber,
 })
 
