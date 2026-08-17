@@ -14,7 +14,7 @@ export const deleteTxIndex = sdk.Action.withoutInput(
       'Deletes the Transaction Index (txindex) in the event it gets corrupted.',
     ),
     warning: i18n(
-      "The Transaction Index will be rebuilt once Bitcoin Core is started again, unless 'Coinstats Index' is disabled in the config settings. Please don't do this unless you fully understand what you are doing.",
+      "The Transaction Index will be rebuilt once Bitcoin Core is started again, unless 'Transaction Index' is disabled in the config settings. Please don't do this unless you fully understand what you are doing.",
     ),
     allowedStatuses: 'only-stopped',
     group: i18n('Delete Corrupted Files'),

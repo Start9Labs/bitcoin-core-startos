@@ -81,13 +81,13 @@ const dict = {
   // actions/deleteTxIndex.ts
   'Delete Transaction Index': 800,
   'Deletes the Transaction Index (txindex) in the event it gets corrupted.': 801,
-  "The Transaction Index will be rebuilt once Bitcoin Core is started again, unless 'Coinstats Index' is disabled in the config settings. Please don't do this unless you fully understand what you are doing.": 802,
+  "The Transaction Index will be rebuilt once Bitcoin Core is started again, unless 'Transaction Index' is disabled in the config settings. Please don't do this unless you fully understand what you are doing.": 802,
   'Successfully deleted txindex': 803,
 
   // actions/deleteCoinstatsIndex.ts
   'Delete Coinstats Index': 900,
   'Deletes the Coinstats Index (coinstatsindex) in case it gets corrupted.': 901,
-  "The Coinstats Index will be rebuilt once Bitcoin Core is started again, unless 'Transaction Index' is disabled in the config settings. Please don't do this unless you fully understand what you are doing.": 902,
+  "The Coinstats Index will be rebuilt once Bitcoin Core is started again, unless 'Coinstats Index' is disabled in the config settings. Please don't do this unless you fully understand what you are doing.": 902,
   'Successfully deleted coinstats index': 903,
 
   // actions/assumeutxo.ts
