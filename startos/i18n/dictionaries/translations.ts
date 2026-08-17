@@ -82,13 +82,13 @@ export default {
     // actions/deleteTxIndex.ts
     800: 'Eliminar índice de transacciones',
     801: 'Elimina el índice de transacciones (txindex) en caso de que se corrompa.',
-    802: "El índice de transacciones se reconstruirá una vez que se inicie Bitcoin Core nuevamente, a menos que 'Índice Coinstats' esté deshabilitado en la configuración. Por favor, no haga esto a menos que comprenda completamente lo que está haciendo.",
+    802: "El índice de transacciones se reconstruirá una vez que se inicie Bitcoin Core nuevamente, a menos que 'Índice de transacciones' esté deshabilitado en la configuración. Por favor, no haga esto a menos que comprenda completamente lo que está haciendo.",
     803: 'txindex eliminado exitosamente',
 
     // actions/deleteCoinstatsIndex.ts
     900: 'Eliminar índice Coinstats',
     901: 'Elimina el índice Coinstats (coinstatsindex) en caso de que se corrompa.',
-    902: "El índice Coinstats se reconstruirá una vez que se inicie Bitcoin Core nuevamente, a menos que 'Índice de transacciones' esté deshabilitado en la configuración. Por favor, no haga esto a menos que comprenda completamente lo que está haciendo.",
+    902: "El índice Coinstats se reconstruirá una vez que se inicie Bitcoin Core nuevamente, a menos que 'Índice Coinstats' esté deshabilitado en la configuración. Por favor, no haga esto a menos que comprenda completamente lo que está haciendo.",
     903: 'Índice coinstats eliminado exitosamente',
 
     // actions/assumeutxo.ts
@@ -383,13 +383,13 @@ export default {
     // actions/deleteTxIndex.ts
     800: 'Transaktionsindex löschen',
     801: 'Löscht den Transaktionsindex (txindex), falls er beschädigt wird.',
-    802: "Der Transaktionsindex wird neu erstellt, sobald Bitcoin Core erneut gestartet wird, es sei denn, 'Coinstats-Index' ist in den Konfigurationseinstellungen deaktiviert. Bitte tun Sie dies nicht, es sei denn, Sie verstehen vollständig, was Sie tun.",
+    802: "Der Transaktionsindex wird neu erstellt, sobald Bitcoin Core erneut gestartet wird, es sei denn, 'Transaktionsindex' ist in den Konfigurationseinstellungen deaktiviert. Bitte tun Sie dies nicht, es sei denn, Sie verstehen vollständig, was Sie tun.",
     803: 'txindex erfolgreich gelöscht',
 
     // actions/deleteCoinstatsIndex.ts
     900: 'Coinstats-Index löschen',
     901: 'Löscht den Coinstats-Index (coinstatsindex), falls er beschädigt wird.',
-    902: "Der Coinstats-Index wird neu erstellt, sobald Bitcoin Core erneut gestartet wird, es sei denn, 'Transaktionsindex' ist in den Konfigurationseinstellungen deaktiviert. Bitte tun Sie dies nicht, es sei denn, Sie verstehen vollständig, was Sie tun.",
+    902: "Der Coinstats-Index wird neu erstellt, sobald Bitcoin Core erneut gestartet wird, es sei denn, 'Coinstats-Index' ist in den Konfigurationseinstellungen deaktiviert. Bitte tun Sie dies nicht, es sei denn, Sie verstehen vollständig, was Sie tun.",
     903: 'Coinstats-Index erfolgreich gelöscht',
 
     // actions/assumeutxo.ts
@@ -684,13 +684,13 @@ export default {
     // actions/deleteTxIndex.ts
     800: 'Usuń indeks transakcji',
     801: 'Usuwa indeks transakcji (txindex) w przypadku jego uszkodzenia.',
-    802: "Indeks transakcji zostanie przebudowany po ponownym uruchomieniu Bitcoin Core, chyba że 'Indeks Coinstats' jest wyłączony w ustawieniach konfiguracji. Proszę tego nie robić, chyba że w pełni rozumiesz, co robisz.",
+    802: "Indeks transakcji zostanie przebudowany po ponownym uruchomieniu Bitcoin Core, chyba że 'Indeks transakcji' jest wyłączony w ustawieniach konfiguracji. Proszę tego nie robić, chyba że w pełni rozumiesz, co robisz.",
     803: 'Pomyślnie usunięto txindex',
 
     // actions/deleteCoinstatsIndex.ts
     900: 'Usuń indeks Coinstats',
     901: 'Usuwa indeks Coinstats (coinstatsindex) w przypadku jego uszkodzenia.',
-    902: "Indeks Coinstats zostanie przebudowany po ponownym uruchomieniu Bitcoin Core, chyba że 'Indeks transakcji' jest wyłączony w ustawieniach konfiguracji. Proszę tego nie robić, chyba że w pełni rozumiesz, co robisz.",
+    902: "Indeks Coinstats zostanie przebudowany po ponownym uruchomieniu Bitcoin Core, chyba że 'Indeks Coinstats' jest wyłączony w ustawieniach konfiguracji. Proszę tego nie robić, chyba że w pełni rozumiesz, co robisz.",
     903: 'Pomyślnie usunięto indeks coinstats',
 
     // actions/assumeutxo.ts
@@ -985,13 +985,13 @@ export default {
     // actions/deleteTxIndex.ts
     800: "Supprimer l'index des transactions",
     801: "Supprime l'index des transactions (txindex) au cas où il serait corrompu.",
-    802: "L'index des transactions sera reconstruit une fois Bitcoin Core redémarré, sauf si 'Index Coinstats' est désactivé dans les paramètres de configuration. Veuillez ne pas faire cela à moins que vous ne compreniez parfaitement ce que vous faites.",
+    802: "L'index des transactions sera reconstruit une fois Bitcoin Core redémarré, sauf si 'Index des transactions' est désactivé dans les paramètres de configuration. Veuillez ne pas faire cela à moins que vous ne compreniez parfaitement ce que vous faites.",
     803: 'txindex supprimé avec succès',
 
     // actions/deleteCoinstatsIndex.ts
     900: "Supprimer l'index Coinstats",
     901: "Supprime l'index Coinstats (coinstatsindex) au cas où il serait corrompu.",
-    902: "L'index Coinstats sera reconstruit une fois Bitcoin Core redémarré, sauf si 'Index de transactions' est désactivé dans les paramètres de configuration. Veuillez ne pas faire cela à moins que vous ne compreniez parfaitement ce que vous faites.",
+    902: "L'index Coinstats sera reconstruit une fois Bitcoin Core redémarré, sauf si 'Index Coinstats' est désactivé dans les paramètres de configuration. Veuillez ne pas faire cela à moins que vous ne compreniez parfaitement ce que vous faites.",
     903: 'Index coinstats supprimé avec succès',
 
     // actions/assumeutxo.ts

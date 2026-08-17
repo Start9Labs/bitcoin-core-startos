@@ -14,7 +14,7 @@ export const deleteCoinstatsIndex = sdk.Action.withoutInput(
       'Deletes the Coinstats Index (coinstatsindex) in case it gets corrupted.',
     ),
     warning: i18n(
-      "The Coinstats Index will be rebuilt once Bitcoin Core is started again, unless 'Transaction Index' is disabled in the config settings. Please don't do this unless you fully understand what you are doing.",
+      "The Coinstats Index will be rebuilt once Bitcoin Core is started again, unless 'Coinstats Index' is disabled in the config settings. Please don't do this unless you fully understand what you are doing.",
     ),
     allowedStatuses: 'only-stopped',
     group: i18n('Delete Corrupted Files'),
