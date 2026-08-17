@@ -7,9 +7,8 @@ export const shape = z
     reindexChainstate: z.boolean().catch(false),
     /** Set when leaving the RDTS-enforcing flavor: on next start, clear
      *  persisted invalid-block verdicts on chain tips (reconsiderblock).
-     *  Present in every bitcoind flavor's shape so a flavor switch never
-     *  strips a pending flag from the shared store — this shape `.strip()`s
-     *  keys it doesn't declare. */
+     *  Declared in every bitcoind flavor's shape so that a flavor which never
+     *  acts on it still round-trips it through the store all flavors share. */
     reconsiderInvalidTips: z.boolean().catch(false),
     /** Whether the binary that last advanced this datadir enforced the RDTS
      *  consensus rules — the package-level durable marker bitcoind itself
