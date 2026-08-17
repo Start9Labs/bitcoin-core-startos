@@ -1,0 +1,16 @@
+name: Sync next
+
+# Carries every change that lands on the base branch onto the paired `next`
+# iteration branch, so `next` never drifts behind what has already shipped.
+# `next` is created on the first run if the repo does not have one yet.
+on:
+  push:
+    branches: ['29.x']
+  workflow_dispatch:
+
+jobs:
+  sync:
+    uses: Start9Labs/start-technologies/.github/workflows/syncNext.yml@master
+    permissions:
+      contents: write
+      pull-requests: write
