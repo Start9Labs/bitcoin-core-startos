@@ -103,7 +103,7 @@ These are starting points, not assertions: nothing re-imposes them, so changing 
 
 Two timing details decide when a hand edit is corrected. The enforced keys are repaired whenever the package writes the file **at all** — every init (install, update, restore) and every config action — but not on a plain restart, so an edit can survive until one of those happens. And because `main` watches the whole parsed file, any write that actually changes a value restarts the service; a form submitted unchanged is not written and does not restart.
 
-One value is coerced rather than enforced: a `prune` target between 1 and the 550 MiB floor is raised to the floor.
+Two values are coerced rather than enforced: a `prune` target between 1 and the 550 MiB floor is raised to the floor, and a `maxconnections` below 40 is raised to 40.
 
 ### i2pd.conf
 
@@ -145,7 +145,7 @@ Block and transaction notifications are two interfaces rather than one because b
 
 **Port 8332 does not always belong to bitcoind.** Unpruned, bitcoind binds `0.0.0.0:8332` directly. Pruned, it binds `127.0.0.1:58332` and `btc-rpc-proxy` takes 8332 and forwards to it, additionally fetching blocks the node has pruned from the p2p network on demand and verifying them against their hash, merkle root, and witness commitment before answering. The switch is automatic, and the interface, port, and credentials are identical either way.
 
-**`peer-local` is a binding, not an interface, and dependents have to know the difference.** bitcoind plain-`bind`s container port 58333 and `whitebind`s 58334. The `peer` interface maps onto the first; the `peer-local` host publishes the second with no exported interface, which keeps it on loopback and the LXC bridge — never the LAN, never the internet. A dependent that pulls historical blocks over p2p (electrs, NBXplorer) resolves it with `sdk.host.getBridgeAddress({ hostId: peerLocalHostId, internalPort: peerPortLocal })` and connects with `noban`, `download`, and `mempool` permissions, exempt from inbound eviction and from the upload-target cutoff. Pointed at `peer` instead, it lands on the plain bind with no permissions, in the same pool as anonymous inbound peers.
+**`peer-local` is a binding, not an interface, and dependents have to know the difference.** bitcoind plain-`bind`s container port 58333 and `whitebind`s 58334. The `peer` interface maps onto the first; the `peer-local` host publishes the second with no exported interface, which keeps it on loopback and the LXC bridge — never the LAN, never the internet. A dependent that pulls historical blocks over p2p (electrs, NBXplorer) resolves it with `sdk.host.getBridgeAddress({ hostId: peerLocalHostId, internalPort: peerPortLocal })` and connects with `noban`, `download`, and `mempool` permissions, exempt from inbound eviction and from the upload-target cutoff. Both exemptions presuppose an inbound slot to take. bitcoind reserves 11 connections for its own outbound peers, so below 12 there is no inbound capacity at all; and because Core protects up to 28 candidates before it will evict any of them, a full node cannot evict one to seat a whitelisted arrival either until it holds roughly 29 inbound peers — under that the connection is dropped at accept whatever its permissions. The config field floors at 40, the smallest value that leaves those 29 slots. Pointed at `peer` instead, it lands on the plain bind with no permissions, in the same pool as anonymous inbound peers.
 
 ## Installation and First-Run Flow
 

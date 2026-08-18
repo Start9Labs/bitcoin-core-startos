@@ -47,6 +47,7 @@ const iniBoolean = z
   .catch(undefined)
 
 export const minPrune = 550
+export const minConnections = 40
 
 const validNets = ['ipv4', 'ipv6', 'onion', 'i2p'] as const
 const onlyNetOption = z.enum(validNets)
@@ -96,7 +97,16 @@ export const shape = z.object({
   v2transport: iniBoolean,
   connect: iniStringArray,
   addnode: iniStringArray,
-  maxconnections: iniNumber,
+  maxconnections: z
+    .union([
+      z.array(z.string()).transform((a) => Number(a.at(-1))),
+      z.string().transform(Number),
+      z.number(),
+    ])
+    .pipe(z.number())
+    .transform((v) => (v < minConnections ? minConnections : v))
+    .optional()
+    .catch(undefined),
   blocksonly: iniBoolean,
   i2psam: z.literal(i2PSamAddress).optional().catch(undefined),
   i2pacceptincoming: iniBoolean,
@@ -515,11 +525,11 @@ export const fullConfigSpec = sdk.InputSpec.of({
   maxconnections: Value.number({
     name: i18n('Maximum Connections'),
     description: i18n(
-      'Set the maximum number of connections to maintain with peers.',
+      'Set the maximum number of connections to maintain with peers. Bitcoin reserves 11 of these for its own outbound peers; the rest are inbound slots, shared between peers on the internet and services on this server that fetch blocks over P2P, such as Electrs. The minimum keeps enough of them free that one of those services can still claim a slot when the rest are taken. To reduce bandwidth, prefer Max Upload Target (Other Settings), whose limit does not apply to those services, or Blocks Only (Mempool Settings).',
     ),
     default: null,
     required: false,
-    min: 0,
+    min: minConnections,
     integer: true,
     footnote: `${i18n('Default')}: 125`,
   }),
