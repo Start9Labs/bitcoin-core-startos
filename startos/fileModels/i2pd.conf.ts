@@ -2,7 +2,9 @@ import { FileHelper, z } from '@start9labs/start-sdk'
 import { sdk } from '../sdk'
 import { i2pSocksPort, i2pUiPort } from '../utils'
 
-const iniNumber = z.union([z.string().transform(Number), z.number()])
+const iniNumber = z
+  .union([z.string().transform(Number), z.number()])
+  .pipe(z.number())
 
 const iniBoolean = z.union([
   z.string().transform((s) => !!Number(s)),
