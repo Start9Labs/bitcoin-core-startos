@@ -5,7 +5,7 @@ import { socksHostId, socksPort } from 'tor-startos/startos/utils'
 import { bitcoinConfFile } from './fileModels/bitcoin.conf'
 import { i2pdConfFile } from './fileModels/i2pd.conf'
 import { storeJson } from './fileModels/store.json'
-import { reconsiderInvalidTips } from './forkRecovery'
+import { ChainTip, reconsiderInvalidTips } from './forkRecovery'
 import { i18n } from './i18n'
 import { sdk } from './sdk'
 import {
@@ -225,32 +225,56 @@ export const main = sdk.setupMain(async ({ effects }) => {
           ])
 
           if (
-            res.exitCode === 0 &&
-            res.stdout !== '' &&
-            typeof res.stdout === 'string'
+            res.exitCode !== 0 ||
+            typeof res.stdout !== 'string' ||
+            res.stdout === ''
           ) {
-            const info: GetBlockchainInfo = JSON.parse(res.stdout)
-
-            if (info.initialblockdownload) {
-              const percentage = (info.verificationprogress * 100).toFixed(2)
-              return {
-                message: i18n('Syncing blocks...${percentage}%', {
-                  percentage,
-                }),
-                result: 'loading',
-              }
-            }
-
             return {
-              message: i18n('Bitcoin is fully synced'),
-              result: 'success',
+              message: i18n('Bitcoin is starting…'),
+              result: 'starting',
             }
           }
 
-          return {
-            message: i18n('Bitcoin is starting…'),
-            result: 'starting',
+          const info: GetBlockchainInfo = JSON.parse(res.stdout)
+          const syncing = {
+            message: i18n('Syncing blocks...${percentage}%', {
+              percentage: (info.verificationprogress * 100).toFixed(2),
+            }),
+            result: 'loading' as const,
           }
+          const synced = {
+            message: i18n('Bitcoin is fully synced'),
+            result: 'success' as const,
+          }
+
+          if (!info.initialblockdownload) return synced
+
+          // At genesis no headers have arrived, so nothing sits above the tip
+          // to find yet either.
+          if (info.blocks === 0) return syncing
+
+          const tipsRes = await bitcoindSub.exec([
+            ...bitcoinCliArgs({ prune: !!bitcoinConf.prune }),
+            '-rpcconnect=127.0.0.1',
+            'getchaintips',
+          ])
+          const tips: ChainTip[] =
+            tipsRes.exitCode === 0 &&
+            typeof tipsRes.stdout === 'string' &&
+            tipsRes.stdout !== ''
+              ? JSON.parse(tipsRes.stdout)
+              : []
+          const active = tips.find((t) => t.status === 'active')
+
+          return !active ||
+            tips.some(
+              (t) =>
+                t.status !== 'active' &&
+                t.status !== 'invalid' &&
+                t.height > active.height,
+            )
+            ? syncing
+            : synced
         },
       },
       requires: ['bitcoind'],
