@@ -103,7 +103,7 @@ These are starting points, not assertions: nothing re-imposes them, so changing 
 
 Two timing details decide when a hand edit is corrected. The enforced keys are repaired whenever the package writes the file **at all** — every init (install, update, restore) and every config action — but not on a plain restart, so an edit can survive until one of those happens. And because `main` watches the whole parsed file, any write that actually changes a value restarts the service; a form submitted unchanged is not written and does not restart.
 
-One value is coerced rather than enforced: a `prune` target between 1 and the 550 MiB floor is raised to the floor.
+Two values are coerced rather than enforced: a `prune` target between 1 and the 550 MiB floor is raised to the floor, and a `maxconnections` below 40 is raised to 40.
 
 ### i2pd.conf
 
@@ -145,7 +145,7 @@ Block and transaction notifications are two interfaces rather than one because b
 
 **Port 8332 does not always belong to bitcoind.** Unpruned, bitcoind binds `0.0.0.0:8332` directly. Pruned, it binds `127.0.0.1:58332` and `btc-rpc-proxy` takes 8332 and forwards to it, additionally fetching blocks the node has pruned from the p2p network on demand and verifying them against their hash, merkle root, and witness commitment before answering. The switch is automatic, and the interface, port, and credentials are identical either way.
 
-**`peer-local` is a binding, not an interface, and dependents have to know the difference.** bitcoind plain-`bind`s container port 58333 and `whitebind`s 58334. The `peer` interface maps onto the first; the `peer-local` host publishes the second with no exported interface, which keeps it on loopback and the LXC bridge — never the LAN, never the internet. A dependent that pulls historical blocks over p2p (electrs, NBXplorer) resolves it with `sdk.host.getBridgeAddress({ hostId: peerLocalHostId, internalPort: peerPortLocal })` and connects with `noban`, `download`, and `mempool` permissions, exempt from inbound eviction and from the upload-target cutoff. Pointed at `peer` instead, it lands on the plain bind with no permissions, in the same pool as anonymous inbound peers.
+**`peer-local` is a binding, not an interface, and dependents have to know the difference.** bitcoind plain-`bind`s container port 58333 and `whitebind`s 58334. The `peer` interface maps onto the first; the `peer-local` host publishes the second with no exported interface, which keeps it on loopback and the LXC bridge — never the LAN, never the internet. A dependent that pulls historical blocks over p2p (electrs, NBXplorer) resolves it with `sdk.host.getBridgeAddress({ hostId: peerLocalHostId, internalPort: peerPortLocal })` and connects with `noban`, `download`, and `mempool` permissions, exempt from inbound eviction and from the upload-target cutoff. Both exemptions presuppose an inbound slot to take. bitcoind reserves 11 connections for its own outbound peers, so below 12 there is no inbound capacity at all; and because Core protects up to 28 candidates before it will evict any of them, a full node cannot evict one to seat a whitelisted arrival either until it holds roughly 29 inbound peers — under that the connection is dropped at accept whatever its permissions. The config field floors at 40, the smallest value that leaves those 29 slots. Pointed at `peer` instead, it lands on the plain bind with no permissions, in the same pool as anonymous inbound peers.
 
 ## Installation and First-Run Flow
 
@@ -237,7 +237,7 @@ Six checks at most, and three of them can never report a failure: they describe 
 | Check           | Displayed       | Probes                                                                       | Grace       | Present                                    |
 | --------------- | --------------- | ---------------------------------------------------------------------------- | ----------- | ------------------------------------------ |
 | `bitcoind`      | RPC             | Waits for `.cookie` to appear, then that the RPC port is listening           | SDK default | always                                     |
-| `sync-progress` | Blockchain Sync | `getblockchaininfo`, every 30 s (5 s while starting or failing)              | —           | always                                     |
+| `sync-progress` | Blockchain Sync | `getblockchaininfo` plus `getchaintips`, every 30 s (5 s while starting or failing)              | —           | always                                     |
 | `i2pd`          | I2P             | i2pd's I2PControl `RouterInfo` on loopback                                   | 5 minutes   | while I2P is enabled                       |
 | `i2p`           | I2P             | nothing — a `disabled` placeholder in place of the daemon check              | —           | while I2P is off, or excluded by `onlynet` |
 | `tor`           | Tor             | Tor's installed and running state, and whether an onion address is published | —           | always                                     |
@@ -246,7 +246,7 @@ Six checks at most, and three of them can never report a failure: they describe 
 
 **`bitcoind` failing** means the RPC port never opened. The cookie is deleted at the start of every run and recreated by bitcoind itself, so a check still waiting on it is one where bitcoind is not reaching the point of serving RPC — read the service logs for a startup or database error rather than looking for a networking fault.
 
-**`sync-progress` is a progress meter, not a fault indicator.** It reports a percentage for the whole of the Initial Block Download, which legitimately runs for hours to days, and only succeeds once bitcoind itself clears `initialblockdownload`. It reports `starting` whenever the RPC call fails, which is normal while the node is coming up.
+**`sync-progress` is a progress meter, not a fault indicator.** It reports a percentage for the whole of the Initial Block Download, which legitimately runs for hours to days. It succeeds once bitcoind clears `initialblockdownload`, and also while that flag is still set if `getchaintips` reports no non-invalid tip above the active one — the flag lags a node that has in fact caught up, and a node with nothing above its tip has nothing left to fetch. It reports `starting` whenever the RPC call fails, which is normal while the node is coming up.
 
 **`i2pd` is the one check written to distinguish "slow" from "never".** Everything reads as starting during the five-minute grace period. Past it, an empty network database means the router never reached a reseed server and will not recover on its own; a reported router error status is surfaced with its number; and a router that has reseeded but built no tunnels yet reports `starting`, because that one does resolve itself.
 
