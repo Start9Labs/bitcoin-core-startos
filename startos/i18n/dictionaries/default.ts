@@ -170,7 +170,7 @@ const dict = {
   'Blocks Only': 1258,
   'Reduce bandwidth by not relaying transactions. Blocks will still be downloaded and validated normally. Disables the mempool, wallet transaction broadcasting, and fee estimation.': 1259,
   'Maximum Connections': 1255,
-  'Set the maximum number of connections to maintain with peers.': 1256,
+  'Set the maximum number of connections to maintain with peers. Bitcoin reserves 11 of these for its own outbound peers; the rest are inbound slots, shared between peers on the internet and services on this server that fetch blocks over P2P, such as Electrs. The minimum keeps enough of them free that one of those services can still claim a slot when the rest are taken. To reduce bandwidth, prefer Max Upload Target (Other Settings), whose limit does not apply to those services, or Blocks Only (Mempool Settings).': 1256,
   unlimited: 1257,
   'Peer Settings': 1253,
   'Edit the Peer settings in bitcoin.conf': 1254,
