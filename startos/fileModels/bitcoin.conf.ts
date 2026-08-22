@@ -89,10 +89,10 @@ export const shape = z.object({
   bytespersigop: iniNumber,
 
   // Peers
-  onlynet: z
-    .union([onlyNetOption, z.array(onlyNetOption)])
-    .optional()
-    .catch(undefined),
+  // Deliberately not onlyNetOption: there is no safe default for this field,
+  // so a value the enum does not know is kept rather than caught away. The
+  // catch would delete the whole restriction and put the node on clearnet.
+  onlynet: iniStringArray,
   externalip: iniStringArray,
   whitelist: iniStringArray,
   v2transport: iniBoolean,
@@ -455,6 +455,9 @@ export const fullConfigSpec = sdk.InputSpec.of({
       validNets.map((n) => [n, n === 'onion' ? 'onion (Tor)' : n]),
     ) as Record<ValidNets, string>,
     default: [],
+    footnote: i18n(
+      'i2p requires the I2P SAM Proxy: while the proxy is disabled it is dropped from your selection, and it cannot be your only selected network.',
+    ),
   }),
   v2transport: Value.triState({
     name: i18n('Use V2 P2P Transport Protocol'),
@@ -728,6 +731,25 @@ function formToFile(
     rpcworkqueue,
   } = input
 
+  // Networks the multiselect cannot represent — cjdns, or whatever bitcoind
+  // adds next — are carried straight through from the file, since the form
+  // cannot round-trip them and dropping them would shorten the restriction.
+  const selected = onlynet?.filter((n): n is ValidNets => !!n) ?? []
+  const unlisted = [raw?.onlynet ?? []]
+    .flat()
+    .filter(
+      (n): n is string => !!n && !(validNets as readonly string[]).includes(n),
+    )
+
+  // bitcoind exits at startup on `-onlynet=i2p` with no `-i2psam`. Dropping i2p
+  // settles that only while another network survives it: an empty onlynet is no
+  // restriction at all, so emptying the list would put a node its owner confined
+  // to I2P onto clearnet. There the SAM address is restored instead.
+  const withoutI2p = [...selected.filter((n) => n !== 'i2p'), ...unlisted]
+  const keepsI2p = !raw?.i2psam && selected.includes('i2p')
+  const dropI2p = keepsI2p && withoutI2p.length > 0
+  const onlynetOut = dropI2p ? withoutI2p : [...selected, ...unlisted]
+
   return {
     ...raw,
 
@@ -791,7 +813,8 @@ function formToFile(
 
     // Peer
     v2transport: v2transport ?? undefined,
-    onlynet: onlynet?.length ? input.onlynet?.filter((a) => !!a) : undefined,
+    onlynet: onlynetOut.length ? onlynetOut : undefined,
+    i2psam: keepsI2p && !dropI2p ? i2PSamAddress : raw?.i2psam,
     connect:
       connectpeer?.selection === 'connect'
         ? (connectpeer.value?.peers?.filter((a) => !!a) as string[] | undefined)
