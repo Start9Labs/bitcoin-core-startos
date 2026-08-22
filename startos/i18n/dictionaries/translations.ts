@@ -160,6 +160,8 @@ export default {
     // actions/config/peers.ts - Peer settings
     1236: 'Onlynet',
     1237: 'Realizar conexiones salientes automáticas solo a las redes seleccionadas. Las conexiones entrantes y manuales no se ven afectadas por esta opción.',
+    1238: 'i2p requiere el proxy SAM de I2P: mientras el proxy esté desactivado se elimina de tu selección, y no puede ser la única red que selecciones.',
+    1240: 'Onlynet está restringido a i2p, así que desactivar el proxy SAM de I2P dejaría al nodo sin ninguna forma de conectarse. Añade otra red a Onlynet primero, o deja el proxy activado.',
 
     1243: 'Usar protocolo de transporte P2P V2',
     1244: 'Habilitar o deshabilitar el uso del protocolo de transporte P2P BIP324 V2.',
@@ -180,7 +182,7 @@ export default {
     1259: 'Reducir el ancho de banda al no retransmitir transacciones. Los bloques se seguirán descargando y validando normalmente. Desactiva el mempool, la transmisión de transacciones de la billetera y la estimación de comisiones.',
     1260: 'Configuración de pares no válida',
     1261: 'Bitcoin se niega a arrancar con Transmisión privada activada y Conectar par establecido en Conectar. La transmisión privada abre sus propias conexiones a pares de Tor o I2P elegidos al azar, algo que Conectar impide. Elige Agregar nodo en su lugar, o desactiva la Transmisión privada.',
-    1262: 'Bitcoin se niega a arrancar con la Transmisión privada activada mientras Onlynet excluye tanto Tor como I2P. Añade onion o i2p a Onlynet, o desactiva la Transmisión privada.',
+    1262: 'Bitcoin se niega a arrancar con la Transmisión privada activada mientras Onlynet excluye tanto Tor como I2P. Añade onion a Onlynet, añade i2p con el proxy SAM de I2P activado, o desactiva la Transmisión privada.',
 
     // actions/config/mempool.ts
     1500: 'Persistir Mempool',
@@ -461,6 +463,8 @@ export default {
     // actions/config/peers.ts - Peer settings
     1236: 'Onlynet',
     1237: 'Automatische ausgehende Verbindungen nur zu den ausgewählten Netzwerken herstellen. Eingehende und manuelle Verbindungen sind von dieser Option nicht betroffen.',
+    1238: 'i2p setzt den I2P-SAM-Proxy voraus: Solange der Proxy deaktiviert ist, wird es aus Ihrer Auswahl entfernt, und es kann nicht Ihr einziges ausgewähltes Netzwerk sein.',
+    1240: 'Onlynet ist auf i2p beschränkt, sodass das Abschalten des I2P-SAM-Proxys dem Knoten keinerlei Verbindungsweg ließe. Fügen Sie zuerst ein weiteres Netzwerk zu Onlynet hinzu oder lassen Sie den Proxy aktiviert.',
 
     1243: 'V2 P2P-Transportprotokoll verwenden',
     1244: 'Aktivieren oder deaktivieren Sie die Verwendung des BIP324 V2 P2P-Transportprotokolls.',
@@ -481,7 +485,7 @@ export default {
     1259: 'Bandbreite reduzieren, indem keine Transaktionen weitergeleitet werden. Blöcke werden weiterhin normal heruntergeladen und validiert. Deaktiviert den Mempool, die Wallet-Transaktionsübertragung und die Gebührenschätzung.',
     1260: 'Ungültige Peer-Einstellungen',
     1261: 'Bitcoin verweigert den Start, wenn Privater Broadcast aktiviert und Peer verbinden auf Verbinden gesetzt ist. Privater Broadcast öffnet eigene Verbindungen zu zufällig gewählten Tor- oder I2P-Peers, was Verbinden unterbindet. Wähle stattdessen Knoten hinzufügen oder schalte Privater Broadcast aus.',
-    1262: 'Bitcoin verweigert den Start, wenn Privater Broadcast aktiviert ist, während Onlynet sowohl Tor als auch I2P ausschließt. Füge onion oder i2p zu Onlynet hinzu oder schalte Privater Broadcast aus.',
+    1262: 'Bitcoin verweigert den Start, wenn Privater Broadcast aktiviert ist, während Onlynet sowohl Tor als auch I2P ausschließt. Füge onion zu Onlynet hinzu, füge i2p bei aktiviertem I2P-SAM-Proxy hinzu oder schalte Privater Broadcast aus.',
 
     // actions/config/mempool.ts
     1500: 'Mempool behalten',
@@ -762,6 +766,8 @@ export default {
     // actions/config/peers.ts - Peer settings
     1236: 'Onlynet',
     1237: 'Nawiązuj automatyczne połączenia wychodzące tylko do wybranych sieci. Połączenia przychodzące i ręczne nie są tym wpływane.',
+    1238: 'i2p wymaga proxy SAM I2P: dopóki proxy jest wyłączone, jest usuwane z Twojego wyboru i nie może być jedyną wybraną przez Ciebie siecią.',
+    1240: 'Onlynet jest ograniczony do i2p, więc wyłączenie proxy SAM I2P pozbawiłoby węzeł jakiejkolwiek możliwości połączenia. Najpierw dodaj do Onlynet inną sieć albo pozostaw proxy włączone.',
 
     1243: 'Użyj protokołu transportowego P2P V2',
     1244: 'Włącz lub wyłącz użycie protokołu transportowego P2P BIP324 V2.',
@@ -782,7 +788,7 @@ export default {
     1259: 'Zmniejsz zużycie pasma, nie przekazując transakcji. Bloki będą nadal pobierane i walidowane normalnie. Wyłącza mempool, transmisję transakcji portfela i szacowanie opłat.',
     1260: 'Nieprawidłowe ustawienia peerów',
     1261: 'Bitcoin odmawia uruchomienia, gdy Prywatne rozgłaszanie jest włączone, a Połącz peera ustawiono na Połącz. Prywatne rozgłaszanie otwiera własne połączenia do losowo wybranych peerów Tor lub I2P, czego Połącz zabrania. Wybierz zamiast tego Dodaj węzeł albo wyłącz Prywatne rozgłaszanie.',
-    1262: 'Bitcoin odmawia uruchomienia, gdy Prywatne rozgłaszanie jest włączone, a Onlynet wyklucza zarówno Tora, jak i I2P. Dodaj onion lub i2p do Onlynet albo wyłącz Prywatne rozgłaszanie.',
+    1262: 'Bitcoin odmawia uruchomienia, gdy Prywatne rozgłaszanie jest włączone, a Onlynet wyklucza zarówno Tora, jak i I2P. Dodaj onion do Onlynet, dodaj i2p przy włączonym proxy SAM I2P albo wyłącz Prywatne rozgłaszanie.',
 
     // actions/config/mempool.ts
     1500: 'Zachowaj Mempool',
@@ -1063,6 +1069,8 @@ export default {
     // actions/config/peers.ts - Peer settings
     1236: 'Onlynet',
     1237: 'Effectuer automatiquement des connexions sortantes uniquement vers les réseaux sélectionnés. Les connexions entrantes et manuelles ne sont pas affectées.',
+    1238: 'i2p nécessite le proxy SAM I2P : tant que le proxy est désactivé, il est retiré de votre sélection, et il ne peut pas être votre seul réseau sélectionné.',
+    1240: "Onlynet est restreint à i2p ; désactiver le proxy SAM I2P priverait le nœud de tout moyen de se connecter. Ajoutez d'abord un autre réseau à Onlynet, ou laissez le proxy activé.",
 
     1243: 'Utiliser le protocole de transport P2P V2',
     1244: "Activer ou désactiver l'utilisation du protocole de transport P2P BIP324 V2.",
@@ -1083,7 +1091,7 @@ export default {
     1259: "Réduire la bande passante en ne relayant pas les transactions. Les blocs seront toujours téléchargés et validés normalement. Désactive le mempool, la diffusion des transactions du portefeuille et l'estimation des frais.",
     1260: 'Paramètres des pairs invalides',
     1261: 'Bitcoin refuse de démarrer lorsque Diffusion privée est activée et que Connecter un pair est réglé sur Connecter. La diffusion privée ouvre ses propres connexions vers des pairs Tor ou I2P choisis au hasard, ce que Connecter interdit. Choisissez plutôt Ajouter un nœud, ou désactivez la Diffusion privée.',
-    1262: "Bitcoin refuse de démarrer lorsque Diffusion privée est activée alors qu'Onlynet exclut à la fois Tor et I2P. Ajoutez onion ou i2p à Onlynet, ou désactivez la Diffusion privée.",
+    1262: "Bitcoin refuse de démarrer lorsque Diffusion privée est activée alors qu'Onlynet exclut à la fois Tor et I2P. Ajoutez onion à Onlynet, ajoutez i2p avec le proxy SAM I2P activé, ou désactivez la Diffusion privée.",
 
     // actions/config/mempool.ts
     1500: 'Conserver le Mempool',
