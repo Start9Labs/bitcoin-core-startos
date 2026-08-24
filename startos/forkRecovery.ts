@@ -50,12 +50,20 @@ import { GetBlockchainInfo, bitcoinCliArgs } from './utils'
 
 /** A container that can run bitcoin-cli against the live bitcoind. */
 export type CliRunner = {
-  exec: (cmd: string[]) => Promise<{
+  exec(
+    cmd: string[],
+    options?: undefined,
+    timeoutMs?: number | null,
+    abort?: AbortController,
+  ): Promise<{
     exitCode: number | null
+    exitSignal: NodeJS.Signals | null
     stdout: string | Buffer
     stderr: string | Buffer
   }>
 }
+
+export type CliOpts = { prune: boolean; abort?: AbortController }
 
 export type GetDeploymentInfo = {
   hash: string
@@ -78,19 +86,29 @@ export type ChainTip = {
 
 const cli = async (
   subc: CliRunner,
-  opts: { prune: boolean },
+  opts: CliOpts,
   ...cmd: string[]
 ): Promise<string> => {
-  const res = await subc.exec([
-    ...bitcoinCliArgs({ prune: opts.prune }),
-    '-rpcconnect=127.0.0.1',
-    '-rpcwait',
-    '-rpcclienttimeout=0',
-    ...cmd,
-  ])
+  // exec SIGKILLs at 30 s by default, contradicting the flags below: every
+  // call blocks through RPC warmup, and reconsiderblock reorgs synchronously.
+  // opts.abort, raised when the service stops, is the bound instead.
+  const res = await subc.exec(
+    [
+      ...bitcoinCliArgs({ prune: opts.prune }),
+      '-rpcconnect=127.0.0.1',
+      '-rpcwait',
+      '-rpcclienttimeout=0',
+      ...cmd,
+    ],
+    undefined,
+    null,
+    opts.abort,
+  )
   if (res.exitCode !== 0) {
     throw new Error(
-      `bitcoin-cli ${cmd[0]} failed (${res.exitCode}): ${String(res.stderr)}`,
+      res.exitSignal
+        ? `bitcoin-cli ${cmd[0]} killed by ${res.exitSignal}`
+        : `bitcoin-cli ${cmd[0]} failed (${res.exitCode}): ${String(res.stderr)}`,
     )
   }
   return String(res.stdout)
@@ -98,7 +116,7 @@ const cli = async (
 
 const cliJson = async <T>(
   subc: CliRunner,
-  opts: { prune: boolean },
+  opts: CliOpts,
   ...cmd: string[]
 ): Promise<T> => JSON.parse(await cli(subc, opts, ...cmd)) as T
 
@@ -118,7 +136,7 @@ const cliJson = async <T>(
  */
 export async function isRdtsEnforcing(
   subc: CliRunner,
-  opts: { prune: boolean },
+  opts: CliOpts,
 ): Promise<boolean> {
   const info = await cliJson<GetDeploymentInfo>(subc, opts, 'getdeploymentinfo')
   return info.deployments['reduced_data'] !== undefined
@@ -156,7 +174,7 @@ export type ReconsiderResult = {
  */
 export async function reconsiderInvalidTips(
   subc: CliRunner,
-  opts: { prune: boolean },
+  opts: CliOpts,
 ): Promise<ReconsiderResult> {
   const result: ReconsiderResult = { reconsidered: [], skippedPruned: [] }
   // Re-fetch tips and chain info every iteration: each reconsiderblock can
