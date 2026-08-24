@@ -157,6 +157,8 @@ const dict = {
   'Accept inbound I2P connections (effective only when I2P is enabled).': 1205,
   Onlynet: 1236,
   'Make automatic outbound connections only to the selected networks. Inbound and manual connections are not affected by this option.': 1237,
+  'i2p requires the I2P SAM Proxy: while the proxy is disabled it is dropped from your selection, and it cannot be your only selected network.': 1238,
+  'Onlynet is restricted to i2p, so disabling the I2P SAM Proxy would leave the node with no way to connect at all. Add another network to Onlynet first, or leave the proxy enabled.': 1240,
   'Use V2 P2P Transport Protocol': 1243,
   'Enable or disable the use of BIP324 V2 P2P transport protocol.': 1244,
   'Connect Peer': 1245,
@@ -176,7 +178,7 @@ const dict = {
   'Edit the Peer settings in bitcoin.conf': 1254,
   'Invalid Peer Settings': 1260,
   'Bitcoin refuses to start with both Private Broadcast and Connect Peer set to Connect. Private broadcast opens its own connections to randomly chosen Tor or I2P peers, which Connect forbids. Choose Add Node instead, or turn off Private Broadcast.': 1261,
-  'Bitcoin refuses to start with Private Broadcast enabled while Onlynet excludes both Tor and I2P. Add onion or i2p to Onlynet, or turn off Private Broadcast.': 1262,
+  'Bitcoin refuses to start with Private Broadcast enabled while Onlynet excludes both Tor and I2P. Add onion to Onlynet, add i2p with the I2P SAM Proxy enabled, or turn off Private Broadcast.': 1262,
 
   // actions/config/mempool.ts
   'Persist Mempool': 1500,
