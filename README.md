@@ -105,7 +105,7 @@ These are starting points, not assertions: nothing re-imposes them, so changing 
 
 Two timing details decide when a hand edit is corrected. The enforced keys are repaired whenever the package writes the file **at all** — every init (install, update, restore) and every config action — but not on a plain restart, so an edit can survive until one of those happens. And because `main` watches the whole parsed file, any write that actually changes a value restarts the service; a form submitted unchanged is not written and does not restart.
 
-Two values are coerced rather than enforced: a `prune` target between 1 and the 550 MiB floor is raised to the floor, and a `maxconnections` below 40 is raised to 40.
+Three values are coerced rather than enforced: a `prune` target between 1 and the 550 MiB floor is raised to the floor, a `maxconnections` below 40 is raised to 40, and `i2p` is dropped from `onlynet` while `i2psam` is absent, because bitcoind refuses to start restricted to a network it has no proxy for. That drop never empties `onlynet`: an empty list is no restriction at all, so where `i2p` is the only entry the `i2psam` address is restored instead, and a node confined to I2P is never handed clearnet. For the same reason `onlynet` is the one field whose invalid values are not repaired — an entry the package does not offer, `cjdns` or a typo, is written back untouched, and bitcoind refusing to start on it beats the package quietly deleting the restriction.
 
 ### i2pd.conf
 
@@ -177,7 +177,7 @@ Fifteen actions, thirteen of them user-facing. The OS already carries each one's
 The four configuration actions. Each writes only the fields it presents, and each costs seconds plus a restart. All are safe to re-run; the form is pre-filled from the current file, so re-running without editing is a no-op.
 
 - **Other Settings** carries the two consequential ones. Turning pruning **off** sets the reindex flag, so the next start rebuilds the databases from the blocks already on disk. Turning it **on** moves RPC behind the proxy and forces `txindex` off.
-- **Peer Settings** is where the embedded I2P router is switched on and off; turning the SAM proxy off here stops the router and swaps the I2P health check for a disabled placeholder.
+- **Peer Settings** is where the embedded I2P router is switched on and off; turning the SAM proxy off here stops the router, swaps the I2P health check for a disabled placeholder, and drops `i2p` from Onlynet if it was selected. It refuses the submission outright when `i2p` is the only network in Onlynet, the one case where dropping it would widen the node rather than narrow it.
 - **Mempool Settings** and **RPC Settings** are plain field edits with no side effects beyond the restart.
 
 ### Generate RPC User Credentials, Delete RPC Users
@@ -275,7 +275,7 @@ Both volumes are copied wholesale — `sdk.Backups.ofVolumes('main', 'i2pd')`. T
 3. **`mempoolfullrbf` and `consensusrules` cannot be set** — both are modelled as must-be-absent and are deleted like the credential pair above.
 4. **Pruning is chosen by disk size**, not asked for, and pruning forces `txindex` off.
 5. **`getblock` verbosity 2 still fails for a pruned block.** The proxy intercepts verbosity 0 and 1 only. Verbosity 2 could not be answered faithfully anyway: its per-input fee fields need undo data a pruned node no longer holds.
-6. **CJDNS is unavailable.** StartOS provides no CJDNS transport, so it is not offered as an `onlynet` option. Clearnet, Tor, and I2P are all fully supported.
+6. **CJDNS is unavailable.** StartOS provides no CJDNS transport, so it is not offered as an `onlynet` option — though one hand-written into `bitcoin.conf` is preserved rather than dropped. Clearnet, Tor, and I2P are all fully supported.
 7. **i2pd tuning is not in the StartOS UI.** Log level, bandwidth class, transit share, tunnel limits, and the web console are edited in `i2pd.conf` on the `i2pd` volume.
 8. **Shutdown is allowed five minutes** to flush the databases before SIGKILL.
 9. **The I2P router is emulated on riscv64**, which has no upstream i2pd image.

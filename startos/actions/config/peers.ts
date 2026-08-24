@@ -81,6 +81,23 @@ export const peerConfig = sdk.Action.withInput(
   async ({ effects, input }) => {
     const { i2psam, ...confInput } = input
 
+    // Dropping i2p is only safe while another network survives it, so the one
+    // combination the file model cannot reconcile is refused here instead.
+    if (
+      i2psam.selection === 'disabled' &&
+      confInput.onlynet.length > 0 &&
+      confInput.onlynet.every((n) => n === 'i2p')
+    ) {
+      return {
+        version: '1',
+        title: i18n('Invalid Peer Settings'),
+        message: i18n(
+          'Onlynet is restricted to i2p, so disabling the I2P SAM Proxy would leave the node with no way to connect at all. Add another network to Onlynet first, or leave the proxy enabled.',
+        ),
+        result: null,
+      }
+    }
+
     await bitcoinConfFile.merge(effects, {
       raw: {
         i2psam: i2psam.selection === 'enabled' ? i2PSamAddress : undefined,

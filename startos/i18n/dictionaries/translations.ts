@@ -160,6 +160,9 @@ export default {
     // actions/config/peers.ts - Peer settings
     1236: 'Onlynet',
     1237: 'Realizar conexiones salientes automáticas solo a las redes seleccionadas. Las conexiones entrantes y manuales no se ven afectadas por esta opción.',
+    1238: 'i2p requiere el proxy SAM de I2P: mientras el proxy esté desactivado se elimina de tu selección, y no puede ser la única red que selecciones.',
+    1239: 'Configuración de pares no válida',
+    1240: 'Onlynet está restringido a i2p, así que desactivar el proxy SAM de I2P dejaría al nodo sin ninguna forma de conectarse. Añade otra red a Onlynet primero, o deja el proxy activado.',
 
     1243: 'Usar protocolo de transporte P2P V2',
     1244: 'Habilitar o deshabilitar el uso del protocolo de transporte P2P BIP324 V2.',
@@ -453,6 +456,9 @@ export default {
     // actions/config/peers.ts - Peer settings
     1236: 'Onlynet',
     1237: 'Automatische ausgehende Verbindungen nur zu den ausgewählten Netzwerken herstellen. Eingehende und manuelle Verbindungen sind von dieser Option nicht betroffen.',
+    1238: 'i2p setzt den I2P-SAM-Proxy voraus: Solange der Proxy deaktiviert ist, wird es aus Ihrer Auswahl entfernt, und es kann nicht Ihr einziges ausgewähltes Netzwerk sein.',
+    1239: 'Ungültige Peer-Einstellungen',
+    1240: 'Onlynet ist auf i2p beschränkt, sodass das Abschalten des I2P-SAM-Proxys dem Knoten keinerlei Verbindungsweg ließe. Fügen Sie zuerst ein weiteres Netzwerk zu Onlynet hinzu oder lassen Sie den Proxy aktiviert.',
 
     1243: 'V2 P2P-Transportprotokoll verwenden',
     1244: 'Aktivieren oder deaktivieren Sie die Verwendung des BIP324 V2 P2P-Transportprotokolls.',
@@ -746,6 +752,9 @@ export default {
     // actions/config/peers.ts - Peer settings
     1236: 'Onlynet',
     1237: 'Nawiązuj automatyczne połączenia wychodzące tylko do wybranych sieci. Połączenia przychodzące i ręczne nie są tym wpływane.',
+    1238: 'i2p wymaga proxy SAM I2P: dopóki proxy jest wyłączone, jest usuwane z Twojego wyboru i nie może być jedyną wybraną przez Ciebie siecią.',
+    1239: 'Nieprawidłowe ustawienia peerów',
+    1240: 'Onlynet jest ograniczony do i2p, więc wyłączenie proxy SAM I2P pozbawiłoby węzeł jakiejkolwiek możliwości połączenia. Najpierw dodaj do Onlynet inną sieć albo pozostaw proxy włączone.',
 
     1243: 'Użyj protokołu transportowego P2P V2',
     1244: 'Włącz lub wyłącz użycie protokołu transportowego P2P BIP324 V2.',
@@ -1039,6 +1048,9 @@ export default {
     // actions/config/peers.ts - Peer settings
     1236: 'Onlynet',
     1237: 'Effectuer automatiquement des connexions sortantes uniquement vers les réseaux sélectionnés. Les connexions entrantes et manuelles ne sont pas affectées.',
+    1238: 'i2p nécessite le proxy SAM I2P : tant que le proxy est désactivé, il est retiré de votre sélection, et il ne peut pas être votre seul réseau sélectionné.',
+    1239: 'Paramètres des pairs invalides',
+    1240: "Onlynet est restreint à i2p ; désactiver le proxy SAM I2P priverait le nœud de tout moyen de se connecter. Ajoutez d'abord un autre réseau à Onlynet, ou laissez le proxy activé.",
 
     1243: 'Utiliser le protocole de transport P2P V2',
     1244: "Activer ou désactiver l'utilisation du protocole de transport P2P BIP324 V2.",
