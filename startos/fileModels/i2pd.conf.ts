@@ -24,7 +24,16 @@ export const shape = z.object({
   port: iniNumber.catch(14096),
   ipv4: iniBoolean.catch(true),
   ipv6: iniBoolean.catch(false),
-  bandwidth: z.enum(['L', 'O', 'P']).catch('L'),
+  // 'O' (256 KB/s). The old default 'L' (32 KB/s) is i2pd's lowest
+  // class, and in the standalone i2pd package's field experience a class-L
+  // router behind home NAT rarely gets its LeaseSet publication confirmed
+  // inside its window — the "Publish confirmation was not received" loop —
+  // leaving inbound I2P unreliable; that package ships 'O' for the same
+  // reason. The raise also lifts the transit-relay ceiling (share and
+  // notransit below). A default only: any valid hand-tuned value — L, O,
+  // P, X, or a number in KB/s — survives every merge; the one-time raise
+  // of an existing 'L' lives in versions/current.ts.
+  bandwidth: z.union([z.enum(['L', 'O', 'P', 'X']), iniNumber]).catch('O'),
   share: iniNumber.catch(100),
   notransit: iniBoolean.catch(false),
   floodfill: iniBoolean.catch(false),

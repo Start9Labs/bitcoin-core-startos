@@ -7,6 +7,7 @@ import { i2pdConfFile } from './fileModels/i2pd.conf'
 import { storeJson } from './fileModels/store.json'
 import { ChainTip, reconsiderInvalidTips } from './forkRecovery'
 import { i18n } from './i18n'
+import { CHURN_FAMILY_COUNT, i2pdLogFilter } from './i2pdLogFilter'
 import { sdk } from './sdk'
 import {
   bitcoinCliArgs,
@@ -424,10 +425,23 @@ export const main = sdk.setupMain(async ({ effects }) => {
         user: 'root',
       })
 
+      // One line per start so a support reader can tell the filter is
+      // engaged, and how big the drop list was, without reading source.
+      console.info(
+        `i2pd log filter active: ${CHURN_FAMILY_COUNT} known-weather families`,
+      )
+
       return {
         subcontainer: i2pdSub,
         exec: {
           command: sdk.useEntrypoint(),
+          // Drop the router's known network-weather lines and prefix what
+          // remains `[i2pd]` (see i2pdLogFilter.ts). Both callbacks or
+          // neither: supplying either one switches the child's stdio to
+          // pipes — all three streams, stdin included — and a pipe nothing
+          // reads blocks i2pd once 64 KiB backs up.
+          onStdout: i2pdLogFilter(process.stdout),
+          onStderr: i2pdLogFilter(process.stderr),
         },
         ready: {
           display: 'I2P',
