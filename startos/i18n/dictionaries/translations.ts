@@ -14,6 +14,15 @@ export default {
     9: 'El proxy RPC de Bitcoin no está listo',
     10: 'Sincronización completa',
     11: 'La blockchain está completamente sincronizada.',
+    12: 'Bitcoin está iniciando: ${step}',
+    13: 'Sincronizando cabeceras de bloques…',
+    14: 'Sincronizando cabeceras de bloques: ${count}',
+    15: 'Sincronización de índices',
+    16: 'No hay índices habilitados',
+    17: 'Todos los índices habilitados están actualizados',
+    18: 'Construyendo ${index}: ${percentage}%',
+    19: 'Índice de filtros de bloques',
+    20: 'No se pudo leer ${cmd} de Bitcoin: ${error}',
 
     // interfaces.ts
     100: 'RPC',
@@ -317,6 +326,15 @@ export default {
     9: 'Der Bitcoin RPC-Proxy ist nicht bereit',
     10: 'Synchronisierung abgeschlossen',
     11: 'Die Blockchain ist vollständig synchronisiert.',
+    12: 'Bitcoin startet: ${step}',
+    13: 'Blockheader werden synchronisiert…',
+    14: 'Blockheader werden synchronisiert: ${count}',
+    15: 'Index-Synchronisierung',
+    16: 'Keine Indizes aktiviert',
+    17: 'Alle aktivierten Indizes sind aktuell',
+    18: '${index} wird aufgebaut: ${percentage}%',
+    19: 'Blockfilter-Index',
+    20: '${cmd} konnte nicht von Bitcoin gelesen werden: ${error}',
 
     // interfaces.ts
     100: 'RPC',
@@ -620,6 +638,15 @@ export default {
     9: 'Proxy RPC Bitcoin nie jest gotowy',
     10: 'Synchronizacja zakończona',
     11: 'Łańcuch bloków jest w pełni zsynchronizowany.',
+    12: 'Bitcoin uruchamia się: ${step}',
+    13: 'Synchronizowanie nagłówków bloków…',
+    14: 'Synchronizowanie nagłówków bloków: ${count}',
+    15: 'Synchronizacja indeksów',
+    16: 'Żadne indeksy nie są włączone',
+    17: 'Wszystkie włączone indeksy są aktualne',
+    18: 'Budowanie ${index}: ${percentage}%',
+    19: 'Indeks filtrów bloków',
+    20: 'Nie udało się odczytać ${cmd} z Bitcoina: ${error}',
 
     // interfaces.ts
     100: 'RPC',
@@ -923,6 +950,15 @@ export default {
     9: "Le proxy RPC Bitcoin n'est pas prêt",
     10: 'Synchronisation terminée',
     11: 'La blockchain est entièrement synchronisée.',
+    12: 'Bitcoin démarre : ${step}',
+    13: 'Synchronisation des en-têtes de blocs…',
+    14: 'Synchronisation des en-têtes de blocs : ${count}',
+    15: 'Synchronisation des index',
+    16: 'Aucun index activé',
+    17: 'Tous les index activés sont à jour',
+    18: 'Construction de ${index} : ${percentage}%',
+    19: 'Index des filtres de blocs',
+    20: 'Impossible de lire ${cmd} depuis Bitcoin : ${error}',
 
     // interfaces.ts
     100: 'RPC',
