@@ -47,6 +47,8 @@ Four actions write to `bitcoin.conf` for you. Only values that differ from upstr
 - **RPC Settings** — RPC server timeout, thread count, and work-queue depth.
 - **Other Settings** — ZeroMQ, `txindex`, coinstats index, BIP158/BIP157 block filters, bloom filters, wallet options, pruning, database cache tuning, compact-block reconstruction memory, NAT-PMP port mapping, and a daily upload limit.
 
+Turning on `txindex`, the coinstats index, or block filters after the chain is already synced starts a rebuild from the first block. The **Index Sync** health check on the Dashboard tracks it, and anything relying on that index — transaction lookups, filter-based wallet scans — stays incomplete until it finishes, even though the node itself reports fully synced.
+
 Some options are fixed by the package and not exposed: RPC cookie authentication, the peer listen ports, `assumevalid`, and the Tor proxy. Advanced i2pd-daemon tuning isn't in the UI either — edit `i2pd.conf` on the `i2pd` volume if you need it.
 
 ### Maintenance
