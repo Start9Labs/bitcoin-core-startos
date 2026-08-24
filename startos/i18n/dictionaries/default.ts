@@ -13,6 +13,15 @@ const dict = {
   'The Bitcoin RPC Proxy is not ready': 9,
   'Sync Complete': 10,
   'The blockchain is fully synced.': 11,
+  'Bitcoin is starting: ${step}': 12,
+  'Syncing block headers…': 13,
+  'Syncing block headers: ${count}': 14,
+  'Index Sync': 15,
+  'No indexes are enabled': 16,
+  'All enabled indexes are up to date': 17,
+  'Building ${index}: ${percentage}%': 18,
+  'Block Filter Index': 19,
+  'Could not read ${cmd} from Bitcoin: ${error}': 20,
 
   // interfaces.ts
   RPC: 100,
