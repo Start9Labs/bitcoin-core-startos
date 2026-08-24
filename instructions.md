@@ -82,3 +82,5 @@ Caveats that apply during an actual split:
 - **Shutdown can take up to 5 minutes** while the database flushes; let it finish rather than force-stopping.
 - **IPC is experimental** — toggling it restarts Bitcoin Core, and it's intended for advanced integrations.
 - **Some i2pd tuning isn't in the UI** (log level, bandwidth class, transit limits, web console) — edit `i2pd.conf` directly if you need to change those.
+- **The service log filters the I2P router's routine chatter.** Lines the router still prints carry an `[i2pd]` prefix; Bitcoin's own lines are unprefixed. Real router problems still appear — only known-routine network noise is dropped.
+- **The bundled I2P router carries only your node's traffic.** It relays nothing for other I2P users, so enabling I2P costs you your own Bitcoin traffic and nothing more. An update also raised its bandwidth class from L to O, which makes inbound I2P reliable without adding any relayed traffic. Both are defaults: set `notransit` or the bandwidth class in `i2pd.conf` on the `i2pd` volume and your values stick — including turning relaying on, if you want to support the I2P network.
