@@ -109,7 +109,7 @@ Three values are coerced rather than enforced: a `prune` target between 1 and th
 
 Written at init, which is what makes most of it yours. `merge` fills in missing keys from their defaults and repairs invalid ones; a valid value you set survives — `bandwidth` accepts `L`, `O`, `P`, `X`, or a number in KB/s. The one exception, once: the release that raised the shipped bandwidth default from `L` to `O` also raises an existing `bandwidth = L` in a single migration write, because the package cannot tell its own old default from a hand-set `L`. That release's notes disclose it; any value set afterwards, `L` included, sticks.
 
-The exceptions are literals, repaired at the next init: `log=stdout` and `loglevel=warn` (pinned at `critical` in earlier revisions, which is how a failing SAM bridge left no trace at all), and the loopback addresses for the SOCKS proxy and I2PControl, neither of which may be exposed beyond the service's own network namespace. Everything else — bandwidth class, transit share and tunnel limits, the listen port, the web console — is a default only, and is the supported way to tune i2pd, since none of it is in the StartOS UI. Enabling `http.enabled` is what publishes the I2P console interface.
+The exceptions are literals, repaired at the next init: `log=stdout` and `loglevel=warn` (pinned at `critical` in earlier revisions, which is how a failing SAM bridge left no trace at all), and the loopback addresses for the SOCKS proxy and I2PControl, neither of which may be exposed beyond the service's own network namespace. Everything else — bandwidth class, transit share and tunnel limits, the listen port, the web console — is a default only, and is the supported way to tune i2pd, since none of it is in the StartOS UI. Two of those defaults are policy rather than tuning: `bandwidth=O` and `notransit=true`. i2pd's bandwidth, share and transit-tunnel limits all cap **transit** — traffic relayed for other I2P users — and none of them touches the node's own, so refusing transit is what takes relayed traffic to zero while `O` keeps the advertised capacity that makes this router's own LeaseSet publication land. Setting `notransit=false` turns relaying back on, bounded by `bandwidth` and `share`. Enabling `http.enabled` is what publishes the I2P console interface.
 
 ### store.json
 
@@ -238,15 +238,15 @@ One task, and it exists only to report a failure that happens after the action t
 
 Six checks at most, and three of them can never report a failure: they describe the node's reachability posture rather than its health.
 
-| Check           | Displayed       | Probes                                                                       | Grace       | Present                                    |
-| --------------- | --------------- | ---------------------------------------------------------------------------- | ----------- | ------------------------------------------ |
-| `bitcoind`      | RPC             | Waits for `.cookie` to appear, then that the RPC port is listening           | SDK default | always                                     |
-| `sync-progress` | Blockchain Sync | `getblockchaininfo` plus `getchaintips`, every 30 s (5 s while starting or failing)              | —           | always                                     |
-| `i2pd`          | I2P             | i2pd's I2PControl `RouterInfo` on loopback                                   | 5 minutes   | while I2P is enabled                       |
-| `i2p`           | I2P             | nothing — a `disabled` placeholder in place of the daemon check              | —           | while I2P is off, or excluded by `onlynet` |
-| `tor`           | Tor             | Tor's installed and running state, and whether an onion address is published | —           | always                                     |
-| `clearnet`      | Clearnet        | Whether a non-onion address is published                                     | —           | always                                     |
-| `proxy`         | RPC Proxy       | That the proxy's port is listening                                           | —           | while the node is pruned                   |
+| Check           | Displayed       | Probes                                                                              | Grace       | Present                                    |
+| --------------- | --------------- | ----------------------------------------------------------------------------------- | ----------- | ------------------------------------------ |
+| `bitcoind`      | RPC             | Waits for `.cookie` to appear, then that the RPC port is listening                  | SDK default | always                                     |
+| `sync-progress` | Blockchain Sync | `getblockchaininfo` plus `getchaintips`, every 30 s (5 s while starting or failing) | —           | always                                     |
+| `i2pd`          | I2P             | i2pd's I2PControl `RouterInfo` on loopback                                          | 5 minutes   | while I2P is enabled                       |
+| `i2p`           | I2P             | nothing — a `disabled` placeholder in place of the daemon check                     | —           | while I2P is off, or excluded by `onlynet` |
+| `tor`           | Tor             | Tor's installed and running state, and whether an onion address is published        | —           | always                                     |
+| `clearnet`      | Clearnet        | Whether a non-onion address is published                                            | —           | always                                     |
+| `proxy`         | RPC Proxy       | That the proxy's port is listening                                                  | —           | while the node is pruned                   |
 
 **`bitcoind` failing** means the RPC port never opened. The cookie is deleted at the start of every run and recreated by bitcoind itself, so a check still waiting on it is one where bitcoind is not reaching the point of serving RPC — read the service logs for a startup or database error rather than looking for a networking fault.
 
@@ -280,7 +280,7 @@ Both volumes are copied wholesale — `sdk.Backups.ofVolumes('main', 'i2pd')`. T
 4. **Pruning is chosen by disk size**, not asked for, and pruning forces `txindex` off.
 5. **`getblock` verbosity 2 still fails for a pruned block.** The proxy intercepts verbosity 0 and 1 only. Verbosity 2 could not be answered faithfully anyway: its per-input fee fields need undo data a pruned node no longer holds.
 6. **CJDNS is unavailable.** StartOS provides no CJDNS transport, so it is not offered as an `onlynet` option — though one hand-written into `bitcoin.conf` is preserved rather than dropped. Clearnet, Tor, and I2P are all fully supported.
-7. **i2pd tuning is not in the StartOS UI.** Log level, bandwidth class, transit share, tunnel limits, and the web console are edited in `i2pd.conf` on the `i2pd` volume.
+7. **i2pd tuning is not in the StartOS UI.** Log level, bandwidth class, transit share, tunnel limits, and the web console are edited in `i2pd.conf` on the `i2pd` volume. The embedded router relays nothing for the I2P network (`notransit=true`); run the standalone i2pd service if you want to contribute transit capacity.
 8. **IPC is experimental**, and toggling it restarts the service because it changes which binary runs.
 9. **Shutdown is allowed five minutes** to flush the databases before SIGKILL.
 10. **`-onion` is always passed**, so bitcoind counts Tor as reachable even when the Tor service is absent. With Private Broadcast enabled and neither Tor nor I2P actually working, `sendrawtransaction` submissions are retried in memory and never delivered.
