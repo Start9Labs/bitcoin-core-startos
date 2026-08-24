@@ -232,21 +232,24 @@ One task, and it exists only to report a failure that happens after the action t
 
 ## Health Checks
 
-Six checks at most, and three of them can never report a failure: they describe the node's reachability posture rather than its health.
+Seven checks at most, and three of them can never report a failure: they describe the node's reachability posture rather than its health.
 
-| Check           | Displayed       | Probes                                                                              | Grace       | Present                                    |
-| --------------- | --------------- | ----------------------------------------------------------------------------------- | ----------- | ------------------------------------------ |
-| `bitcoind`      | RPC             | Waits for `.cookie` to appear, then that the RPC port is listening                  | SDK default | always                                     |
-| `sync-progress` | Blockchain Sync | `getblockchaininfo` plus `getchaintips`, every 30 s (5 s while starting or failing) | —           | always                                     |
-| `i2pd`          | I2P             | i2pd's I2PControl `RouterInfo` on loopback                                          | 5 minutes   | while I2P is enabled                       |
-| `i2p`           | I2P             | nothing — a `disabled` placeholder in place of the daemon check                     | —           | while I2P is off, or excluded by `onlynet` |
-| `tor`           | Tor             | Tor's installed and running state, and whether an onion address is published        | —           | always                                     |
-| `clearnet`      | Clearnet        | Whether a non-onion address is published                                            | —           | always                                     |
-| `proxy`         | RPC Proxy       | That the proxy's port is listening                                                  | —           | while the node is pruned                   |
+| Check           | Displayed       | Probes                                                                                       | Grace       | Present                                    |
+| --------------- | --------------- | -------------------------------------------------------------------------------------------- | ----------- | ------------------------------------------ |
+| `bitcoind`      | RPC             | Waits for `.cookie` to appear, then that the RPC port is listening                           | SDK default | always                                     |
+| `sync-progress` | Blockchain Sync | `getblockchaininfo` plus `getchaintips`, every 30 s (5 s while starting or failing)          | —           | always                                     |
+| `index-sync`    | Index Sync      | `getindexinfo`, plus `getblockchaininfo` only while an index is behind, on the same schedule | —           | always                                     |
+| `i2pd`          | I2P             | i2pd's I2PControl `RouterInfo` on loopback                                                   | 5 minutes   | while I2P is enabled                       |
+| `i2p`           | I2P             | nothing — a `disabled` placeholder in place of the daemon check                              | —           | while I2P is off, or excluded by `onlynet` |
+| `tor`           | Tor             | Tor's installed and running state, and whether an onion address is published                 | —           | always                                     |
+| `clearnet`      | Clearnet        | Whether a non-onion address is published                                                     | —           | always                                     |
+| `proxy`         | RPC Proxy       | That the proxy's port is listening                                                           | —           | while the node is pruned                   |
 
 **`bitcoind` failing** means the RPC port never opened. The cookie is deleted at the start of every run and recreated by bitcoind itself, so a check still waiting on it is one where bitcoind is not reaching the point of serving RPC — read the service logs for a startup or database error rather than looking for a networking fault.
 
-**`sync-progress` is a progress meter, not a fault indicator.** It reports a percentage for the whole of the Initial Block Download, which legitimately runs for hours to days. It succeeds once bitcoind clears `initialblockdownload`, and also while that flag is still set if `getchaintips` reports no non-invalid tip above the active one — the flag lags a node that has in fact caught up, and a node with nothing above its tip has nothing left to fetch. It reports `starting` whenever the RPC call fails, which is normal while the node is coming up.
+**`sync-progress` is a progress meter, not a fault indicator.** It reports a percentage for the whole of the Initial Block Download, which legitimately runs for hours to days. It succeeds once bitcoind clears `initialblockdownload`, and also while that flag is still set if `getchaintips` reports no non-invalid tip above the active one — the flag lags a node that has in fact caught up, and a node with nothing above its tip has nothing left to fetch. It reports `starting` whenever the RPC call fails, which is normal while the node is coming up; when the failure is RPC warmup (`-28`) the message carries bitcoind's own account of what it is doing, so a long `Verifying blocks…` or the `Replaying blocks…` that follows an unclean stop is visible rather than indistinguishable from a hang. Before the first block connects it reports the height of the header chain rather than a block percentage that would sit at 0.00% for the whole of that phase. The two chain checks share one probe for their RPC calls, so both separate a node that is not answering yet — `starting` — from a call that could not be run at all or a reply that could not be parsed, which is the only condition under which either reports `failure`.
+
+**`index-sync` is separate from `sync-progress` because the indexes are.** `getindexinfo` lists only the indexes actually enabled, so the check reports `disabled` when there are none and success when every one of them sits at the tip — the normal state throughout IBD, where an index follows block connection rather than trailing it. It goes to `loading` when one falls behind, naming the furthest behind and its height as a percentage of the chain tip. The case it exists for is enabling an index on a node that is already synced: that starts a backfill from the first block, during which `getrawtransaction`, `getblockfilter`, and `gettxoutsetinfo` answer for only the part of the chain the index has reached, while `sync-progress` reports the node fully synced. An index that is behind is working, not broken, so that reads as `loading`; the only thing that reddens this check is bitcoind failing to answer or answering with something unreadable.
 
 **`i2pd` is the one check written to distinguish "slow" from "never".** Everything reads as starting during the five-minute grace period. Past it, an empty network database means the router never reached a reseed server and will not recover on its own; a reported router error status is surfaced with its number; and a router that has reseeded but built no tunnels yet reports `starting`, because that one does resolve itself.
 
@@ -333,6 +336,7 @@ tasks:
 health_checks:
   - bitcoind # the daemon's ready check, displayed "RPC"
   - sync-progress # displayed "Blockchain Sync"
+  - index-sync # displayed "Index Sync"
   - i2pd # displayed "I2P"; only while I2P is enabled
   - i2p # displayed "I2P"; the disabled placeholder otherwise
   - tor
