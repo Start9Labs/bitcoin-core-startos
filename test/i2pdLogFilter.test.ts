@@ -108,10 +108,44 @@ test('keeps failure evidence and anything unknown', () => {
   }
 })
 
+// i2pd colours the level field on every stdout write and cannot be told not to,
+// so these — captured verbatim off a running router — are the shape the filter
+// actually sees. Plain fixtures alone let a filter that never parses a real
+// header pass the whole suite.
+const COLOURED_DROPPED = [
+  '00:30:46@110/\x1b[1;33mwarn\x1b[0m - Profiling: No profile yet for 0dP41hr14ijCvPGIQu-nYd5D40Db-tDPEuqx5FgCIJU=',
+  '00:30:37@288/\x1b[1;33mwarn\x1b[0m - NTCP2: SessionCreated read error: End of file',
+  '00:31:55@288/\x1b[1;33mwarn\x1b[0m - NTCP2: SessionCreated read error: Connection reset by peer',
+]
+
+const COLOURED_KEPT = [
+  "00:29:53@989/\x1b[1;33mwarn\x1b[0m - Addressbook: Can't open /var/lib/i2pd/addressbook/addresses.csv",
+  '00:29:53@989/\x1b[1;31merror\x1b[0m - Addressbook: Resetting eTags',
+]
+
+test('drops churn whose level field is ANSI-coloured', () => {
+  for (const line of COLOURED_DROPPED) {
+    assert.equal(isI2pdChurn(line), true, `should drop: ${line}`)
+  }
+})
+
+test('keeps non-churn whose level field is ANSI-coloured', () => {
+  for (const line of COLOURED_KEPT) {
+    assert.equal(isI2pdChurn(line), false, `should keep: ${line}`)
+  }
+})
+
 const collect = () => {
   const out: string[] = []
   return { out, write: (s: string) => out.push(s) }
 }
+
+test('emits a kept coloured line with its colour intact', () => {
+  const sink = collect()
+  const filter = i2pdLogFilter(sink)
+  filter(Buffer.from(`${COLOURED_KEPT[0]}\n`))
+  assert.deepEqual(sink.out, [`[i2pd] ${COLOURED_KEPT[0]}\n`])
+})
 
 test('kept lines are emitted with the [i2pd] prefix and newline', () => {
   const sink = collect()
