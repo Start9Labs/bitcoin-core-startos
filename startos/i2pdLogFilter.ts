@@ -99,6 +99,11 @@ const CHURN_FAMILIES: RegExp[] = [
 
 export const CHURN_FAMILY_COUNT = CHURN_FAMILIES.length
 
+// i2pd wraps the level field in ANSI colour on every stdout write and offers no
+// way to turn it off (Log.cpp, `case eLogStdout`; only the file destination is
+// left plain), so the header never parses until these are gone.
+const ANSI_SGR = /\x1b\[[0-9;]*m/g
+
 // i2pd line shape: `HH:MM:SS@<thread>/<level> - <message>`, tolerantly
 // matched (optional leading date token, fractional seconds, non-numeric
 // thread ids) so a format drift does not blind the matcher. A line whose
@@ -107,7 +112,7 @@ export const CHURN_FAMILY_COUNT = CHURN_FAMILIES.length
 const MESSAGE = /^(?:\S+ )?\d{2}:\d{2}:\d{2}(?:[.,]\d+)?@\w+\/\w+ - (.*)$/
 
 export const isI2pdChurn = (line: string): boolean => {
-  const message = MESSAGE.exec(line)?.[1] ?? line
+  const message = MESSAGE.exec(line.replace(ANSI_SGR, ''))?.[1] ?? line
   return CHURN_FAMILIES.some((family) => family.test(message))
 }
 
