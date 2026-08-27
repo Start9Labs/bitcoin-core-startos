@@ -22,9 +22,14 @@ import {
 import { i18n } from './i18n'
 
 export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
-  let bitcoinConf = await bitcoinConfFile.read().const(effects)
-
-  if (!bitcoinConf) return []
+  // Only the ZMQ and I2P exports read this file, so RPC and peer must not
+  // vanish with it, and an absent conf is a gap rather than a removal.
+  const bitcoinConf = await bitcoinConfFile
+    .read(
+      (conf) => conf,
+      (prev, next) => next === null || prev === next,
+    )
+    .const(effects)
 
   // RPC
   const rpcMulti = sdk.MultiHost.of(effects, rpcHostId)
@@ -88,7 +93,7 @@ export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
   // ZMQ (conditional). Block (28332) and transaction (28333) are exposed as
   // separate interfaces so a dependent (e.g. LND) can resolve each one's bridge
   // address independently — bitcoind publishes the two on distinct ports.
-  if (bitcoinConf.zmqEnabled) {
+  if (bitcoinConf?.zmqEnabled) {
     const zmqMulti = sdk.MultiHost.of(effects, zmqHostId)
 
     const zmqBlockOrigin = await zmqMulti.bindPort(zmqPortBlock, {
@@ -139,7 +144,7 @@ export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
     .read((c) => c.http.enabled)
     .const(effects)
 
-  if (bitcoinConf.raw?.i2psam && i2pConsoleEnabled) {
+  if (bitcoinConf?.raw?.i2psam && i2pConsoleEnabled) {
     const i2pMulti = sdk.MultiHost.of(effects, i2pConsoleHostId)
     const i2pConsoleOrigin = await i2pMulti.bindPort(i2pUiPort, {
       protocol: 'http',
