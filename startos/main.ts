@@ -736,6 +736,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
         // Unset, the proxy asks every eligible peer for the same block at once
         // and keeps the first valid answer — N copies of every fetch.
         max_peer_concurrency: 3,
+        block_cache_size_mib: 64,
         // Peers reachable only over I2P need i2pd's SOCKS proxy; the fetcher
         // reaches clearnet and .onion peers on its own.
         ...(runI2pd && i2pdConf?.socksproxy.enabled
