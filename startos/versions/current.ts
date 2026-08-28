@@ -2,7 +2,7 @@ import { VersionInfo } from '@start9labs/start-sdk'
 import { rm } from 'fs/promises'
 
 export const current = VersionInfo.of({
-  version: '31.1:13',
+  version: '31.1:14',
   releaseNotes: {
     en_US: `- Blocks fetched from the network for another service are kept in memory, up to 64 MiB, so a repeat request is answered without going back out.`,
     es_ES: `- Los bloques obtenidos de la red para otro servicio se mantienen en memoria, hasta 64 MiB, de modo que una petición repetida se responde sin volver a salir.`,
@@ -21,6 +21,6 @@ export const current = VersionInfo.of({
     },
   },
 })
-  .satisfies('30.3:13')
-  .satisfies('29.4:13')
-  .satisfies('28.4:26')
+  .satisfies('30.3:14')
+  .satisfies('29.4:14')
+  .satisfies('28.4:27')
