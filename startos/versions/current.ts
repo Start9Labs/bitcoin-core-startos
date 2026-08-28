@@ -1,7 +1,7 @@
 import { VersionInfo } from '@start9labs/start-sdk'
 
 export const current = VersionInfo.of({
-  version: '29.4:13',
+  version: '29.4:14',
   releaseNotes: {
     en_US: `- Blocks fetched from the network for another service are kept in memory, up to 64 MiB, so a repeat request is answered without going back out.`,
     es_ES: `- Los bloques obtenidos de la red para otro servicio se mantienen en memoria, hasta 64 MiB, de modo que una petición repetida se responde sin volver a salir.`,
@@ -13,4 +13,4 @@ export const current = VersionInfo.of({
     up: async ({ effects }) => {},
     down: async ({ effects }) => {},
   },
-}).satisfies('28.4:26')
+}).satisfies('28.4:27')
