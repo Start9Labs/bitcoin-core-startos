@@ -52,7 +52,7 @@ Verification is a signer quorum rather than a single trusted key: `SHA256SUMS.as
 | `proxy-sub`    | `btc-rpc-proxy`         | while the node is pruned | Serves RPC on 8332 and fetches pruned blocks over p2p                                                                                                                                                           |
 | _temporaries_  | built locally, `python` | seconds to hours         | One per action that shells out — `assumeutxo`, `delete-peers`, `delete-txindex`, `delete-coinstats`, `getnetworkinfo`, `getblockchaininfo`, and `rpc-auth-generator` (the `python` image, running `rpcauth.py`) |
 
-Four oneshots bracket the daemons. `nocow` sets the btrfs no-COW attribute across the data directory, and `clean-chainstate-old` deletes leftover `chainstate.old` directories; both must finish before `bitcoind` starts. `synced-true` and `chain-recovery` run after it, and are described under [Installation and First-Run Flow](#installation-and-first-run-flow).
+Three oneshots bracket the daemons. `nocow` sets the btrfs no-COW attribute across the data directory, and `clean-chainstate-old` deletes leftover `chainstate.old` directories; both must finish before `bitcoind` starts. `synced-true` runs after it, and is described under [Installation and First-Run Flow](#installation-and-first-run-flow).
 
 The i2pd image has no riscv64 build and is declared `emulateMissingAs: 'x86_64'`, so on riscv64 hardware the I2P router runs emulated.
 
@@ -81,7 +81,7 @@ Three models, and ownership is decided per key rather than per file: some keys a
 
 ### bitcoin.conf
 
-**Enforced** — rewritten to a fixed value whenever the package writes the file: `rpcbind`, `rpcallowip`, `rpccookiefile`, `listen`, `bind`, and `whitebind`. The first two are derived from whether the node is pruned; the rest are constants. `rpcuser`, `rpcpassword`, `mempoolfullrbf`, and `consensusrules` are modelled as "must be absent", so a value on disk is discarded on the next write rather than honoured. The last of those is a Bitcoin Knots (RDTS) key this build does not understand and logs `Ignoring unknown configuration value` for on every start; Knots clears it on the way out now, and modelling it here heals installs that switched before that shipped.
+**Enforced** — rewritten to a fixed value whenever the package writes the file: `rpcbind`, `rpcallowip`, `rpccookiefile`, `listen`, `bind`, and `whitebind`. The first two are derived from whether the node is pruned; the rest are constants. `rpcuser`, `rpcpassword`, `mempoolfullrbf`, and `consensusrules` are modelled as "must be absent", so a value on disk is discarded on the next write rather than honoured. The last of those is a Bitcoin Knots (RDTS) key this build does not understand and logs `Ignoring unknown configuration value` for on every start.
 
 **Seeded at install and then yours.** Install overrides these and nothing else:
 
@@ -115,7 +115,7 @@ The exceptions are literals, repaired at the next init: `log=stdout` and `loglev
 
 ### store.json
 
-StartOS-side state, none of it upstream configuration. `reindexBlockchain` and `reindexChainstate` are one-shot flags: the next start converts each into a bitcoind argument and clears it. `fullySynced` gates the Sync Complete notification, `snapshotInUse` records that a UTXO snapshot is loaded, and `reconsiderInvalidTips` and `rdtsEnforcedLastRun` drive chain-split recovery.
+StartOS-side state, none of it upstream configuration. `reindexBlockchain` and `reindexChainstate` are one-shot flags: the next start converts each into a bitcoind argument and clears it. `fullySynced` gates the Sync Complete notification, and `snapshotInUse` records that a UTXO snapshot is loaded.
 
 The store is shared across bitcoind flavors along with the rest of the volume, which is why every flavor declares all of these keys — including ones it never acts on.
 
@@ -157,16 +157,8 @@ There is no setup wizard, no credential to enter, and no task raised at install 
 2. **Seeded divergences.** The ZeroMQ publishers and `blockfilterindex` are switched on because dependent services need them, `i2psam` points at the embedded router, `dbcache` and `dbbatchsize` are scaled to system RAM for the duration of the sync, the RPC thread count and work-queue depth are raised, and `assumevalid` is pinned.
 3. **Every init repairs all three models.** Install, update, and restore each merge `store.json`, `i2pd.conf`, and `bitcoin.conf`, which fills in missing keys and corrects invalid ones. An update is therefore how a new enforced value reaches an existing install.
 4. **`externalip` is derived, not asked for.** It follows whatever addresses are published on the peer interface, so adding a Tor address there is what makes the node advertise it and what turns Tor into a running dependency.
-5. **Every start** runs `nocow` and `clean-chainstate-old` before bitcoind, and `chain-recovery` immediately after RPC answers.
+5. **Every start** runs `nocow` and `clean-chainstate-old` before bitcoind.
 6. **When sync completes**, `synced-true` posts a Sync Complete notification and clears the two cache settings. It fires once per data directory; a reindex resets the flag, so it fires again when that finishes.
-
-### First start after a flavor switch
-
-Bitcoin Core and the Bitcoin Knots flavors share the `bitcoind` package id, and therefore one data directory — switching between them keeps the synced chain. bitcoind also persists a validity verdict for every block it has evaluated, trusts those verdicts verbatim at startup, and does not record which consensus rules produced them. Around a BIP-110 (RDTS) chain split that inheritance is a hazard in both directions; only one direction lands here, because Bitcoin Core never enforces RDTS.
-
-`store.json` carries `rdtsEnforcedLastRun`, which every flavor writes on every start and this one always writes `false`. Finding anything else — `true` from the enforcing flavor, or no marker at all on a data directory last advanced by a package version predating it — is read as a change of enforcement regime, and the `chain-recovery` oneshot then runs `reconsiderblock` on every invalid chain tip so those branches are re-evaluated under this binary's rules. Reconnection is a full validation, so a genuinely invalid branch re-flags itself, and with no invalid tips the pass is a no-op.
-
-The oneshot depends only on `bitcoind`, so it never holds up the service, and every consequential outcome posts a notification. Two things it cannot do. A tip whose fork point lies below the prune horizon is skipped, because reorganizing onto it would need blocks the node no longer stores; the notification for that points at Reindex Blockchain, which on a pruned node means re-downloading the chain. And clearing a verdict only lets the node _accept_ a chain — actually following it still requires peers serving it.
 
 ## Actions
 
