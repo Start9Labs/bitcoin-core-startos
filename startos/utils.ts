@@ -110,6 +110,19 @@ export type GetBlockchainInfo = {
 export const ipcSocketPath = `unix:${rootDir}/ipc/bitcoin-core.sock`
 
 /** RPC connection args shared by bitcoin-cli and shell-script wrappers. */
+export type ChainTip = {
+  height: number
+  hash: string
+  branchlen: number
+  status:
+    | 'active'
+    | 'invalid'
+    | 'headers-only'
+    | 'valid-headers'
+    | 'valid-fork'
+    | 'unknown'
+}
+
 export function rpcArgs(opts: { prune: boolean }): string[] {
   return [
     `-conf=${rootDir}/bitcoin.conf`,

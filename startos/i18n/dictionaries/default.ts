@@ -302,16 +302,6 @@ const dict = {
   Configuration: 1800,
   Default: 2000,
 
-  // Chain Recovery: forkRecovery.ts, main.ts chain-recovery oneshot
-  // (3200 block — ids shared with the Knots RDTS flavor's Chain Recovery
-  // strings; 3220-3225 and 3232-3241 are its RDTS-revalidation strings,
-  // unused in this never-enforcing flavor)
-  'Chain Verdicts Reset': 3226,
-  "Cleared invalid-block verdicts inherited from the previously installed bitcoind flavor on ${count} chain tip(s). The node now follows the best chain that is valid under this flavor's rules; reorganizing onto it may take a while and requires peers on that chain.": 3227,
-  'Some Chains Not Recoverable': 3228,
-  '${count} invalid chain branch(es) inherited from the previous bitcoind flavor could not be reconsidered: this pruned node no longer stores the blocks needed to reorganize onto them. If the node appears stuck on the wrong chain, run Reindex Blockchain (on a pruned node this re-downloads the chain).': 3229,
-  'Chain Recovery Failed': 3230,
-  'Clearing invalid-block verdicts inherited from the previous bitcoind flavor failed; it will be retried at the next restart. Error: ${error}': 3231,
 } as const
 
 /**
