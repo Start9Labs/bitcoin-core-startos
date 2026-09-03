@@ -5,18 +5,6 @@ export const shape = z
   .object({
     reindexBlockchain: z.boolean().catch(false),
     reindexChainstate: z.boolean().catch(false),
-    /** Set when leaving the RDTS-enforcing flavor: on next start, clear
-     *  persisted invalid-block verdicts on chain tips (reconsiderblock).
-     *  Declared in every bitcoind flavor's shape so that a flavor which never
-     *  acts on it still round-trips it through the store all flavors share. */
-    reconsiderInvalidTips: z.boolean().catch(false),
-    /** Whether the binary that last advanced this datadir enforced the RDTS
-     *  consensus rules — the package-level durable marker bitcoind itself
-     *  lacks (its persisted block verdicts don't record which rules
-     *  produced them). Every flavor records it each start; the non-enforcing
-     *  flavors read it to recognize inherited RDTS verdicts as foreign
-     *  (undefined = legacy datadir, treated as unknown → reconsider). */
-    rdtsEnforcedLastRun: z.boolean().optional().catch(undefined),
     fullySynced: z.boolean().catch(false),
     snapshotInUse: z.boolean().catch(false),
     enableIpc: z.boolean().catch(false),

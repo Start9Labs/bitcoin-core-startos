@@ -301,13 +301,6 @@ export default {
     2003: 'Difunde las transacciones enviadas mediante el RPC sendrawtransaction a través de una conexión Tor o I2P efímera e independiente para cada una, ocultando la IP del remitente a los pares y desvinculando múltiples transacciones del mismo remitente. Esas transacciones no pasan por tu propio mempool, así que no aparecen en getrawmempool. Solo afecta a sendrawtransaction; los envíos desde la billetera no se ven afectados.',
     2004: 'Requiere que Tor o I2P sean realmente alcanzables: I2P está activado de forma predeterminada, mientras que Tor requiere que el servicio Tor esté instalado y en ejecución. Mientras ninguno lo esté, las transacciones enviadas por esta vía se reintentan pero nunca llegan a la red.',
 
-    // Chain Recovery (3200 block)
-    3226: 'Veredictos de cadena restablecidos',
-    3227: 'Se borraron los veredictos de bloques inválidos heredados de la variante de bitcoind instalada anteriormente en ${count} punta(s) de cadena. El nodo ahora sigue la mejor cadena válida bajo las reglas de esta variante; reorganizarse hacia ella puede tardar un tiempo y requiere pares en esa cadena.',
-    3228: 'Algunas cadenas no recuperables',
-    3229: '${count} rama(s) de cadena inválida(s) heredada(s) de la variante anterior de bitcoind no pudieron reconsiderarse: este nodo podado ya no almacena los bloques necesarios para reorganizarse hacia ellas. Si el nodo parece atascado en la cadena equivocada, ejecute Reindexar blockchain (en un nodo podado esto vuelve a descargar la cadena).',
-    3230: 'Recuperación de cadena fallida',
-    3231: 'El borrado de los veredictos de bloques inválidos heredados de la variante anterior de bitcoind falló; se reintentará en el próximo reinicio. Error: ${error}',
     1962: 'Iniciando el enrutador I2P',
     1963: 'Construyendo la base de datos de la red',
     1964: 'No se encontraron pares. El enrutador no pudo contactar con ningún servidor de resiembra, lo que suele significar que este servidor no puede resolver DNS. Revise Sistema > Servidores DNS.',
@@ -613,13 +606,6 @@ export default {
     2003: 'Überträgt Transaktionen, die über den sendrawtransaction-RPC eingereicht werden, jeweils über eine eigene kurzlebige Tor- oder I2P-Verbindung. Das verbirgt die IP des Absenders vor Peers und macht mehrere Transaktionen desselben Absenders nicht mehr verknüpfbar. Solche Transaktionen umgehen den eigenen Mempool und tauchen daher nicht in getrawmempool auf. Betrifft nur sendrawtransaction; Wallet-Sendungen bleiben unberührt.',
     2004: 'Setzt voraus, dass Tor oder I2P tatsächlich erreichbar ist: I2P ist standardmäßig aktiviert, Tor erfordert den installierten und laufenden Tor-Dienst. Solange keines von beiden erreichbar ist, werden so eingereichte Transaktionen zwar wiederholt versucht, erreichen das Netzwerk aber nie.',
 
-    // Chain Recovery (3200 block)
-    3226: 'Chain-Urteile zurückgesetzt',
-    3227: 'Von der zuvor installierten bitcoind-Variante geerbte Ungültigkeits-Urteile auf ${count} Chain-Spitze(n) gelöscht. Der Knoten folgt jetzt der besten Chain, die unter den Regeln dieser Variante gültig ist; die Reorganisation dorthin kann eine Weile dauern und braucht Peers auf dieser Chain.',
-    3228: 'Einige Chains nicht wiederherstellbar',
-    3229: '${count} von der vorherigen bitcoind-Variante geerbte(r) ungültige(r) Chain-Zweig(e) konnten nicht überdacht werden: Dieser beschnittene Knoten speichert die für eine Reorganisation dorthin nötigen Blöcke nicht mehr. Wirkt der Knoten auf der falschen Chain festgefahren, führen Sie „Blockchain neu indizieren" aus (auf einem beschnittenen Knoten lädt dies die Chain neu herunter).',
-    3230: 'Chain-Wiederherstellung fehlgeschlagen',
-    3231: 'Das Löschen der von der vorherigen bitcoind-Variante geerbten Ungültigkeits-Urteile ist fehlgeschlagen; beim nächsten Neustart wird es erneut versucht. Fehler: ${error}',
     1962: 'I2P-Router wird gestartet',
     1963: 'Netzwerkdatenbank wird aufgebaut',
     1964: 'Keine Peers gefunden. Der Router konnte keinen Reseed-Server erreichen, was in der Regel bedeutet, dass dieser Server keine DNS-Namen auflösen kann. Prüfen Sie System > DNS-Server.',
@@ -925,13 +911,6 @@ export default {
     2003: 'Rozgłasza transakcje przesłane przez RPC sendrawtransaction, każdą osobnym, krótkotrwałym połączeniem Tor lub I2P, ukrywając IP nadawcy przed peerami i uniemożliwiając powiązanie wielu transakcji tego samego nadawcy. Takie transakcje omijają twój własny mempool, więc nie pojawiają się w getrawmempool. Dotyczy wyłącznie sendrawtransaction; wysyłki z portfela nie są zmieniane.',
     2004: 'Wymaga, aby Tor lub I2P był faktycznie osiągalny: I2P jest włączone domyślnie, natomiast Tor wymaga zainstalowanej i działającej usługi Tor. Dopóki żadne z nich nie jest osiągalne, transakcje przesłane tą drogą są ponawiane, ale nigdy nie trafiają do sieci.',
 
-    // Chain Recovery (3200 block)
-    3226: 'Werdykty łańcucha zresetowane',
-    3227: 'Wyczyszczono werdykty nieważności bloków odziedziczone po poprzednio zainstalowanym wariancie bitcoind na ${count} wierzchołku(ach) łańcucha. Węzeł podąża teraz za najlepszym łańcuchem ważnym według reguł tego wariantu; reorganizacja może chwilę potrwać i wymaga peerów na tym łańcuchu.',
-    3228: 'Niektóre łańcuchy nie do odzyskania',
-    3229: '${count} nieważna(e) gałąź(zie) łańcucha odziedziczona(e) po poprzednim wariancie bitcoind nie mogły zostać ponownie rozważone: ten przycięty węzeł nie przechowuje już bloków potrzebnych do reorganizacji na nie. Jeśli węzeł wydaje się utknięty na niewłaściwym łańcuchu, uruchom „Przeindeksuj blockchain" (na przyciętym węźle oznacza to ponowne pobranie łańcucha).',
-    3230: 'Odzyskiwanie łańcucha nie powiodło się',
-    3231: 'Czyszczenie werdyktów nieważności bloków odziedziczonych po poprzednim wariancie bitcoind nie powiodło się; próba zostanie ponowiona przy następnym restarcie. Błąd: ${error}',
     1962: 'Uruchamianie routera I2P',
     1963: 'Budowanie bazy danych sieci',
     1964: 'Nie znaleziono węzłów. Router nie mógł połączyć się z żadnym serwerem reseed, co zwykle oznacza, że ten serwer nie rozwiązuje nazw DNS. Sprawdź System > Serwery DNS.',
@@ -1237,13 +1216,6 @@ export default {
     2003: "Diffuse les transactions soumises via le RPC sendrawtransaction chacune sur une connexion Tor ou I2P éphémère distincte, masquant l'IP de l'expéditeur aux pairs et empêchant la corrélation de plusieurs transactions du même expéditeur. Ces transactions contournent votre propre mempool et n'apparaissent donc pas dans getrawmempool. N'affecte que sendrawtransaction ; les envois depuis le portefeuille ne sont pas modifiés.",
     2004: "Nécessite que Tor ou I2P soit réellement joignable : I2P est activé par défaut, tandis que Tor exige que le service Tor soit installé et en cours d'exécution. Tant qu'aucun des deux ne l'est, les transactions soumises par ce biais sont réessayées mais n'atteignent jamais le réseau.",
 
-    // Chain Recovery (3200 block)
-    3226: 'Verdicts de chaîne réinitialisés',
-    3227: 'Verdicts de blocs invalides hérités de la variante bitcoind précédemment installée effacés sur ${count} pointe(s) de chaîne. Le nœud suit désormais la meilleure chaîne valide selon les règles de cette variante ; la réorganisation peut prendre un certain temps et nécessite des pairs sur cette chaîne.',
-    3228: 'Certaines chaînes non récupérables',
-    3229: "${count} branche(s) de chaîne invalide(s) héritée(s) de la variante bitcoind précédente n'ont pas pu être reconsidérées : ce nœud élagué ne stocke plus les blocs nécessaires pour se réorganiser vers elles. Si le nœud semble bloqué sur la mauvaise chaîne, exécutez « Réindexer la blockchain » (sur un nœud élagué cela retélécharge la chaîne).",
-    3230: 'Échec de la récupération de chaîne',
-    3231: "L'effacement des verdicts de blocs invalides hérités de la variante bitcoind précédente a échoué ; nouvelle tentative au prochain redémarrage. Erreur : ${error}",
     1962: 'Démarrage du routeur I2P',
     1963: 'Construction de la base de données du réseau',
     1964: "Aucun pair trouvé. Le routeur n'a pu joindre aucun serveur de réamorçage, ce qui signifie généralement que ce serveur ne peut pas résoudre les noms DNS. Vérifiez Système > Serveurs DNS.",
