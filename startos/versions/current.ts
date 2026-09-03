@@ -2,13 +2,13 @@ import { VersionInfo } from '@start9labs/start-sdk'
 import { rm } from 'fs/promises'
 
 export const current = VersionInfo.of({
-  version: '30.3:14',
+  version: '30.3:15',
   releaseNotes: {
-    en_US: `- Blocks fetched from the network for another service are kept in memory, up to 64 MiB, so a repeat request is answered without going back out.`,
-    es_ES: `- Los bloques obtenidos de la red para otro servicio se mantienen en memoria, hasta 64 MiB, de modo que una petición repetida se responde sin volver a salir.`,
-    de_DE: `- Blöcke, die für einen anderen Dienst aus dem Netzwerk geholt wurden, bleiben im Speicher, bis zu 64 MiB, sodass eine erneute Anfrage ohne neuen Netzwerkzugriff beantwortet wird.`,
-    pl_PL: `- Bloki pobrane z sieci na potrzeby innej usługi są przechowywane w pamięci, do 64 MiB, więc powtórne żądanie jest obsługiwane bez ponownego wyjścia do sieci.`,
-    fr_FR: `- Les blocs récupérés sur le réseau pour un autre service sont conservés en mémoire, jusqu'à 64 Mio, de sorte qu'une requête répétée est satisfaite sans nouvel accès au réseau.`,
+    en_US: `- Bitcoin Knots (RDTS) follows a different chain and can no longer be switched to from here.`,
+    es_ES: `- Bitcoin Knots (RDTS) sigue una cadena diferente y ya no se puede cambiar a él desde aquí.`,
+    de_DE: `- Bitcoin Knots (RDTS) folgt einer anderen Kette und kann von hier aus nicht mehr gewechselt werden.`,
+    pl_PL: `- Bitcoin Knots (RDTS) podąża za innym łańcuchem i nie można już się na niego przełączyć.`,
+    fr_FR: `- Bitcoin Knots (RDTS) suit une chaîne différente et il n'est plus possible de basculer vers lui depuis ici.`,
   },
   migrations: {
     up: async ({ effects }) => {},
@@ -22,5 +22,5 @@ export const current = VersionInfo.of({
     },
   },
 })
-  .satisfies('29.4:14')
-  .satisfies('28.4:27')
+  .satisfies('29.4:15')
+  .satisfies('28.4:28')
