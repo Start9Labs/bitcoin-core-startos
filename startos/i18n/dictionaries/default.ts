@@ -301,7 +301,6 @@ const dict = {
   // Common
   Configuration: 1800,
   Default: 2000,
-
 } as const
 
 /**
