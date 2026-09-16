@@ -2,18 +2,18 @@ import { VersionInfo } from '@start9labs/start-sdk'
 import { rm } from 'fs/promises'
 
 export const current = VersionInfo.of({
-  version: '31.1:16',
+  version: '31.1:17',
   releaseNotes: {
-    en_US: `- Restarting Bitcoin no longer leaves dependent services unable to connect until this service is restarted too.
-- On a pruned node, blocks from the 2016 SegWit signalling period can be fetched for dependent services again.`,
-    es_ES: `- Reiniciar Bitcoin ya no deja a los servicios dependientes sin poder conectarse hasta que también se reinicie este servicio.
-- En un nodo podado, los bloques del periodo de señalización de SegWit de 2016 vuelven a poder obtenerse para los servicios dependientes.`,
-    de_DE: `- Ein Neustart von Bitcoin lässt abhängige Dienste nicht mehr ohne Verbindung zurück, bis auch dieser Dienst neu gestartet wird.
-- Auf einem beschnittenen Knoten können Blöcke aus der SegWit-Signalisierungsphase von 2016 wieder für abhängige Dienste abgerufen werden.`,
-    pl_PL: `- Ponowne uruchomienie Bitcoina nie pozostawia już usług zależnych bez połączenia do czasu ponownego uruchomienia także tej usługi.
-- W przyciętym węźle bloki z okresu sygnalizacji SegWit z 2016 roku można ponownie pobierać na potrzeby usług zależnych.`,
-    fr_FR: `- Redémarrer Bitcoin ne laisse plus les services dépendants incapables de se connecter jusqu'à ce que ce service soit lui aussi redémarré.
-- Sur un nœud élagué, les blocs de la période de signalisation SegWit de 2016 peuvent à nouveau être récupérés pour les services dépendants.`,
+    en_US:
+      "Bitcoin's REST interface is now available to dependent services such as Electrs.",
+    es_ES:
+      'La interfaz REST de Bitcoin está ahora disponible para servicios dependientes como Electrs.',
+    de_DE:
+      'Die REST-Schnittstelle von Bitcoin steht jetzt abhängigen Diensten wie Electrs zur Verfügung.',
+    pl_PL:
+      'Interfejs REST Bitcoina jest teraz dostępny dla usług zależnych, takich jak Electrs.',
+    fr_FR:
+      "L'interface REST de Bitcoin est désormais disponible pour les services dépendants tels qu'Electrs.",
   },
   migrations: {
     up: async ({ effects }) => {},

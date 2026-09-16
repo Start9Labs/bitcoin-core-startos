@@ -30,7 +30,7 @@ Bitcoin Core surfaces its interfaces — RPC, peer, ZeroMQ, and the I2P console 
 
 ### RPC access
 
-The JSON-RPC API listens on port 8332. Dependent StartOS services connect and configure themselves automatically when you install them — you set nothing up. For an external wallet or app, run **Generate RPC User Credentials** to mint a username and password, then point the app at port 8332. **Delete RPC Users** removes credentials you've created. `rpcuser`/`rpcpassword` lines in `bitcoin.conf` are not supported and are stripped; authentication is the `.cookie` file or `rpcauth` users.
+The JSON-RPC API and REST endpoints listen on port 8332. Dependent StartOS services connect and configure themselves automatically when you install them — you set nothing up. For an external wallet or app that uses JSON-RPC, run **Generate RPC User Credentials** to mint a username and password, then point the app at port 8332. **Delete RPC Users** removes credentials you've created. `rpcuser`/`rpcpassword` lines in `bitcoin.conf` are not supported and are stripped; authentication is the `.cookie` file or `rpcauth` users.
 
 ### Pruned nodes
 

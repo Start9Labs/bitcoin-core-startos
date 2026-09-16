@@ -81,7 +81,7 @@ Three models, and ownership is decided per key rather than per file: some keys a
 
 ### bitcoin.conf
 
-**Enforced** — rewritten to a fixed value whenever the package writes the file: `rpcbind`, `rpcallowip`, `rpccookiefile`, `listen`, `bind`, and `whitebind`. The first two are derived from whether the node is pruned; the rest are constants. `rpcuser`, `rpcpassword`, `mempoolfullrbf`, and `consensusrules` are modelled as "must be absent", so a value on disk is discarded on the next write rather than honoured. The last of those is a Bitcoin Knots (RDTS) key this build does not understand and logs `Ignoring unknown configuration value` for on every start.
+**Enforced** — rewritten to a fixed value whenever the package writes the file: `rpcbind`, `rpcallowip`, `rpccookiefile`, `rest`, `listen`, `bind`, and `whitebind`. The first two are derived from whether the node is pruned; the rest are constants. REST stays enabled so dependent services can read chain data through the RPC bridge binding. `rpcuser`, `rpcpassword`, `mempoolfullrbf`, and `consensusrules` are modelled as "must be absent", so a value on disk is discarded on the next write rather than honoured. The last of those is a Bitcoin Knots (RDTS) key this build does not understand and logs `Ignoring unknown configuration value` for on every start.
 
 **Seeded at install and then yours.** Install overrides these and nothing else:
 
