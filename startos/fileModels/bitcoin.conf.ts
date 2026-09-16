@@ -8,9 +8,7 @@ import {
   peerPortInternal,
   peerPortLocal,
   rpcallowip,
-  rpcallowipPruned,
   rpcbind,
-  rpcbindPruned,
   rpccookiefile,
   zmqBundle,
 } from '../utils'
@@ -56,8 +54,8 @@ type ValidNets = z.infer<typeof onlyNetOption>
 
 export const shape = z.object({
   // RPC enforced
-  rpcbind: z.enum([rpcbind, rpcbindPruned]).catch(rpcbind),
-  rpcallowip: z.enum([rpcallowip, rpcallowipPruned]).catch(rpcallowip),
+  rpcbind: z.literal(rpcbind).catch(rpcbind),
+  rpcallowip: z.literal(rpcallowip).catch(rpcallowip),
   rpcuser: z.undefined().optional().catch(undefined),
   rpcpassword: z.undefined().optional().catch(undefined),
   rpccookiefile: z.literal(rpccookiefile).catch(rpccookiefile),
@@ -786,8 +784,8 @@ function formToFile(
     bytespersigop: bytespersigop ?? undefined,
 
     // RPC
-    rpcbind: prune ? rpcbindPruned : rpcbind,
-    rpcallowip: prune ? rpcallowipPruned : rpcallowip,
+    rpcbind,
+    rpcallowip,
     rest: true,
 
     // Wallet

@@ -30,13 +30,13 @@ Bitcoin Core surfaces its interfaces — RPC, peer, ZeroMQ, and the I2P console 
 
 ### RPC access
 
-The JSON-RPC API and REST endpoints listen on port 8332. Dependent StartOS services connect and configure themselves automatically when you install them — you set nothing up. For an external wallet or app that uses JSON-RPC, run **Generate RPC User Credentials** to mint a username and password, then point the app at port 8332. **Delete RPC Users** removes credentials you've created. `rpcuser`/`rpcpassword` lines in `bitcoin.conf` are not supported and are stripped; authentication is the `.cookie` file or `rpcauth` users.
+The JSON-RPC API listens on port 8332. Dependent StartOS services connect and configure themselves automatically when you install them — you set nothing up. For an external wallet or app, run **Generate RPC User Credentials** to mint a username and password, then point the app at port 8332. **Delete RPC Users** removes credentials you've created. `rpcuser`/`rpcpassword` lines in `bitcoin.conf` are not supported and are stripped; authentication is the `.cookie` file or `rpcauth` users.
 
 ### Pruned nodes
 
 On a small disk Bitcoin Core runs **pruned** — it keeps validating every block but discards old block files once they're checked, so on-disk usage stays around a few hundred MB of recent blocks instead of the full multi-hundred-GB chain. Pruning is on by default below roughly 900 GB of disk; you can also toggle it under **Other Settings**.
 
-So that a pruned node is still useful to wallets and services that occasionally need an old block, a bundled proxy — `btc-rpc-proxy` — runs in front of it on port 8332. When something requests a block the node has pruned, the proxy fetches that block from the peer-to-peer network on the spot and serves it back over the normal RPC. To anything using the RPC — a Lightning node rescanning, an Electrum server, a block explorer — the node looks like a full archival node and works with no special configuration. The only cost is a little latency whenever an old block is needed, since it comes over the network rather than off your disk.
+So that a pruned node is still useful to wallets and services that occasionally need an old block, the bundled RPC proxy — `btc-rpc-proxy`, which fronts port 8332 on every node — steps in. When something requests a block the node has pruned, the proxy fetches that block from the peer-to-peer network on the spot and serves it back over the normal RPC. To anything using the RPC — a Lightning node rescanning, an Electrum server, a block explorer — the node looks like a full archival node and works with no special configuration. The only cost is a little latency whenever an old block is needed, since it comes over the network rather than off your disk.
 
 ### Configuration
 
