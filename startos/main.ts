@@ -18,7 +18,7 @@ import {
   rootDir,
   rpccookiefile,
   rpcPort,
-  rpcPortPruned,
+  rpcPortLocal,
 } from './utils'
 
 const ipcSocketFile = `${rootDir}/ipc/bitcoin-core.sock`
@@ -174,7 +174,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
   ): Promise<{ value: T } | { health: healthFns.HealthCheckResult }> => {
     try {
       const res = await bitcoindSub.exec([
-        ...bitcoinCliArgs({ prune: !!bitcoinConf.prune }),
+        ...bitcoinCliArgs(),
         '-rpcconnect=127.0.0.1',
         ...cmd,
       ])
@@ -203,9 +203,9 @@ export const main = sdk.setupMain(async ({ effects }) => {
    * ======================== Daemons ========================
    *
    * Unconditional daemons are chained synchronously on baseDaemons.
-   * Conditional daemons (i2pd, proxy) use async factories that return
-   * null to skip or params to include. Type assertions (as [...]) are
-   * needed because async factories weaken TypeScript's contextual typing.
+   * i2pd's factory is async and returns null to skip; the proxy's is async
+   * for its config write. Type assertions (as [...]) are needed because
+   * async factories weaken TypeScript's contextual typing.
    */
 
   const i2pEnabled = !!bitcoinConf.raw?.i2psam
@@ -283,14 +283,10 @@ export const main = sdk.setupMain(async ({ effects }) => {
             }
           }
 
-          return sdk.healthCheck.checkPortListening(
-            effects,
-            bitcoinConf.prune ? rpcPortPruned : rpcPort,
-            {
-              successMessage: i18n('The Bitcoin RPC Interface is ready'),
-              errorMessage: i18n('The Bitcoin RPC Interface is not ready'),
-            },
-          )
+          return sdk.healthCheck.checkPortListening(effects, rpcPortLocal, {
+            successMessage: i18n('The Bitcoin RPC Interface is ready'),
+            errorMessage: i18n('The Bitcoin RPC Interface is not ready'),
+          })
         },
       },
       requires: ['nocow', 'clean-chainstate-old'],
@@ -627,10 +623,9 @@ export const main = sdk.setupMain(async ({ effects }) => {
     requires: [],
   })
 
-  // RPC proxy (conditional, enabled when pruning)
+  // The proxy fronts the exported RPC port on every node: it answers JSON-RPC
+  // only, which keeps bitcoind's unauthenticated REST off the LAN and Tor.
   return withClearnet.addDaemon('proxy', async () => {
-    if (!bitcoinConf.prune) return null
-
     const subcontainer = await sdk.SubContainer.eager(
       effects,
       { imageId: 'proxy' },
@@ -642,7 +637,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
       `${subcontainer.rootfs}/config.toml`,
       TOML.stringify({
         bitcoind_address: '127.0.0.1',
-        bitcoind_port: rpcPortPruned,
+        bitcoind_port: rpcPortLocal,
         bind_address: '0.0.0.0',
         bind_port: rpcPort,
         cookie_file: rpcCookiePath,
@@ -650,9 +645,9 @@ export const main = sdk.setupMain(async ({ effects }) => {
         tor_only: onlynetList.length === 1 && onlynetList[0] === 'onion',
         // Users derived from the two passthrough sources carry no explicit
         // fetch_blocks, so this global switch is what grants them on-demand
-        // fetching of pruned blocks over p2p. Without it the proxy forwards
-        // every getblock straight to bitcoind.
-        default_fetch_blocks: true,
+        // fetching of pruned blocks over p2p. Off, the proxy forwards every
+        // getblock straight to bitcoind; on, it re-renders verbosity 1 itself.
+        default_fetch_blocks: !!bitcoinConf.prune,
         // Unset, the proxy asks every eligible peer for the same block at once
         // and keeps the first valid answer — N copies of every fetch.
         max_peer_concurrency: 3,

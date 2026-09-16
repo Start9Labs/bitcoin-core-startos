@@ -12,7 +12,9 @@ import {
   peerPortLocal,
   rpcHostId,
   rpcInterfaceId,
+  rpcLocalHostId,
   rpcPort,
+  rpcPortLocal,
   zmqBlockInterfaceId,
   zmqHostId,
   zmqTxInterfaceId,
@@ -51,6 +53,17 @@ export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
   const rpcReceipt = await rpcMultiOrigin.export([rpc])
 
   const receipts = [rpcReceipt]
+
+  // bitcoind's own listener, REST included, for services on the bridge. The
+  // `rpc` binding above lands on the proxy, which refuses REST; this one has
+  // no exported interface, so the unauthenticated REST surface stays on
+  // lo/lxcbr0 and never reaches the LAN or Tor.
+  await sdk.MultiHost.of(effects, rpcLocalHostId).bindPort(rpcPortLocal, {
+    protocol: null,
+    preferredExternalPort: rpcPortLocal,
+    addSsl: null,
+    secure: { ssl: false },
+  })
 
   // Peer
   const peerMulti = sdk.MultiHost.of(effects, peerHostId)

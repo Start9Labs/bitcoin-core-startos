@@ -1,5 +1,4 @@
 import { T } from '@start9labs/start-sdk'
-import { bitcoinConfFile } from '../fileModels/bitcoin.conf'
 import { storeJson } from '../fileModels/store.json'
 import { i18n } from '../i18n'
 import { sdk } from '../sdk'
@@ -29,7 +28,6 @@ export const runtimeInfo = sdk.Action.withoutInput(
 
   // execution function
   async ({ effects }) => {
-    const conf = (await bitcoinConfFile.read().const(effects))!
     // getnetowrkinfo
 
     const networkInfoRes = await sdk.SubContainer.withTemp(
@@ -38,10 +36,7 @@ export const runtimeInfo = sdk.Action.withoutInput(
       bitcoinMounts,
       'getnetworkinfo',
       async (subc) => {
-        return await subc.execFail([
-          ...bitcoinCliArgs({ prune: !!conf.prune }),
-          'getnetworkinfo',
-        ])
+        return await subc.execFail([...bitcoinCliArgs(), 'getnetworkinfo'])
       },
     )
 
@@ -57,10 +52,7 @@ export const runtimeInfo = sdk.Action.withoutInput(
       bitcoinMounts,
       'getblockchaininfo',
       async (subc) => {
-        return await subc.execFail([
-          ...bitcoinCliArgs({ prune: !!conf.prune }),
-          'getblockchaininfo',
-        ])
+        return await subc.execFail([...bitcoinCliArgs(), 'getblockchaininfo'])
       },
     )
 
