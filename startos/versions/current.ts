@@ -1,22 +1,26 @@
 import { VersionInfo } from '@start9labs/start-sdk'
 import { rm } from 'fs/promises'
+import { sdk } from '../sdk'
+import { peerHostId } from '../utils'
 
 export const current = VersionInfo.of({
-  version: '31.1:18',
+  version: '31.1:19',
   releaseNotes: {
     en_US:
-      'Frigate and other services that speak JSON-RPC 2.0 can now connect to Bitcoin.',
+      'Frees the peer port left claimed by the StartOS 0.3.5 version of Bitcoin. If that version had a Tor address on the Peer interface, the address is kept: add it back from the Peer interface with Add Onion Service, where it is offered for reuse.',
     es_ES:
-      'Frigate y otros servicios que usan JSON-RPC 2.0 ahora pueden conectarse a Bitcoin.',
+      'Libera el puerto de pares que la versión de Bitcoin para StartOS 0.3.5 dejó reservado. Si esa versión tenía una dirección Tor en la interfaz Peer, la dirección se conserva: vuelva a añadirla desde la interfaz Peer con Add Onion Service, donde se ofrece para reutilizarla.',
     de_DE:
-      'Frigate und andere Dienste, die JSON-RPC 2.0 verwenden, können sich jetzt mit Bitcoin verbinden.',
+      'Gibt den Peer-Port frei, den die StartOS-0.3.5-Version von Bitcoin belegt gelassen hatte. Hatte diese Version eine Tor-Adresse an der Peer-Schnittstelle, bleibt die Adresse erhalten: Fügen Sie sie über die Peer-Schnittstelle mit Add Onion Service wieder hinzu, wo sie zur Wiederverwendung angeboten wird.',
     pl_PL:
-      'Frigate i inne usługi korzystające z JSON-RPC 2.0 mogą teraz łączyć się z Bitcoinem.',
+      'Zwalnia port peerów, który pozostawiła zajęty wersja Bitcoina dla StartOS 0.3.5. Jeśli ta wersja miała adres Tor w interfejsie Peer, adres zostaje zachowany: dodaj go ponownie z interfejsu Peer za pomocą Add Onion Service, gdzie jest oferowany do ponownego użycia.',
     fr_FR:
-      'Frigate et les autres services utilisant JSON-RPC 2.0 peuvent désormais se connecter à Bitcoin.',
+      "Libère le port des pairs que la version de Bitcoin pour StartOS 0.3.5 avait laissé réservé. Si cette version avait une adresse Tor sur l'interface Peer, l'adresse est conservée : rajoutez-la depuis l'interface Peer avec Add Onion Service, où elle est proposée pour être réutilisée.",
   },
   migrations: {
-    up: async ({ effects }) => {},
+    up: async ({ effects }) => {
+      await sdk.MultiHost.of(effects, peerHostId).retirePort(8333)
+    },
     down: async ({ effects }) => {
       // v31 changed CURRENT_FEES_FILE_VERSION (149900 → 309900) and the
       // fee estimator bucket size; ≤30 hard-fails on a v31-written file.
