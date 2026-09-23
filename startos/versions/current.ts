@@ -19,6 +19,9 @@ export const current = VersionInfo.of({
   },
   migrations: {
     up: async ({ effects }) => {
+      // The StartOS 0.3.5 package bound container port 8333 on the peer host,
+      // left disabled but holding external 8333 once 58333 replaced it. Tor
+      // keeps the peer .onion as unused, for Add Onion Service to reattach.
       await sdk.MultiHost.of(effects, peerHostId).retirePort(8333)
     },
     down: async ({ effects }) => {
