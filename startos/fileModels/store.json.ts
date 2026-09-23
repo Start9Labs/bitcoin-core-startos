@@ -8,6 +8,7 @@ export const shape = z
     fullySynced: z.boolean().catch(false),
     snapshotInUse: z.boolean().catch(false),
     enableIpc: z.boolean().catch(false),
+    reattachPeerOnions: z.boolean().catch(false),
   })
   .strip()
 
