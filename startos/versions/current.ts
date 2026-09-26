@@ -2,18 +2,18 @@ import { VersionInfo } from '@start9labs/start-sdk'
 import { rm } from 'fs/promises'
 
 export const current = VersionInfo.of({
-  version: '31.1:17',
+  version: '31.1:18',
   releaseNotes: {
     en_US:
-      "Bitcoin's REST interface is now available to dependent services such as Electrs.",
+      'Frigate and other services that speak JSON-RPC 2.0 can now connect to Bitcoin.',
     es_ES:
-      'La interfaz REST de Bitcoin está ahora disponible para servicios dependientes como Electrs.',
+      'Frigate y otros servicios que usan JSON-RPC 2.0 ahora pueden conectarse a Bitcoin.',
     de_DE:
-      'Die REST-Schnittstelle von Bitcoin steht jetzt abhängigen Diensten wie Electrs zur Verfügung.',
+      'Frigate und andere Dienste, die JSON-RPC 2.0 verwenden, können sich jetzt mit Bitcoin verbinden.',
     pl_PL:
-      'Interfejs REST Bitcoina jest teraz dostępny dla usług zależnych, takich jak Electrs.',
+      'Frigate i inne usługi korzystające z JSON-RPC 2.0 mogą teraz łączyć się z Bitcoinem.',
     fr_FR:
-      "L'interface REST de Bitcoin est désormais disponible pour les services dépendants tels qu'Electrs.",
+      'Frigate et les autres services utilisant JSON-RPC 2.0 peuvent désormais se connecter à Bitcoin.',
   },
   migrations: {
     up: async ({ effects }) => {},
