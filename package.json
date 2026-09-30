@@ -4,7 +4,7 @@
     "build": "rm -rf ./javascript && ncc build startos/index.ts -o ./javascript",
     "prettier": "prettier --write startos test",
     "check": "tsc --noEmit && npm run test",
-    "test": "node --experimental-strip-types --test test/*.test.ts"
+    "test": "node --experimental-strip-types --test test/*.test.ts test/*.test.cjs"
   },
   "dependencies": {
     "@start9labs/start-sdk": "2.0.9",

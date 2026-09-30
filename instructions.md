@@ -20,13 +20,17 @@ Bitcoin Core begins its Initial Block Download (IBD) — fetching and verifying 
 
 There is no setup wizard and nothing required to start using Bitcoin Core — it begins syncing on first launch.
 
-1. Open Bitcoin Core's **Dashboard** tab to watch sync progress. A full Initial Block Download takes anywhere from several hours to a few days depending on your hardware, disk, and network.
+1. **Start Bitcoin Core**, then open its **Dashboard** tab to watch sync progress. A full Initial Block Download takes anywhere from several hours to a few days depending on your hardware, disk, and network.
 2. To use a service that depends on Bitcoin Core — a Lightning node, an Electrum server, a block explorer — just install it; it configures its connection to Bitcoin Core automatically. It will report that it's waiting for Bitcoin to sync until IBD finishes.
 3. To connect an external wallet or app, follow instructions in the Start9 Bitcoin guides (linked above).
 
 ## Using Bitcoin Core
 
 Bitcoin Core surfaces its interfaces — RPC, peer, ZeroMQ, and the I2P console when you've enabled it — on the **Dashboard** tab; everything else is driven by actions in the service's sidebar.
+
+### Preserving a peer .onion address after an update
+
+The update reattaches existing peer addresses to the current peer interface through Tor, keeping their hostname and public port. Keep Tor up to date; reattachment waits until it supports this operation. Unused addresses from a different host can be explicitly selected through the interface's Tor table.
 
 ### RPC access
 
