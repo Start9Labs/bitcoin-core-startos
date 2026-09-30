@@ -5,7 +5,7 @@ import { sdk } from '../sdk'
 import { peerHostId, peerInterfaceId, peerPortInternal } from '../utils'
 
 /** Tor releases whose Add Onion Service a service may run for its own hosts. */
-const torAttachesForServices = VersionRange.parse('>=0.4.9.12:7')
+const torAttachesForServices = VersionRange.parse('>=0.4.9.13:1')
 
 const urlPluginMetadata = {
   packageId: manifest.id,
@@ -23,7 +23,9 @@ async function unusedPeerOnions(effects: T.Effects): Promise<string[]> {
   })
   const address = (form?.spec as IST.InputSpec | undefined)?.address
   if (address?.type !== 'union') return []
-  return Object.keys(address.variants).filter((id) => id !== 'new')
+  return Object.keys(address.variants).filter((id) =>
+    id.startsWith(`${manifest.id}/${peerHostId}/`),
+  )
 }
 
 /**
@@ -35,6 +37,15 @@ export const reattachPeerOnions = sdk.setupOnInit(async (effects) => {
     .read((s) => s.reattachPeerOnions)
     .const(effects)
   if (!pending) return
+
+  const enabled = await sdk.host
+    .get(
+      effects,
+      { hostId: peerHostId },
+      (host) => host?.bindings[peerPortInternal]?.enabled ?? false,
+    )
+    .const()
+  if (!enabled) return
 
   const torVersion = await sdk
     .getServiceManifest(effects, 'tor', (m) => m?.version ?? null)
