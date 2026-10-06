@@ -197,7 +197,7 @@ export const fullConfigSpec = sdk.InputSpec.of({
   }),
   maxmempool: Value.number({
     name: i18n('Max Mempool Size'),
-    description: i18n('Keep the transaction memory pool below <n> megabytes.'),
+    description: i18n('Keep the transaction memory pool below this size.'),
     required: false,
     default: null,
     min: 1,
@@ -208,7 +208,7 @@ export const fullConfigSpec = sdk.InputSpec.of({
   mempoolexpiry: Value.number({
     name: i18n('Mempool Expiration'),
     description: i18n(
-      'Do not keep transactions in the mempool longer than <n> hours.',
+      'Do not keep transactions in the mempool longer than this many hours.',
     ),
     required: false,
     default: null,
