@@ -7,7 +7,9 @@ const { InputSpec, Value } = sdk
 export const inputSpec = InputSpec.of({
   username: Value.text({
     name: i18n('Username'),
-    description: i18n('RPC Auth Username'),
+    description: i18n(
+      'The name the client will log in to the RPC interface with. It must differ from every existing RPC user.',
+    ),
     required: true,
     default: null,
     patterns: [
@@ -94,10 +96,14 @@ export const generateRpcUser = sdk.Action.withInput(
     return {
       version: '1',
       title: i18n('Failed to create RPC user'),
-      message: i18n('rpcauth.py failed with error: ${error}', {
-        error: res.stderr as string,
-      }),
-      result: null,
+      message: i18n('rpcauth.py failed. Its error output is below.'),
+      result: {
+        type: 'multiline',
+        value: String(res.stderr),
+        copyable: true,
+        masked: false,
+        qr: false,
+      },
     }
   },
 )

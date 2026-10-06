@@ -13,7 +13,9 @@ export const deletePeers = sdk.Action.withoutInput(
     description: i18n(
       'Deletes the Peer List (peers.dat) in case it gets corrupted.',
     ),
-    warning: null,
+    warning: i18n(
+      'Bitcoin forgets the peers it has learned and finds new ones when it next starts, so connecting may take longer.',
+    ),
     allowedStatuses: 'only-stopped',
     group: i18n('Delete Corrupted Files'),
     visibility: 'enabled',
