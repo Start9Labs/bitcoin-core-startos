@@ -1,27 +1,12 @@
 {
   "name": "bitcoin-core-startos",
   "scripts": {
-    "build": "rm -rf ./javascript && ncc build startos/index.ts -o ./javascript",
-    "prettier": "prettier --write startos test",
-    "check": "tsc --noEmit && npm run test",
-    "test": "node --experimental-strip-types --test test/*.test.ts"
+    "test": "node --experimental-strip-types --test test/*.test.ts test/*.test.cjs"
   },
   "dependencies": {
-    "@start9labs/start-sdk": "2.0.9",
+    "@start9labs/start-sdk": "3.0.2",
     "diskusage": "^1.2.0",
     "tor-startos": "github:Start9Labs/tor-startos#next"
-  },
-  "devDependencies": {
-    "@types/node": "^22.19.7",
-    "@vercel/ncc": "^0.38.4",
-    "prettier": "^3.8.1",
-    "typescript": "^6.0.3"
-  },
-  "prettier": {
-    "trailingComma": "all",
-    "tabWidth": 2,
-    "semi": false,
-    "singleQuote": true
   },
   "overrides": {
     "@start9labs/start-sdk": "$@start9labs/start-sdk"
