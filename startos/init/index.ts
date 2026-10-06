@@ -4,7 +4,7 @@ import { dependencies } from '../dependencies'
 import { versionGraph } from '../versions'
 import { setInterfaces } from '../interfaces'
 import { sdk } from '../sdk'
-import { reattachPeerOnions } from './reattachPeerOnions'
+import { reattachPeerOnions, retireLegacyPeerPort } from './reattachPeerOnions'
 import { seedFiles } from './seedFiles'
 import { watchHosts } from './watchHosts'
 
@@ -16,6 +16,7 @@ export const init = sdk.setupInit(
   actions,
   dependencies,
   watchHosts,
+  retireLegacyPeerPort,
   reattachPeerOnions,
 )
 

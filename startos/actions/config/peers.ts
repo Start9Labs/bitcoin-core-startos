@@ -33,7 +33,9 @@ export const peerConfig = sdk.Action.withInput(
     .add({
       i2psam: Value.union({
         name: i18n('I2P SAM Proxy'),
-        description: i18n('Select how to connect to the I2P network.'),
+        description: i18n(
+          '- Enabled: Bitcoin also reaches peers over I2P, through the I2P router this service runs.\n- Disabled: no I2P connections, and i2p is dropped from Onlynet.',
+        ),
         default: 'enabled',
         variants: Variants.of({
           disabled: {
@@ -46,7 +48,7 @@ export const peerConfig = sdk.Action.withInput(
               i2pacceptincoming: Value.toggle({
                 name: i18n('Accept Incoming I2P Connections'),
                 description: i18n(
-                  'Accept inbound I2P connections (effective only when I2P is enabled).',
+                  'Let other I2P nodes connect to yours, which helps the network. Off, your node only makes outbound I2P connections.',
                 ),
                 default: true,
               }),

@@ -38,7 +38,7 @@ export default {
 
     // actions/generateRpcUser.ts
     200: 'Nombre de usuario',
-    201: 'Nombre de usuario de autenticación RPC',
+    201: 'El nombre con el que el cliente iniciará sesión en la interfaz RPC. Debe ser distinto de todos los usuarios RPC existentes.',
     202: 'Debe ser alfanumérico (puede contener guion bajo).',
     203: 'Generar credenciales de usuario RPC',
     204: 'Generar credenciales de usuario RPC para conexiones remotas, por ejemplo, Sparrow. rpcauth.py generará aleatoriamente una contraseña segura. El nombre de usuario y la contraseña cifrada se guardarán en Bitcoin.conf',
@@ -48,7 +48,7 @@ export default {
     208: 'Usuario RPC creado exitosamente',
     209: 'Contraseña RPC creada para ${username}. Guarde esta contraseña en un lugar seguro. Si la pierde, será necesario crear un nuevo usuario RPC ya que Bitcoin.conf solo almacena un hash de la contraseña',
     212: 'Error al crear usuario RPC',
-    213: 'rpcauth.py falló con error: ${error}',
+    213: 'rpcauth.py falló. Su salida de error se muestra a continuación.',
 
     // actions/generateRpcUserDependent.ts
     300: 'Contraseña',
@@ -162,18 +162,18 @@ export default {
     1198: 'Deshabilitado',
     1199: 'Habilitado',
     1200: 'Proxy SAM I2P',
-    1201: 'Seleccione cómo conectarse a la red I2P.',
+    1201: '- Habilitado: Bitcoin también se conecta a pares a través de I2P, mediante el enrutador I2P que ejecuta este servicio.\n- Deshabilitado: sin conexiones I2P, e i2p se quita de Onlynet.',
     1204: 'Aceptar conexiones I2P entrantes',
-    1205: 'Aceptar conexiones I2P entrantes (efectivo solo cuando I2P está habilitado).',
+    1205: 'Permite que otros nodos I2P se conecten al suyo, lo que ayuda a la red. Desactivado, su nodo solo establece conexiones I2P salientes.',
 
     // actions/config/peers.ts - Peer settings
     1236: 'Onlynet',
-    1237: 'Realizar conexiones salientes automáticas solo a las redes seleccionadas. Las conexiones entrantes y manuales no se ven afectadas por esta opción.',
+    1237: 'Establece conexiones salientes automáticas solo con las redes seleccionadas; si no se selecciona ninguna, Bitcoin las usa todas. Las conexiones entrantes y manuales no se ven afectadas.\n- ipv4, ipv6: pares de clearnet\n- onion (Tor): requiere el servicio Tor\n- i2p: requiere el proxy SAM I2P',
     1238: 'i2p requiere el proxy SAM de I2P: mientras el proxy esté desactivado se elimina de tu selección, y no puede ser la única red que selecciones.',
     1240: 'Onlynet está restringido a i2p, así que desactivar el proxy SAM de I2P dejaría al nodo sin ninguna forma de conectarse. Añade otra red a Onlynet primero, o deja el proxy activado.',
 
     1243: 'Usar protocolo de transporte P2P V2',
-    1244: 'Habilitar o deshabilitar el uso del protocolo de transporte P2P BIP324 V2.',
+    1244: 'Cifra las conexiones con los pares que lo admiten (BIP324), lo que dificulta observar su tráfico. Los pares que no lo admiten siguen conectándose sin cifrar.',
     1245: 'Conectar par',
     1246: 'Conectar',
     1247: 'Conectar nodos',
@@ -231,10 +231,10 @@ export default {
     1700: 'ZeroMQ habilitado',
     1701: 'La interfaz ZeroMQ es útil para algunas aplicaciones que pueden requerir datos relacionados con eventos de bloques y transacciones de Bitcoin Core. Por ejemplo, LND requiere que ZeroMQ esté habilitado para que LND obtenga los datos de bloque más recientes',
     1702: 'Índice de transacciones',
-    1703: 'Al habilitar el índice de transacciones (txindex), Bitcoin Core construirá un índice de transacciones completo. Esto permite que Bitcoin Core acceda a cualquier transacción con comandos como `getrawtransaction`.',
+    1703: 'Al habilitar el índice de transacciones (txindex), Bitcoin Core construirá un índice de transacciones completo. Esto permite que Bitcoin Core acceda a cualquier transacción con comandos como getrawtransaction.',
     1704: 'No hay suficiente espacio en disco',
     1705: 'Notificación de bloque',
-    1706: 'Ejecutar un comando arbitrario cuando cambie el mejor bloque',
+    1706: 'Un comando de shell que Bitcoin ejecuta dentro de su contenedor cada vez que cambia el mejor bloque. %s en el comando se sustituye por el hash del bloque.',
     1753: 'Transacciones adicionales para la reconstrucción de bloques',
     1754: 'Transacciones adicionales que se mantienen en memoria para la reconstrucción de bloques compactos',
     1707: 'Índice Coinstats',
@@ -305,6 +305,8 @@ export default {
     1963: 'Construyendo la base de datos de la red',
     1964: 'No se encontraron pares. El enrutador no pudo contactar con ningún servidor de resiembra, lo que suele significar que este servidor no puede resolver DNS. Revise Sistema > Servidores DNS.',
     1965: 'El enrutador I2P informó del estado de error ${status}',
+    2005: '- Agregar nodo: conecta con estos nodos además de con los pares que Bitcoin encuentra por sí mismo.\n- Conectar: conecta solo con estos nodos. Bitcoin no establece ninguna otra conexión saliente.',
+    2006: 'Bitcoin olvida los pares que ha conocido y busca otros nuevos al iniciarse de nuevo, por lo que la conexión puede tardar más.',
   } satisfies LangDict,
   de_DE: {
     // main.ts
@@ -343,7 +345,7 @@ export default {
 
     // actions/generateRpcUser.ts
     200: 'Benutzername',
-    201: 'RPC-Authentifizierungsbenutzername',
+    201: 'Der Name, mit dem sich der Client an der RPC-Schnittstelle anmeldet. Er muss sich von allen vorhandenen RPC-Benutzern unterscheiden.',
     202: 'Muss alphanumerisch sein (kann Unterstrich enthalten).',
     203: 'RPC-Benutzeranmeldeinformationen generieren',
     204: 'RPC-Benutzeranmeldeinformationen für Remote-Verbindungen generieren, z.B. Sparrow. rpcauth.py generiert zufällig ein sicheres Passwort. Der Benutzername und das gehashte Passwort werden in Bitcoin.conf gespeichert',
@@ -353,7 +355,7 @@ export default {
     208: 'RPC-Benutzer erfolgreich erstellt',
     209: 'RPC-Passwort für ${username} erstellt. Bewahren Sie dieses Passwort an einem sicheren Ort auf. Wenn es verloren geht, muss ein neuer RPC-Benutzer erstellt werden, da Bitcoin.conf nur einen Hash des Passworts speichert',
     212: 'Fehler beim Erstellen des RPC-Benutzers',
-    213: 'rpcauth.py ist mit Fehler fehlgeschlagen: ${error}',
+    213: 'rpcauth.py ist fehlgeschlagen. Die Fehlerausgabe steht unten.',
 
     // actions/generateRpcUserDependent.ts
     300: 'Passwort',
@@ -467,18 +469,18 @@ export default {
     1198: 'Deaktiviert',
     1199: 'Aktiviert',
     1200: 'I2P SAM-Proxy',
-    1201: 'Wählen Sie aus, wie eine Verbindung zum I2P-Netzwerk hergestellt werden soll.',
+    1201: '- Aktiviert: Bitcoin erreicht Peers zusätzlich über I2P, über den I2P-Router, den dieser Dienst betreibt.\n- Deaktiviert: keine I2P-Verbindungen, und i2p wird aus Onlynet entfernt.',
     1204: 'Eingehende I2P-Verbindungen akzeptieren',
-    1205: 'Eingehende I2P-Verbindungen akzeptieren (nur wirksam, wenn I2P aktiviert ist).',
+    1205: 'Erlaubt anderen I2P-Knoten, sich mit Ihrem zu verbinden, was dem Netzwerk hilft. Ausgeschaltet baut Ihr Knoten nur ausgehende I2P-Verbindungen auf.',
 
     // actions/config/peers.ts - Peer settings
     1236: 'Onlynet',
-    1237: 'Automatische ausgehende Verbindungen nur zu den ausgewählten Netzwerken herstellen. Eingehende und manuelle Verbindungen sind von dieser Option nicht betroffen.',
+    1237: 'Baut automatische ausgehende Verbindungen nur zu den ausgewählten Netzwerken auf; ist keines ausgewählt, nutzt Bitcoin alle. Eingehende und manuelle Verbindungen sind nicht betroffen.\n- ipv4, ipv6: Clearnet-Peers\n- onion (Tor): erfordert den Tor-Dienst\n- i2p: erfordert den I2P SAM-Proxy',
     1238: 'i2p setzt den I2P-SAM-Proxy voraus: Solange der Proxy deaktiviert ist, wird es aus Ihrer Auswahl entfernt, und es kann nicht Ihr einziges ausgewähltes Netzwerk sein.',
     1240: 'Onlynet ist auf i2p beschränkt, sodass das Abschalten des I2P-SAM-Proxys dem Knoten keinerlei Verbindungsweg ließe. Fügen Sie zuerst ein weiteres Netzwerk zu Onlynet hinzu oder lassen Sie den Proxy aktiviert.',
 
     1243: 'V2 P2P-Transportprotokoll verwenden',
-    1244: 'Aktivieren oder deaktivieren Sie die Verwendung des BIP324 V2 P2P-Transportprotokolls.',
+    1244: 'Verschlüsselt Verbindungen mit Peers, die es unterstützen (BIP324), sodass Ihr Datenverkehr schwerer zu beobachten ist. Peers ohne Unterstützung verbinden sich weiterhin unverschlüsselt.',
     1245: 'Peer verbinden',
     1246: 'Verbinden',
     1247: 'Knoten verbinden',
@@ -536,10 +538,10 @@ export default {
     1700: 'ZeroMQ aktiviert',
     1701: 'Die ZeroMQ-Schnittstelle ist nützlich für einige Anwendungen, die Daten zu Block- und Transaktionsereignissen von Bitcoin Core benötigen könnten. Beispielsweise muss LND ZeroMQ aktiviert haben, damit LND die neuesten Blockdaten erhält',
     1702: 'Transaktionsindex',
-    1703: 'Durch Aktivieren des Transaktionsindex (txindex) erstellt Bitcoin Core einen vollständigen Transaktionsindex. Dadurch kann Bitcoin Core mit Befehlen wie `getrawtransaction` auf jede Transaktion zugreifen.',
+    1703: 'Durch Aktivieren des Transaktionsindex (txindex) erstellt Bitcoin Core einen vollständigen Transaktionsindex. Dadurch kann Bitcoin Core mit Befehlen wie getrawtransaction auf jede Transaktion zugreifen.',
     1704: 'Nicht genügend Speicherplatz',
     1705: 'Blockbenachrichtigung',
-    1706: 'Führen Sie einen beliebigen Befehl aus, wenn sich der beste Block ändert',
+    1706: 'Ein Shell-Befehl, den Bitcoin in seinem Container ausführt, sobald sich der beste Block ändert. %s im Befehl wird durch den Block-Hash ersetzt.',
     1753: 'Zusätzliche Transaktionen für die Blockrekonstruktion',
     1754: 'Zusätzliche Transaktionen, die für die Rekonstruktion kompakter Blöcke im Speicher gehalten werden',
     1707: 'Coinstats-Index',
@@ -610,6 +612,8 @@ export default {
     1963: 'Netzwerkdatenbank wird aufgebaut',
     1964: 'Keine Peers gefunden. Der Router konnte keinen Reseed-Server erreichen, was in der Regel bedeutet, dass dieser Server keine DNS-Namen auflösen kann. Prüfen Sie System > DNS-Server.',
     1965: 'Der I2P-Router meldete den Fehlerstatus ${status}',
+    2005: '- Knoten hinzufügen: verbindet sich zusätzlich zu den Peers, die Bitcoin selbst findet, mit diesen Knoten.\n- Verbinden: verbindet sich nur mit diesen Knoten. Bitcoin baut keine anderen ausgehenden Verbindungen auf.',
+    2006: 'Bitcoin vergisst die Peers, die es kennengelernt hat, und sucht beim nächsten Start neue, daher kann der Verbindungsaufbau länger dauern.',
   } satisfies LangDict,
   pl_PL: {
     // main.ts
@@ -648,7 +652,7 @@ export default {
 
     // actions/generateRpcUser.ts
     200: 'Nazwa użytkownika',
-    201: 'Nazwa użytkownika uwierzytelniania RPC',
+    201: 'Nazwa, pod którą klient będzie logował się do interfejsu RPC. Musi różnić się od nazw wszystkich istniejących użytkowników RPC.',
     202: 'Musi być alfanumeryczny (może zawierać podkreślenie).',
     203: 'Generuj dane uwierzytelniające użytkownika RPC',
     204: 'Generuj dane uwierzytelniające użytkownika RPC dla połączeń zdalnych, np. Sparrow. rpcauth.py losowo wygeneruje bezpieczne hasło. Nazwa użytkownika i zahashowane hasło zostaną zachowane w Bitcoin.conf',
@@ -658,7 +662,7 @@ export default {
     208: 'Użytkownik RPC utworzony pomyślnie',
     209: 'Hasło RPC utworzone dla ${username}. Przechowuj to hasło w bezpiecznym miejscu. Jeśli zostanie utracone, konieczne będzie utworzenie nowego użytkownika RPC, ponieważ Bitcoin.conf przechowuje tylko hash hasła',
     212: 'Nie udało się utworzyć użytkownika RPC',
-    213: 'rpcauth.py zakończył się błędem: ${error}',
+    213: 'rpcauth.py zakończył się błędem. Jego komunikat błędu znajduje się poniżej.',
 
     // actions/generateRpcUserDependent.ts
     300: 'Hasło',
@@ -772,18 +776,18 @@ export default {
     1198: 'Wyłączony',
     1199: 'Włączony',
     1200: 'Proxy SAM I2P',
-    1201: 'Wybierz sposób łączenia się z siecią I2P.',
+    1201: '- Włączony: Bitcoin łączy się też z peerami przez I2P, za pomocą routera I2P uruchamianego przez tę usługę.\n- Wyłączony: brak połączeń I2P, a i2p zostaje usunięte z Onlynet.',
     1204: 'Akceptuj przychodzące połączenia I2P',
-    1205: 'Akceptuj przychodzące połączenia I2P (skuteczne tylko gdy I2P jest włączone).',
+    1205: 'Pozwala innym węzłom I2P łączyć się z Twoim, co pomaga sieci. Po wyłączeniu Twój węzeł nawiązuje tylko wychodzące połączenia I2P.',
 
     // actions/config/peers.ts - Peer settings
     1236: 'Onlynet',
-    1237: 'Nawiązuj automatyczne połączenia wychodzące tylko do wybranych sieci. Połączenia przychodzące i ręczne nie są tym wpływane.',
+    1237: 'Nawiązuje automatyczne połączenia wychodzące tylko z wybranymi sieciami; gdy żadna nie jest wybrana, Bitcoin używa wszystkich. Nie dotyczy to połączeń przychodzących ani ręcznych.\n- ipv4, ipv6: peery w clearnecie\n- onion (Tor): wymaga usługi Tor\n- i2p: wymaga proxy SAM I2P',
     1238: 'i2p wymaga proxy SAM I2P: dopóki proxy jest wyłączone, jest usuwane z Twojego wyboru i nie może być jedyną wybraną przez Ciebie siecią.',
     1240: 'Onlynet jest ograniczony do i2p, więc wyłączenie proxy SAM I2P pozbawiłoby węzeł jakiejkolwiek możliwości połączenia. Najpierw dodaj do Onlynet inną sieć albo pozostaw proxy włączone.',
 
     1243: 'Użyj protokołu transportowego P2P V2',
-    1244: 'Włącz lub wyłącz użycie protokołu transportowego P2P BIP324 V2.',
+    1244: 'Szyfruje połączenia z peerami, które to obsługują (BIP324), dzięki czemu Twój ruch trudniej obserwować. Peery bez tej obsługi nadal łączą się bez szyfrowania.',
     1245: 'Połącz peera',
     1246: 'Połącz',
     1247: 'Połącz węzły',
@@ -841,10 +845,10 @@ export default {
     1700: 'ZeroMQ włączony',
     1701: 'Interfejs ZeroMQ jest przydatny dla niektórych aplikacji, które mogą wymagać danych związanych z blokami i zdarzeniami transakcji z Bitcoin Core. Na przykład LND wymaga włączenia ZeroMQ, aby LND otrzymywał najnowsze dane bloku',
     1702: 'Indeks transakcji',
-    1703: 'Włączając indeks transakcji (txindex), Bitcoin Core zbuduje pełny indeks transakcji. Pozwala to Bitcoin Core na dostęp do dowolnej transakcji za pomocą poleceń takich jak `getrawtransaction`.',
+    1703: 'Włączając indeks transakcji (txindex), Bitcoin Core zbuduje pełny indeks transakcji. Pozwala to Bitcoin Core na dostęp do dowolnej transakcji za pomocą poleceń takich jak getrawtransaction.',
     1704: 'Za mało miejsca na dysku',
     1705: 'Powiadomienie o bloku',
-    1706: 'Wykonaj dowolne polecenie, gdy zmieni się najlepszy blok',
+    1706: 'Polecenie powłoki, które Bitcoin uruchamia w swoim kontenerze przy każdej zmianie najlepszego bloku. %s w poleceniu jest zastępowane hashem bloku.',
     1753: 'Dodatkowe transakcje do rekonstrukcji bloków',
     1754: 'Dodatkowe transakcje przechowywane w pamięci na potrzeby rekonstrukcji bloków kompaktowych',
     1707: 'Indeks Coinstats',
@@ -915,6 +919,8 @@ export default {
     1963: 'Budowanie bazy danych sieci',
     1964: 'Nie znaleziono węzłów. Router nie mógł połączyć się z żadnym serwerem reseed, co zwykle oznacza, że ten serwer nie rozwiązuje nazw DNS. Sprawdź System > Serwery DNS.',
     1965: 'Router I2P zgłosił status błędu ${status}',
+    2005: '- Dodaj węzeł: łączy się z tymi węzłami oprócz peerów, które Bitcoin znajduje sam.\n- Połącz: łączy się tylko z tymi węzłami. Bitcoin nie nawiązuje żadnych innych połączeń wychodzących.',
+    2006: 'Bitcoin zapomina poznane peery i przy następnym uruchomieniu szuka nowych, więc nawiązanie połączeń może potrwać dłużej.',
   } satisfies LangDict,
   fr_FR: {
     // main.ts
@@ -953,7 +959,7 @@ export default {
 
     // actions/generateRpcUser.ts
     200: "Nom d'utilisateur",
-    201: "Nom d'utilisateur d'authentification RPC",
+    201: "Le nom avec lequel le client se connectera à l'interface RPC. Il doit être différent de tous les utilisateurs RPC existants.",
     202: 'Doit être alphanumérique (peut contenir un trait de soulignement).',
     203: "Générer les informations d'identification utilisateur RPC",
     204: "Générer les informations d'identification utilisateur RPC pour les connexions distantes, par exemple Sparrow. rpcauth.py générera aléatoirement un mot de passe sécurisé. Le nom d'utilisateur et le mot de passe haché seront conservés dans Bitcoin.conf",
@@ -963,7 +969,7 @@ export default {
     208: 'Utilisateur RPC créé avec succès',
     209: "Mot de passe RPC créé pour ${username}. Conservez ce mot de passe dans un endroit sûr. En cas de perte, un nouvel utilisateur RPC devra être créé car Bitcoin.conf ne stocke qu'un hachage du mot de passe",
     212: "Échec de la création de l'utilisateur RPC",
-    213: "rpcauth.py a échoué avec l'erreur : ${error}",
+    213: "rpcauth.py a échoué. Sa sortie d'erreur figure ci-dessous.",
 
     // actions/generateRpcUserDependent.ts
     300: 'Mot de passe',
@@ -1077,18 +1083,18 @@ export default {
     1198: 'Désactivé',
     1199: 'Activé',
     1200: 'Proxy SAM I2P',
-    1201: 'Sélectionnez comment vous connecter au réseau I2P.',
+    1201: "- Activé : Bitcoin joint aussi des pairs via I2P, grâce au routeur I2P que ce service exécute.\n- Désactivé : aucune connexion I2P, et i2p est retiré d'Onlynet.",
     1204: 'Accepter les connexions I2P entrantes',
-    1205: 'Accepter les connexions I2P entrantes (effectif uniquement lorsque I2P est activé).',
+    1205: "Permet à d'autres nœuds I2P de se connecter au vôtre, ce qui aide le réseau. Désactivé, votre nœud n'établit que des connexions I2P sortantes.",
 
     // actions/config/peers.ts - Peer settings
     1236: 'Onlynet',
-    1237: 'Effectuer automatiquement des connexions sortantes uniquement vers les réseaux sélectionnés. Les connexions entrantes et manuelles ne sont pas affectées.',
+    1237: "N'établit de connexions sortantes automatiques qu'avec les réseaux sélectionnés ; si aucun n'est sélectionné, Bitcoin les utilise tous. Les connexions entrantes et manuelles ne sont pas concernées.\n- ipv4, ipv6 : pairs du clearnet\n- onion (Tor) : nécessite le service Tor\n- i2p : nécessite le proxy SAM I2P",
     1238: 'i2p nécessite le proxy SAM I2P : tant que le proxy est désactivé, il est retiré de votre sélection, et il ne peut pas être votre seul réseau sélectionné.',
     1240: "Onlynet est restreint à i2p ; désactiver le proxy SAM I2P priverait le nœud de tout moyen de se connecter. Ajoutez d'abord un autre réseau à Onlynet, ou laissez le proxy activé.",
 
     1243: 'Utiliser le protocole de transport P2P V2',
-    1244: "Activer ou désactiver l'utilisation du protocole de transport P2P BIP324 V2.",
+    1244: 'Chiffre les connexions avec les pairs qui le prennent en charge (BIP324), ce qui rend votre trafic plus difficile à observer. Les pairs qui ne le prennent pas en charge se connectent toujours sans chiffrement.',
     1245: 'Connecter un pair',
     1246: 'Connecter',
     1247: 'Connecter aux nœuds',
@@ -1146,10 +1152,10 @@ export default {
     1700: 'ZeroMQ activé',
     1701: "L'interface ZeroMQ est utile pour certaines applications qui peuvent nécessiter des données relatives aux blocs et aux événements de transaction de Bitcoin Core. Par exemple, LND nécessite l'activation de ZeroMQ pour que LND reçoive les dernières données de bloc",
     1702: 'Index des transactions',
-    1703: "En activant l'index des transactions (txindex), Bitcoin Core construira un index complet des transactions. Cela permet à Bitcoin Core d'accéder à n'importe quelle transaction à l'aide de commandes telles que `getrawtransaction`.",
+    1703: "En activant l'index des transactions (txindex), Bitcoin Core construira un index complet des transactions. Cela permet à Bitcoin Core d'accéder à n'importe quelle transaction à l'aide de commandes telles que getrawtransaction.",
     1704: 'Espace disque insuffisant',
     1705: 'Notification de bloc',
-    1706: 'Exécuter une commande arbitraire lorsque le meilleur bloc change',
+    1706: 'Une commande shell que Bitcoin exécute dans son conteneur à chaque changement du meilleur bloc. %s dans la commande est remplacé par le hash du bloc.',
     1753: 'Transactions supplémentaires pour la reconstruction des blocs',
     1754: 'Transactions supplémentaires conservées en mémoire pour la reconstruction des blocs compacts',
     1707: 'Index Coinstats',
@@ -1220,5 +1226,7 @@ export default {
     1963: 'Construction de la base de données du réseau',
     1964: "Aucun pair trouvé. Le routeur n'a pu joindre aucun serveur de réamorçage, ce qui signifie généralement que ce serveur ne peut pas résoudre les noms DNS. Vérifiez Système > Serveurs DNS.",
     1965: "Le routeur I2P a signalé le statut d'erreur ${status}",
+    2005: "- Ajouter un nœud : se connecte à ces nœuds en plus des pairs que Bitcoin trouve lui-même.\n- Connecter : se connecte uniquement à ces nœuds. Bitcoin n'établit aucune autre connexion sortante.",
+    2006: "Bitcoin oublie les pairs qu'il a appris et en cherche de nouveaux à son prochain démarrage ; la connexion peut donc prendre plus de temps.",
   } satisfies LangDict,
 }
