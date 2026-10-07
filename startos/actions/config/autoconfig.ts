@@ -12,6 +12,7 @@ const dependentConfigSpec = fullConfigSpec.filter({
   peerbloomfilters: true,
   prune: true,
   txindex: true,
+  wallet: { enable: true },
   zmqEnabled: true,
 })
 
