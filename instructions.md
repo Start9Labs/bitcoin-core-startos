@@ -47,7 +47,7 @@ So that a pruned node is still useful to wallets and services that occasionally 
 Four actions write to `bitcoin.conf` for you. Only values that differ from upstream defaults are stored, and each field shows its upstream default.
 
 - **Mempool Settings** — mempool size and expiry, persistence, bare-multisig and `OP_RETURN` relay policy, the minimum relay fee rate, sigop weighting, blocks-only mode.
-- **Peer Settings** — which networks to use (`onlynet`: IPv4/IPv6/Tor/I2P/CJDNS), BIP324 v2 transport, the embedded I2P SAM proxy, and manual `addnode`/`connect` peers.
+- **Peer Settings** — which networks to use (`onlynet`: IPv4/IPv6/Tor/I2P), BIP324 v2 transport, the embedded I2P SAM proxy, and manual `addnode`/`connect` peers.
 - **RPC Settings** — RPC server timeout, thread count, and work-queue depth.
 - **Other Settings** — ZeroMQ, `txindex`, coinstats index, BIP158/BIP157 block filters, bloom filters, wallet options, pruning, database cache tuning, compact-block reconstruction memory, NAT-PMP port mapping, and a daily upload limit.
 
