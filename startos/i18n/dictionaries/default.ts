@@ -37,7 +37,7 @@ const dict = {
 
   // actions/generateRpcUser.ts
   Username: 200,
-  'RPC Auth Username': 201,
+  'The name the client will log in to the RPC interface with. It must differ from every existing RPC user.': 201,
   'Must be alphanumeric (can contain underscore).': 202,
   'Generate RPC User Credentials': 203,
   'Generate RPC User Credentials for remote connections i.e. Sparrow. rpcauth.py will randomly generate a secure password. The username and hashed password will be persisted in Bitcoin.conf': 204,
@@ -47,7 +47,7 @@ const dict = {
   'RPC user successfully created': 208,
   'RPC password created for ${username}. Store this password in a secure place. If lost, a new RPC user will need to be created as Bitcoin.conf only stores a hash of the password': 209,
   'Failed to create RPC user': 212,
-  'rpcauth.py failed with error: ${error}': 213,
+  'rpcauth.py failed. Its error output is below.': 213,
 
   // actions/generateRpcUserDependent.ts
   Password: 300,
@@ -161,15 +161,15 @@ const dict = {
   Disabled: 1198,
   Enabled: 1199,
   'I2P SAM Proxy': 1200,
-  'Select how to connect to the I2P network.': 1201,
+  '- Enabled: Bitcoin also reaches peers over I2P, through the I2P router this service runs.\n- Disabled: no I2P connections, and i2p is dropped from Onlynet.': 1201,
   'Accept Incoming I2P Connections': 1204,
-  'Accept inbound I2P connections (effective only when I2P is enabled).': 1205,
+  'Let other I2P nodes connect to yours, which helps the network. Off, your node only makes outbound I2P connections.': 1205,
   Onlynet: 1236,
-  'Make automatic outbound connections only to the selected networks. Inbound and manual connections are not affected by this option.': 1237,
+  'Make automatic outbound connections only to the selected networks; with none selected, Bitcoin uses them all. Inbound and manual connections are not affected.\n- ipv4, ipv6: clearnet peers\n- onion (Tor): needs the Tor service\n- i2p: needs the I2P SAM Proxy': 1237,
   'i2p requires the I2P SAM Proxy: while the proxy is disabled it is dropped from your selection, and it cannot be your only selected network.': 1238,
   'Onlynet is restricted to i2p, so disabling the I2P SAM Proxy would leave the node with no way to connect at all. Add another network to Onlynet first, or leave the proxy enabled.': 1240,
   'Use V2 P2P Transport Protocol': 1243,
-  'Enable or disable the use of BIP324 V2 P2P transport protocol.': 1244,
+  'Encrypt connections with peers that support it (BIP324), so your traffic is harder to observe. Peers without it still connect unencrypted.': 1244,
   'Connect Peer': 1245,
   Connect: 1246,
   'Connect Nodes': 1247,
@@ -193,9 +193,9 @@ const dict = {
   'Persist Mempool': 1500,
   'Save the mempool on shutdown and load on restart.': 1501,
   'Max Mempool Size': 1502,
-  'Keep the transaction memory pool below <n> megabytes.': 1503,
+  'Keep the transaction memory pool below this size.': 1503,
   'Mempool Expiration': 1504,
-  'Do not keep transactions in the mempool longer than <n> hours.': 1505,
+  'Do not keep transactions in the mempool longer than this many hours.': 1505,
   Hr: 1506,
   'Permit Bare Multisig': 1507,
   'Relay non-P2SH multisig transactions': 1508,
@@ -227,10 +227,10 @@ const dict = {
   'ZeroMQ Enabled': 1700,
   'The ZeroMQ interface is useful for some applications which might require data related to block and transaction events from Bitcoin Core. For example, LND requires ZeroMQ be enabled for LND to get the latest block data': 1701,
   'Transaction Index': 1702,
-  'By enabling Transaction Index (txindex) Bitcoin Core will build a complete transaction index. This allows Bitcoin Core to access any transaction with commands like `getrawtransaction`.': 1703,
+  'By enabling Transaction Index (txindex) Bitcoin Core will build a complete transaction index. This allows Bitcoin Core to access any transaction with commands like getrawtransaction.': 1703,
   'Not enough disk space': 1704,
   'Block Notify': 1705,
-  'Execute an arbitrary command when the best block changes': 1706,
+  'A shell command Bitcoin runs inside its container each time the best block changes. %s in the command is replaced by the block hash.': 1706,
   'Block Reconstruction Extra TXN': 1753,
   'Extra transactions to keep in memory for compact block reconstructions': 1754,
   'Coinstats Index': 1707,
@@ -301,6 +301,8 @@ const dict = {
   // Common
   Configuration: 1800,
   Default: 2000,
+  '- Add Node: connect to these nodes in addition to the peers Bitcoin finds itself.\n- Connect: connect only to these nodes. Bitcoin makes no other outbound connections.': 2005,
+  'Bitcoin forgets the peers it has learned and finds new ones when it next starts, so connecting may take longer.': 2006,
 } as const
 
 /**

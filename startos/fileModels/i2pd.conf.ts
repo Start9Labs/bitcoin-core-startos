@@ -12,7 +12,7 @@ const iniBoolean = z.union([
   z.boolean(),
 ])
 
-export const shape = z.object({
+export const shape = z.looseObject({
   log: z.literal('stdout').catch('stdout'),
   // Enforced, not defaulted: nothing exposes this setting, so a value already
   // on disk would stand forever. `critical` suppressed even bind and startup
@@ -45,19 +45,19 @@ export const shape = z.object({
   notransit: iniBoolean.catch(true),
   floodfill: iniBoolean.catch(false),
   ntcp2: z
-    .object({
+    .looseObject({
       enabled: iniBoolean.catch(true),
       published: iniBoolean.catch(true),
     })
     .catch({ enabled: true, published: true }),
   ssu2: z
-    .object({
+    .looseObject({
       enabled: iniBoolean.catch(true),
       published: iniBoolean.catch(true),
     })
     .catch({ enabled: true, published: true }),
   http: z
-    .object({
+    .looseObject({
       enabled: iniBoolean.catch(false),
       address: z.string().catch('0.0.0.0'),
       port: iniNumber.catch(i2pUiPort),
@@ -70,7 +70,7 @@ export const shape = z.object({
       strictheaders: false,
     }),
   httpproxy: z
-    .object({
+    .looseObject({
       enabled: iniBoolean.catch(false),
     })
     .catch({ enabled: false }),
@@ -78,19 +78,19 @@ export const shape = z.object({
   // transport of its own and Tor cannot resolve them. Loopback-only, so it
   // stays inside the service's network namespace.
   socksproxy: z
-    .object({
+    .looseObject({
       enabled: iniBoolean.catch(true),
       address: z.literal('127.0.0.1').catch('127.0.0.1'),
       port: iniNumber.catch(i2pSocksPort),
     })
     .catch({ enabled: true, address: '127.0.0.1', port: i2pSocksPort }),
   sam: z
-    .object({
+    .looseObject({
       enabled: iniBoolean.catch(true),
     })
     .catch({ enabled: true }),
   i2pcontrol: z
-    .object({
+    .looseObject({
       enabled: iniBoolean.catch(true),
       address: z.literal('127.0.0.1').catch('127.0.0.1'),
       port: iniNumber.catch(7650),
@@ -103,17 +103,17 @@ export const shape = z.object({
       password: 'itoopie',
     }),
   upnp: z
-    .object({
+    .looseObject({
       enabled: iniBoolean.catch(false),
     })
     .catch({ enabled: false }),
   reseed: z
-    .object({
+    .looseObject({
       verify: iniBoolean.catch(true),
     })
     .catch({ verify: true }),
   limits: z
-    .object({
+    .looseObject({
       transittunnels: iniNumber.catch(10000),
     })
     .catch({ transittunnels: 10000 }),
