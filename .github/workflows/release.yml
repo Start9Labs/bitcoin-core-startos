@@ -9,7 +9,6 @@ jobs:
   release:
     uses: Start9Labs/start-technologies/.github/workflows/release.yml@master
     with:
-      # FREE_DISK_SPACE: true
       RELEASE_REGISTRY: ${{ vars.RELEASE_REGISTRY }}
       S3_S9PKS_BASE_URL: ${{ vars.S3_S9PKS_BASE_URL }}
     secrets:

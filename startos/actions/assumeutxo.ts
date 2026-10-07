@@ -119,8 +119,7 @@ export const assumeutxo = sdk.Action.withInput(
             snapshotTempFile,
             input.snapshotUrl.trim(),
           ],
-          {},
-          null,
+          { timeout: null },
         )
 
         const headersDeadline = Date.now() + 6 * 60 * 60 * 1000
@@ -148,8 +147,7 @@ export const assumeutxo = sdk.Action.withInput(
             'loadtxoutset',
             `${rootDir}/${snapshotTempFile}`,
           ],
-          {},
-          null,
+          { timeout: null },
         )
         await storeJson.merge(effects, { snapshotInUse: true })
       } catch (e) {
