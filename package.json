@@ -4,7 +4,7 @@
     "test": "node --experimental-strip-types --test test/*.test.ts test/*.test.cjs"
   },
   "dependencies": {
-    "@start9labs/start-sdk": "3.0.3",
+    "@start9labs/start-sdk": "3.0.4",
     "diskusage": "^1.2.0",
     "tor-startos": "github:Start9Labs/tor-startos#next"
   },
