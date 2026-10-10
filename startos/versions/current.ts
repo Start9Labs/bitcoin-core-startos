@@ -1,18 +1,18 @@
 import { VersionInfo } from '@start9labs/start-sdk'
 
 export const current = VersionInfo.of({
-  version: '29.4:18',
+  version: '29.4:19',
   releaseNotes: {
     en_US:
-      "Fixes Bitcoin failing to update or start on servers moved from StartOS 0.3.5 that don't have Tor installed.",
+      'Adds Delete Block Filter Index to recover from corrupted BIP158 filters without a full blockchain reindex on archival nodes. Index deletions now tolerate absent directories, and Delete Coinstats Index targets the correct directory.',
     es_ES:
-      'Corrige que Bitcoin no pudiera actualizarse ni arrancar en servidores trasladados desde StartOS 0.3.5 que no tienen Tor instalado.',
+      'Añade Eliminar índice de filtros de bloques para reparar filtros BIP158 corruptos sin reindexar toda la cadena en nodos de archivo. La eliminación de índices tolera directorios ausentes y Eliminar índice Coinstats usa el directorio correcto.',
     de_DE:
-      'Behebt, dass Bitcoin auf Servern, die von StartOS 0.3.5 umgezogen sind und Tor nicht installiert haben, weder aktualisieren noch starten konnte.',
+      'Fügt Blockfilter-Index löschen hinzu, um beschädigte BIP158-Filter auf Archivknoten ohne vollständige Blockchain-Neuindizierung zu reparieren. Fehlende Indexverzeichnisse verursachen keinen Löschfehler mehr, und Coinstats-Index löschen verwendet das richtige Verzeichnis.',
     pl_PL:
-      'Naprawia błąd, przez który Bitcoin nie mógł się zaktualizować ani uruchomić na serwerach przeniesionych ze StartOS 0.3.5 bez zainstalowanego Tora.',
+      'Dodaje Usuń indeks filtrów bloków, aby naprawić uszkodzone filtry BIP158 bez ponownego indeksowania całego blockchaina na węzłach archiwalnych. Usuwanie indeksów toleruje brak katalogów, a Usuń indeks Coinstats używa poprawnego katalogu.',
     fr_FR:
-      "Corrige l'impossibilité pour Bitcoin de se mettre à jour ou de démarrer sur les serveurs migrés depuis StartOS 0.3.5 sur lesquels Tor n'est pas installé.",
+      "Ajoute Supprimer l'index des filtres de blocs pour réparer les filtres BIP158 corrompus sans réindexer toute la blockchain sur les nœuds d'archive. La suppression des index tolère les répertoires absents et Supprimer l'index Coinstats utilise le bon répertoire.",
   },
   migrations: {
     up: async ({ effects }) => {},
