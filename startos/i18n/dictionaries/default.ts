@@ -99,6 +99,11 @@ const dict = {
   "The Coinstats Index will be rebuilt once Bitcoin Core is started again, unless 'Coinstats Index' is disabled in the config settings. Please don't do this unless you fully understand what you are doing.": 902,
   'Successfully deleted coinstats index': 903,
 
+  'Delete Block Filter Index': 910,
+  'Deletes the BIP158 Block Filter Index in case it gets corrupted, without deleting other indexes, blocks, or chainstate.': 911,
+  "The Block Filter Index will be rebuilt on the next start if 'Compute Compact Block Filters (BIP158)' is enabled in 'Other Settings'. Filter-based wallets must wait for the rebuild. If historical blocks have been pruned, rebuilding requires 'Reindex Blockchain' and downloading the chain again; disable block filters to start without rebuilding.": 912,
+  'Successfully deleted block filter index': 913,
+
   // actions/assumeutxo.ts
   'UTXO Snapshot URL': 1000,
   'URL of UTXO Snapshot to bootstrap bitcoin': 1001,

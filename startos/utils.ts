@@ -1,3 +1,5 @@
+import { T } from '@start9labs/start-sdk'
+import { rm } from 'fs/promises'
 import { sdk } from './sdk'
 
 // Host ids (the `sdk.MultiHost.of` groups) — distinct from the interface ids
@@ -71,6 +73,24 @@ export const bitcoinMounts = sdk.Mounts.of().mountVolume({
   mountpoint: rootDir,
   readonly: false,
 })
+
+export async function deleteIndex(
+  effects: T.Effects,
+  index: 'blockfilter' | 'coinstatsindex' | 'txindex',
+) {
+  await sdk.SubContainer.withTemp(
+    effects,
+    { imageId: 'bitcoind' },
+    bitcoinMounts,
+    `delete-${index}`,
+    async (subc) => {
+      await rm(`${subc.rootfs}${rootDir}/indexes/${index}`, {
+        recursive: true,
+        force: true,
+      })
+    },
+  )
+}
 
 export type GetNetworkInfo = {
   connections: number
