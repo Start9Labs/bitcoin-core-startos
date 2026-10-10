@@ -101,7 +101,7 @@ const dict = {
 
   'Delete Block Filter Index': 910,
   'Deletes the BIP158 Block Filter Index in case it gets corrupted, without deleting other indexes, blocks, or chainstate.': 911,
-  "The Block Filter Index will be rebuilt on the next start if 'Compute Compact Block Filters (BIP158)' is enabled in Other Settings. Filter-based wallets must wait for the rebuild. If historical blocks have been pruned, rebuilding requires Reindex Blockchain and downloading the chain again; disable block filters to start without rebuilding.": 912,
+  "The Block Filter Index will be rebuilt on the next start if 'Compute Compact Block Filters (BIP158)' is enabled in 'Other Settings'. Filter-based wallets must wait for the rebuild. If historical blocks have been pruned, rebuilding requires 'Reindex Blockchain' and downloading the chain again; disable block filters to start without rebuilding.": 912,
   'Successfully deleted block filter index': 913,
 
   // actions/assumeutxo.ts
