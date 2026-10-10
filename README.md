@@ -45,12 +45,12 @@ The node binary does not come from a registry. The repo's own `Dockerfile` downl
 
 Verification is a signer quorum rather than a single trusted key: `SHA256SUMS.asc` must carry good signatures from a quorum of **distinct** signers holding keys committed under `assets/release-keys/`, counted by primary fingerprint so that one signer's subkeys cannot vote twice, and the keyring is asserted equal to the pinned set so a stray key cannot join the count. Only then is the tarball checked against `SHA256SUMS`. The runtime image adds `curl` (the snapshot download shells out to it), `jq`, `yq`, `tini`, and `e2fsprogs`.
 
-| Subcontainer   | Image                   | Lifetime                 | Purpose                                                                                                                                                                                                         |
-| -------------- | ----------------------- | ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `bitcoind-sub` | built locally           | the running service      | The `bitcoind` daemon — this is the one to `attach` to                                                                                                                                                          |
-| `i2pd-sub`     | `purplei2p/i2pd`        | while I2P is enabled     | Embedded I2P router: SAM bridge, SOCKS proxy, I2PControl                                                                                                                                                        |
-| `proxy-sub`    | `btc-rpc-proxy`         | while the node is pruned | Serves RPC on 8332 and fetches pruned blocks over p2p                                                                                                                                                           |
-| _temporaries_  | built locally, `python` | seconds to hours         | One per action that shells out — `assumeutxo`, `delete-peers`, `delete-txindex`, `delete-coinstats`, `getnetworkinfo`, `getblockchaininfo`, and `rpc-auth-generator` (the `python` image, running `rpcauth.py`) |
+| Subcontainer   | Image                   | Lifetime                 | Purpose                                                                                                                                                                                                                                    |
+| -------------- | ----------------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `bitcoind-sub` | built locally           | the running service      | The `bitcoind` daemon — this is the one to `attach` to                                                                                                                                                                                     |
+| `i2pd-sub`     | `purplei2p/i2pd`        | while I2P is enabled     | Embedded I2P router: SAM bridge, SOCKS proxy, I2PControl                                                                                                                                                                                   |
+| `proxy-sub`    | `btc-rpc-proxy`         | while the node is pruned | Serves RPC on 8332 and fetches pruned blocks over p2p                                                                                                                                                                                      |
+| _temporaries_  | built locally, `python` | seconds to hours         | One per action that shells out — `assumeutxo`, `delete-peers`, `delete-txindex`, `delete-coinstatsindex`, `delete-blockfilter`, `getnetworkinfo`, `getblockchaininfo`, and `rpc-auth-generator` (the `python` image, running `rpcauth.py`) |
 
 Three oneshots bracket the daemons. `nocow` sets the btrfs no-COW attribute across the data directory, and `clean-chainstate-old` deletes leftover `chainstate.old` directories; both must finish before `bitcoind` starts. `synced-true` runs after it, and is described under [Installation and First-Run Flow](#installation-and-first-run-flow).
 
@@ -162,7 +162,7 @@ There is no setup wizard, no credential to enter, and no task raised at install 
 
 ## Actions
 
-Fifteen actions, thirteen of them user-facing. The OS already carries each one's name, description, warning, visibility, permitted statuses, and input schema; what follows is what it cannot. One thing applies to all of them that write `bitcoin.conf`: `main` watches the whole file, so a write that changes any value restarts Bitcoin Core, while a form submitted unchanged is not written and does not restart.
+Sixteen actions, fourteen of them user-facing. The OS already carries each one's name, description, warning, visibility, permitted statuses, and input schema; what follows is what it cannot. One thing applies to all of them that write `bitcoin.conf`: `main` watches the whole file, so a write that changes any value restarts Bitcoin Core, while a form submitted unchanged is not written and does not restart.
 
 ### Mempool, Peer, RPC, and Other Settings
 
@@ -184,17 +184,20 @@ Both set a flag in `store.json` and then restart the node if it is running, or t
 
 **Reindex Blockchain** rebuilds the block and chainstate databases from genesis. On an archival node it re-uses the blocks on disk; on a pruned node it is equivalent to syncing from scratch, which can take weeks on modest hardware. **Reindex Chainstate** rebuilds only the chainstate and is strictly faster, and is hidden on pruned nodes, where it does not apply. Reach for either only for suspected corruption — they are safe to repeat, but each costs a full rebuild.
 
-### Delete Peer List, Delete Transaction Index, Delete Coinstats Index
+### Delete Peer List, Delete Transaction Index, Delete Coinstats Index, Delete Block Filter Index
 
-Three recovery actions for a corrupted file, each requiring the service to be stopped because bitcoind holds these open while running. Each deletes one thing and nothing else; the node recreates it on the next start.
+Four recovery actions for corrupted files. Each deletes one thing and nothing else; an index is rebuilt on the next start only if it is still enabled.
 
-| Action                   | Removes                  | Cost of the rebuild                          |
-| ------------------------ | ------------------------ | -------------------------------------------- |
-| Delete Peer List         | `peers.dat`              | None — peers are rediscovered                |
-| Delete Transaction Index | `indexes/txindex`        | A full re-index over the chain on next start |
-| Delete Coinstats Index   | `indexes/coinstatsindex` | A full re-index over the chain on next start |
+| Action                    | Removes                  | Cost of the rebuild                    |
+| ------------------------- | ------------------------ | -------------------------------------- |
+| Delete Peer List          | `peers.dat`              | None — peers are rediscovered          |
+| Delete Transaction Index  | `indexes/txindex`        | Rebuilds this index over the chain     |
+| Delete Coinstats Index    | `indexes/coinstatsindex` | Rebuilds this index over the chain     |
+| Delete Block Filter Index | `indexes/blockfilter`    | Rebuilds BIP158 filters over the chain |
 
-All three are idempotent: deleting a file that is already gone succeeds.
+For startup failures whose logs identify block filter index corruption, Delete Block Filter Index removes both the filter database and filter files, leaving other indexes, blocks, chainstate, wallets, and configuration untouched. It does not request a blockchain or chainstate reindex. Rebuilding needs the historical blocks: on an archival node this avoids a full reindex, while a node that has already pruned those blocks needs Reindex Blockchain to download them again, or block filters disabled to start without rebuilding. Filter consumers remain incomplete until Index Sync reports success.
+
+All four are idempotent: deleting a file or directory that is already gone succeeds.
 
 ### Download UTXO Snapshot (assumeutxo)
 
@@ -321,6 +324,7 @@ actions:
   - delete-peers
   - delete-txindex
   - delete-coinstats-index
+  - delete-block-filter-index
   - assumeutxo # hidden once fully synced
   - runtime-info
   - autoconfig # hidden; driven by dependents
