@@ -99,9 +99,11 @@ export default {
     901: 'Elimina el índice Coinstats (coinstats) en caso de que se corrompa.',
     902: "El índice Coinstats se reconstruirá una vez que se inicie Bitcoin Core nuevamente, a menos que 'Índice Coinstats' esté deshabilitado en la configuración. Por favor, no haga esto a menos que comprenda completamente lo que está haciendo.",
     903: 'Índice coinstats eliminado exitosamente',
+
+    // actions/deleteBlockFilterIndex.ts
     910: 'Eliminar índice de filtros de bloques',
     911: 'Elimina el índice de filtros de bloques BIP158 si se corrompe, sin eliminar otros índices, bloques ni el estado de la cadena.',
-    912: "El índice de filtros de bloques se reconstruirá en el próximo inicio si 'Calcular filtros compactos de bloques (BIP158)' está activado en Otros ajustes. Las carteras basadas en filtros deben esperar a que termine la reconstrucción. Si se han podado bloques históricos, la reconstrucción requiere Reindexar cadena de bloques y descargar la cadena de nuevo; desactiva los filtros de bloques para iniciar sin reconstruirlos.",
+    912: "El índice de filtros de bloques se reconstruirá en el próximo inicio si 'Calcular filtros de bloque compactos (BIP158)' está activado en 'Otras configuraciones'. Las carteras basadas en filtros deben esperar a que termine la reconstrucción. Si se han podado bloques históricos, la reconstrucción requiere 'Reindexar blockchain' y descargar la cadena de nuevo; desactiva los filtros de bloques para iniciar sin reconstruirlos.",
     913: 'Índice de filtros de bloques eliminado correctamente',
 
     // actions/assumeutxo.ts
@@ -403,9 +405,11 @@ export default {
     901: 'Löscht den Coinstats-Index (coinstats), falls er beschädigt wird.',
     902: "Der Coinstats-Index wird neu erstellt, sobald Bitcoin Core erneut gestartet wird, es sei denn, 'Coinstats-Index' ist in den Konfigurationseinstellungen deaktiviert. Bitte tun Sie dies nicht, es sei denn, Sie verstehen vollständig, was Sie tun.",
     903: 'Coinstats-Index erfolgreich gelöscht',
+
+    // actions/deleteBlockFilterIndex.ts
     910: 'Blockfilter-Index löschen',
     911: 'Löscht den BIP158-Blockfilter-Index bei Beschädigung, ohne andere Indizes, Blöcke oder den Chainstate zu löschen.',
-    912: "Der Blockfilter-Index wird beim nächsten Start neu aufgebaut, wenn 'Kompakte Blockfilter berechnen (BIP158)' unter Andere Einstellungen aktiviert ist. Filterbasierte Wallets müssen den Neuaufbau abwarten. Wurden historische Blöcke bereits gelöscht (Pruning), erfordert der Neuaufbau Blockchain neu indizieren und einen erneuten Download der Blockchain; Blockfilter deaktivieren, um ohne Neuaufbau zu starten.",
+    912: "Der Blockfilter-Index wird beim nächsten Start neu aufgebaut, wenn 'Kompakte Blockfilter berechnen (BIP158)' unter 'Weitere Einstellungen' aktiviert ist. Filterbasierte Wallets müssen den Neuaufbau abwarten. Wurden historische Blöcke bereits gelöscht (Pruning), erfordert der Neuaufbau 'Blockchain neu indizieren' und einen erneuten Download der Blockchain; Blockfilter deaktivieren, um ohne Neuaufbau zu starten.",
     913: 'Blockfilter-Index erfolgreich gelöscht',
 
     // actions/assumeutxo.ts
@@ -707,9 +711,11 @@ export default {
     901: 'Usuwa indeks Coinstats (coinstats) w przypadku jego uszkodzenia.',
     902: "Indeks Coinstats zostanie przebudowany po ponownym uruchomieniu Bitcoin Core, chyba że 'Indeks Coinstats' jest wyłączony w ustawieniach konfiguracji. Proszę tego nie robić, chyba że w pełni rozumiesz, co robisz.",
     903: 'Pomyślnie usunięto indeks coinstats',
+
+    // actions/deleteBlockFilterIndex.ts
     910: 'Usuń indeks filtrów bloków',
     911: 'Usuwa uszkodzony indeks filtrów bloków BIP158 bez usuwania innych indeksów, bloków ani stanu łańcucha.',
-    912: "Indeks filtrów bloków zostanie odbudowany przy następnym uruchomieniu, jeśli opcja 'Obliczaj kompaktowe filtry bloków (BIP158)' jest włączona w Innych ustawieniach. Portfele korzystające z filtrów muszą poczekać na odbudowę. Jeśli historyczne bloki zostały przycięte, odbudowa wymaga ponownego indeksowania blockchaina i pobrania łańcucha od nowa; wyłącz filtry bloków, aby uruchomić węzeł bez odbudowy.",
+    912: "Indeks filtrów bloków zostanie odbudowany przy następnym uruchomieniu, jeśli opcja 'Oblicz kompaktowe filtry bloków (BIP158)' jest włączona w 'Inne ustawienia'. Portfele korzystające z filtrów muszą poczekać na odbudowę. Jeśli historyczne bloki zostały przycięte, odbudowa wymaga akcji 'Przeindeksuj blockchain' i pobrania łańcucha od nowa; wyłącz filtry bloków, aby uruchomić węzeł bez odbudowy.",
     913: 'Pomyślnie usunięto indeks filtrów bloków',
 
     // actions/assumeutxo.ts
@@ -1011,9 +1017,11 @@ export default {
     901: "Supprime l'index Coinstats (coinstats) au cas où il serait corrompu.",
     902: "L'index Coinstats sera reconstruit une fois Bitcoin Core redémarré, sauf si 'Index Coinstats' est désactivé dans les paramètres de configuration. Veuillez ne pas faire cela à moins que vous ne compreniez parfaitement ce que vous faites.",
     903: 'Index coinstats supprimé avec succès',
+
+    // actions/deleteBlockFilterIndex.ts
     910: "Supprimer l'index des filtres de blocs",
     911: "Supprime l'index des filtres de blocs BIP158 en cas de corruption, sans supprimer les autres index, les blocs ni l'état de la chaîne.",
-    912: "L'index des filtres de blocs sera reconstruit au prochain démarrage si 'Calculer les filtres de blocs compacts (BIP158)' est activé dans Autres paramètres. Les portefeuilles utilisant les filtres doivent attendre la reconstruction. Si des blocs historiques ont été élagués, la reconstruction nécessite Réindexer la blockchain et un nouveau téléchargement de la chaîne ; désactivez les filtres de blocs pour démarrer sans reconstruction.",
+    912: "L'index des filtres de blocs sera reconstruit au prochain démarrage si 'Calculer les filtres de blocs compacts (BIP158)' est activé dans 'Autres paramètres'. Les portefeuilles utilisant les filtres doivent attendre la reconstruction. Si des blocs historiques ont été élagués, la reconstruction nécessite 'Réindexer la blockchain' et un nouveau téléchargement de la chaîne ; désactivez les filtres de blocs pour démarrer sans reconstruction.",
     913: 'Index des filtres de blocs supprimé avec succès',
 
     // actions/assumeutxo.ts

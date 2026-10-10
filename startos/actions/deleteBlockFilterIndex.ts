@@ -13,7 +13,7 @@ export const deleteBlockFilterIndex = sdk.Action.withoutInput(
       'Deletes the BIP158 Block Filter Index in case it gets corrupted, without deleting other indexes, blocks, or chainstate.',
     ),
     warning: i18n(
-      "The Block Filter Index will be rebuilt on the next start if 'Compute Compact Block Filters (BIP158)' is enabled in Other Settings. Filter-based wallets must wait for the rebuild. If historical blocks have been pruned, rebuilding requires Reindex Blockchain and downloading the chain again; disable block filters to start without rebuilding.",
+      "The Block Filter Index will be rebuilt on the next start if 'Compute Compact Block Filters (BIP158)' is enabled in 'Other Settings'. Filter-based wallets must wait for the rebuild. If historical blocks have been pruned, rebuilding requires 'Reindex Blockchain' and downloading the chain again; disable block filters to start without rebuilding.",
     ),
     allowedStatuses: 'only-stopped',
     group: i18n('Delete Corrupted Files'),
