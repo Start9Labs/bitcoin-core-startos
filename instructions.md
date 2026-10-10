@@ -59,7 +59,7 @@ Some options are fixed by the package and not exposed: RPC cookie authentication
 
 - **Reindex Blockchain** — rebuild blocks and chainstate from scratch (use after on-disk corruption).
 - **Reindex Chainstate** — rebuild just the chainstate from existing blocks (hidden on pruned nodes).
-- **Delete Peer List** / **Delete Transaction Index** / **Delete Coinstats Index** — remove a corrupted `peers.dat`, `txindex`, or `coinstatsindex`. The service must be stopped to run these.
+- **Delete Peer List** / **Delete Transaction Index** / **Delete Coinstats Index** / **Delete Block Filter Index** — remove a corrupted peer list or individual index. Stop the service before running these. If the logs identify block filter index corruption, use **Delete Block Filter Index** under **Delete Corrupted Files**, then start Bitcoin Core again. It rebuilds the filters if **Compute Compact Block Filters (BIP158)** is still enabled in **Other Settings**, without rebuilding the blockchain or chainstate. Watch **Index Sync** for progress; filter-based wallets must wait for it to finish. If your node has already pruned historical blocks, rebuilding requires **Reindex Blockchain** and downloading the chain again; alternatively, disable block filters in **Other Settings** to start without rebuilding.
 
 ### Other actions
 
