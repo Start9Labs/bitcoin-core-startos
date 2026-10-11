@@ -186,18 +186,18 @@ Both set a flag in `store.json` and then restart the node if it is running, or t
 
 ### Delete Peer List, Delete Transaction Index, Delete Coinstats Index, Delete Block Filter Index
 
-Four recovery actions for corrupted files. Each deletes one thing and nothing else; an index is rebuilt on the next start only if it is still enabled.
+Four recovery actions for a corrupted file, each requiring the service to be stopped because bitcoind holds these open while running. Each deletes one thing and nothing else; the node recreates it on the next start — an index only if it is still enabled.
 
-| Action                    | Removes                  | Cost of the rebuild                    |
-| ------------------------- | ------------------------ | -------------------------------------- |
-| Delete Peer List          | `peers.dat`              | None — peers are rediscovered          |
-| Delete Transaction Index  | `indexes/txindex`        | Rebuilds this index over the chain     |
-| Delete Coinstats Index    | `indexes/coinstatsindex` | Rebuilds this index over the chain     |
-| Delete Block Filter Index | `indexes/blockfilter`    | Rebuilds BIP158 filters over the chain |
+| Action                    | Removes                  | Cost of the rebuild                          |
+| ------------------------- | ------------------------ | -------------------------------------------- |
+| Delete Peer List          | `peers.dat`              | None — peers are rediscovered                |
+| Delete Transaction Index  | `indexes/txindex`        | A full re-index over the chain on next start |
+| Delete Coinstats Index    | `indexes/coinstatsindex` | A full re-index over the chain on next start |
+| Delete Block Filter Index | `indexes/blockfilter`    | A full re-index over the chain on next start |
 
-For startup failures whose logs identify block filter index corruption, Delete Block Filter Index removes both the filter database and filter files, leaving other indexes, blocks, chainstate, wallets, and configuration untouched. It does not request a blockchain or chainstate reindex. Rebuilding needs the historical blocks: on an archival node this avoids a full reindex, while a node that has already pruned those blocks needs Reindex Blockchain to download them again, or block filters disabled to start without rebuilding. Filter consumers remain incomplete until Index Sync reports success.
+An index rebuild reads every block, so on a node that has already pruned them it needs Reindex Blockchain instead.
 
-All four are idempotent: deleting a file or directory that is already gone succeeds.
+All four are idempotent: deleting a file that is already gone succeeds.
 
 ### Download UTXO Snapshot (assumeutxo)
 
