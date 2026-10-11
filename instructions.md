@@ -59,7 +59,7 @@ Some options are fixed by the package and not exposed: RPC cookie authentication
 
 - **Reindex Blockchain** — rebuild blocks and chainstate from scratch (use after on-disk corruption).
 - **Reindex Chainstate** — rebuild just the chainstate from existing blocks (hidden on pruned nodes).
-- **Delete Peer List** / **Delete Transaction Index** / **Delete Coinstats Index** — remove a corrupted `peers.dat`, `txindex`, or `coinstatsindex`. The service must be stopped to run these.
+- **Delete Peer List** / **Delete Transaction Index** / **Delete Coinstats Index** / **Delete Block Filter Index** — remove a corrupted peer list or index. The service must be stopped to run these; a deleted index is rebuilt on the next start if it is still enabled.
 
 ### Other actions
 
