@@ -1,6 +1,5 @@
 import { sdk } from '../sdk'
-import * as fs from 'fs/promises'
-import { rootDir, bitcoinMounts } from '../utils'
+import { deleteIndex } from '../utils'
 import { i18n } from '../i18n'
 
 export const deleteCoinstatsIndex = sdk.Action.withoutInput(
@@ -23,17 +22,7 @@ export const deleteCoinstatsIndex = sdk.Action.withoutInput(
 
   // execution function
   async ({ effects }) => {
-    await sdk.SubContainer.withTemp(
-      effects,
-      { imageId: 'bitcoind' },
-      bitcoinMounts,
-      'delete-coinstats',
-      async (subc) => {
-        await fs.rmdir(`${subc.rootfs}/${rootDir}/indexes/coinstatsindex/`, {
-          recursive: true,
-        })
-      },
-    )
+    await deleteIndex(effects, 'coinstatsindex')
 
     return {
       version: '1',
