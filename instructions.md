@@ -28,10 +28,6 @@ There is no setup wizard and nothing required to start using Bitcoin Core — it
 
 Bitcoin Core surfaces its interfaces — RPC, peer, ZeroMQ, and the I2P console when you've enabled it — on the **Dashboard** tab; everything else is driven by actions in the service's sidebar.
 
-### Preserving a peer .onion address after an update
-
-The update reattaches existing peer addresses to the current peer interface through Tor, keeping their hostname and public port. Keep Tor up to date; reattachment waits until it supports this operation. Unused addresses from a different host can be explicitly selected through the interface's Tor table.
-
 ### RPC access
 
 The JSON-RPC API listens on port 8332. Dependent StartOS services connect and configure themselves automatically when you install them — you set nothing up. For an external wallet or app, run **Generate RPC User Credentials** to mint a username and password, then point the app at port 8332. **Delete RPC Users** removes credentials you've created. `rpcuser`/`rpcpassword` lines in `bitcoin.conf` are not supported and are stripped; authentication is the `.cookie` file or `rpcauth` users.
