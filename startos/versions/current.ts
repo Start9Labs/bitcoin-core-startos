@@ -1,18 +1,18 @@
 import { IMPOSSIBLE, VersionInfo } from '@start9labs/start-sdk'
 
 export const current = VersionInfo.of({
-  version: '28.4:33',
+  version: '28.4:34',
   releaseNotes: {
     en_US:
-      'Restarting Bitcoin Core while it is still starting stops every process of the previous run.',
+      'A Peers health check shows how many outbound and inbound peers the node is connected to.',
     es_ES:
-      'Reiniciar Bitcoin Core mientras aún se está iniciando detiene todos los procesos de la ejecución anterior.',
+      'Una comprobación de estado de Pares muestra a cuántos pares salientes y entrantes está conectado el nodo.',
     de_DE:
-      'Ein Neustart von Bitcoin Core, während es noch startet, beendet alle Prozesse des vorherigen Laufs.',
+      'Eine Peers-Zustandsprüfung zeigt, mit wie vielen ausgehenden und eingehenden Peers der Knoten verbunden ist.',
     pl_PL:
-      'Ponowne uruchomienie Bitcoin Core w trakcie uruchamiania zatrzymuje wszystkie procesy poprzedniego uruchomienia.',
+      'Kontrola stanu Węzły pokazuje, z iloma węzłami wychodzącymi i przychodzącymi połączony jest węzeł.',
     fr_FR:
-      "Redémarrer Bitcoin Core pendant son démarrage arrête tous les processus de l'exécution précédente.",
+      "Une vérification d'état Pairs indique à combien de pairs sortants et entrants le nœud est connecté.",
   },
   migrations: {
     up: async ({ effects }) => {},
