@@ -22,6 +22,10 @@ const dict = {
   'Building ${index}: ${percentage}%': 18,
   'Block Filter Index': 19,
   'Could not read ${cmd} from Bitcoin: ${error}': 20,
+  Peers: 21,
+  'Peer-to-peer networking is turned off': 22,
+  'No outbound peers (inbound: ${inbound})': 23,
+  'Outbound: ${outbound}, inbound: ${inbound}': 24,
 
   // interfaces.ts
   RPC: 100,

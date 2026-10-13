@@ -13,6 +13,7 @@ import {
   bitcoinMounts,
   ChainTip,
   GetBlockchainInfo,
+  GetNetworkInfo,
   i2pControlPort,
   rootDir,
   rpccookiefile,
@@ -421,6 +422,45 @@ export const main = sdk.setupMain(async ({ effects }) => {
                 ? (behind[1].best_block_height / tip) * 100
                 : 0
               ).toFixed(2),
+            }),
+          }
+        },
+      },
+      requires: ['bitcoind'],
+    })
+    .addHealthCheck('peers', {
+      ready: {
+        display: i18n('Peers'),
+        trigger: sdk.trigger.statusTrigger(30_000, {
+          starting: 5_000,
+          failure: 5_000,
+        }),
+        gracePeriod: 5 * 60 * 1000,
+        fn: async () => {
+          const res = await probe<GetNetworkInfo>('getnetworkinfo')
+          if ('health' in res) return res.health
+
+          const { networkactive, connections_in, connections_out } = res.value
+
+          if (!networkactive)
+            return {
+              result: 'disabled' as const,
+              message: i18n('Peer-to-peer networking is turned off'),
+            }
+
+          if (!connections_out)
+            return {
+              result: 'failure' as const,
+              message: i18n('No outbound peers (inbound: ${inbound})', {
+                inbound: connections_in,
+              }),
+            }
+
+          return {
+            result: 'success' as const,
+            message: i18n('Outbound: ${outbound}, inbound: ${inbound}', {
+              outbound: connections_out,
+              inbound: connections_in,
             }),
           }
         },
