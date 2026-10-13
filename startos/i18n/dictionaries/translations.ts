@@ -23,6 +23,10 @@ export default {
     18: 'Construyendo ${index}: ${percentage}%',
     19: 'Índice de filtros de bloques',
     20: 'No se pudo leer ${cmd} de Bitcoin: ${error}',
+    21: 'Pares',
+    22: 'Las conexiones entre pares están desactivadas',
+    23: 'Ningún par saliente (entrantes: ${inbound})',
+    24: 'Salientes: ${outbound}, entrantes: ${inbound}',
 
     // interfaces.ts
     100: 'RPC',
@@ -334,6 +338,10 @@ export default {
     18: '${index} wird aufgebaut: ${percentage}%',
     19: 'Blockfilter-Index',
     20: '${cmd} konnte nicht von Bitcoin gelesen werden: ${error}',
+    21: 'Peers',
+    22: 'Peer-to-Peer-Netzwerk ist ausgeschaltet',
+    23: 'Keine ausgehenden Peers (eingehend: ${inbound})',
+    24: 'Ausgehend: ${outbound}, eingehend: ${inbound}',
 
     // interfaces.ts
     100: 'RPC',
@@ -645,6 +653,10 @@ export default {
     18: 'Budowanie ${index}: ${percentage}%',
     19: 'Indeks filtrów bloków',
     20: 'Nie udało się odczytać ${cmd} z Bitcoina: ${error}',
+    21: 'Węzły',
+    22: 'Sieć peer-to-peer jest wyłączona',
+    23: 'Brak węzłów wychodzących (przychodzące: ${inbound})',
+    24: 'Wychodzące: ${outbound}, przychodzące: ${inbound}',
 
     // interfaces.ts
     100: 'RPC',
@@ -956,6 +968,10 @@ export default {
     18: 'Construction de ${index} : ${percentage}%',
     19: 'Index des filtres de blocs',
     20: 'Impossible de lire ${cmd} depuis Bitcoin : ${error}',
+    21: 'Pairs',
+    22: 'Le réseau pair-à-pair est désactivé',
+    23: 'Aucun pair sortant (entrants : ${inbound})',
+    24: 'Sortants : ${outbound}, entrants : ${inbound}',
 
     // interfaces.ts
     100: 'RPC',
