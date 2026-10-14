@@ -305,7 +305,17 @@ export const main = sdk.setupMain(async ({ effects }) => {
             result: 'success' as const,
           }
 
-          if (!info.initialblockdownload) return synced
+          if (!info.initialblockdownload) {
+            const behind = info.headers - info.blocks
+            // A new block's header lands a moment before the block connects.
+            if (behind < 2) return synced
+            return {
+              result: 'loading' as const,
+              message: i18n('Catching up: ${count} blocks behind', {
+                count: behind,
+              }),
+            }
+          }
 
           // At genesis nothing sits above the tip to find yet either, and
           // verificationprogress is still 0 — the header chain is the only
