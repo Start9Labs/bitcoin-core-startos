@@ -26,6 +26,7 @@ const dict = {
   'Peer-to-peer networking is turned off': 22,
   'No outbound peers (inbound: ${inbound})': 23,
   'Outbound: ${outbound}, inbound: ${inbound}': 24,
+  'Catching up: ${count} blocks behind': 25,
 
   // interfaces.ts
   RPC: 100,

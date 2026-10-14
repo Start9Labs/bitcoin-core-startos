@@ -27,6 +27,7 @@ export default {
     22: 'Las conexiones entre pares están desactivadas',
     23: 'Ningún par saliente (entrantes: ${inbound})',
     24: 'Salientes: ${outbound}, entrantes: ${inbound}',
+    25: 'Poniéndose al día: ${count} bloques de retraso',
 
     // interfaces.ts
     100: 'RPC',
@@ -335,6 +336,7 @@ export default {
     22: 'Peer-to-Peer-Netzwerk ist ausgeschaltet',
     23: 'Keine ausgehenden Peers (eingehend: ${inbound})',
     24: 'Ausgehend: ${outbound}, eingehend: ${inbound}',
+    25: 'Holt auf: ${count} Blöcke im Rückstand',
 
     // interfaces.ts
     100: 'RPC',
@@ -643,6 +645,7 @@ export default {
     22: 'Sieć peer-to-peer jest wyłączona',
     23: 'Brak węzłów wychodzących (przychodzące: ${inbound})',
     24: 'Wychodzące: ${outbound}, przychodzące: ${inbound}',
+    25: 'Nadrabianie zaległości: brakuje ${count} bloków',
 
     // interfaces.ts
     100: 'RPC',
@@ -951,6 +954,7 @@ export default {
     22: 'Le réseau pair-à-pair est désactivé',
     23: 'Aucun pair sortant (entrants : ${inbound})',
     24: 'Sortants : ${outbound}, entrants : ${inbound}',
+    25: 'Rattrapage en cours : ${count} blocs de retard',
 
     // interfaces.ts
     100: 'RPC',
