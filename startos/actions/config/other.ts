@@ -21,6 +21,7 @@ export const otherConfig = sdk.Action.withInput(
   fullConfigSpec.filter({
     blockfilters: true,
     blocknotify: true,
+    blockreservedweight: true,
     blockreconstructionextratxn: true,
     coinstatsindex: true,
     dbbatchsize: true,

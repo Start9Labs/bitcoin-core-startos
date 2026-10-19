@@ -280,6 +280,8 @@ const dict = {
   'Use PCP or NAT-PMP to map the listening port.': 1758,
   'Max Upload Target': 1759,
   "Tries to keep outbound traffic under the given target in MiB per 24h. Limit does not apply to peers with 'download' permission or blocks created within past week. 0 = no limit.": 1760,
+  'Block Reserved Weight': 1761,
+  'Block weight that block templates leave free for the coinbase transaction. Mining software that builds a large coinbase, such as a pool paying many outputs, needs more than the default.': 1762,
   'Enable IPC': 1736,
   'Enable inter-process communication (IPC) via Unix socket. This allows other services to communicate with Bitcoin Core using a high-performance local socket connection. The socket path will be displayed in Runtime Information.': 1737,
   'IPC is an experimental feature. Only enable this if you know what you are doing with the IPC socket. An example use case would be Stratum v2 mining services.': 1738,
