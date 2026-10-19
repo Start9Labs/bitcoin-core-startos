@@ -215,7 +215,7 @@ A read-only snapshot for diagnosis: peer counts split inbound and outbound, bloc
 
 ### Hidden: Auto-Configure, Create RPC Credentials
 
-Both are `visibility: 'hidden'` — not user-facing, and never something to tell a user to run. **Auto-Configure** is how a dependent service requests configuration; the surface it can reach is deliberately narrow (block filters, `blocknotify`, coinstats index, bloom filters, pruning, `txindex`, ZeroMQ), and `raw` — with `rpcauth`, `whitelist`, `externalip`, and the peer lists — is unreachable from it. **Create RPC Credentials** lets a dependent register an `rpcauth` user with a password it already holds, subject to a minimum length the user cannot override.
+Both are `visibility: 'hidden'` — not user-facing, and never something to tell a user to run. **Auto-Configure** is how a dependent service requests configuration; the surface it can reach is deliberately narrow (block filters, `blocknotify`, `blockreservedweight`, coinstats index, bloom filters, pruning, `txindex`, enabling the wallet, ZeroMQ), and `raw` — with `rpcauth`, `whitelist`, `externalip`, and the peer lists — is unreachable from it. **Create RPC Credentials** lets a dependent register an `rpcauth` user with a password it already holds, subject to a minimum length the user cannot override.
 
 ## Tasks
 

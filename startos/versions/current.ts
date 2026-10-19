@@ -2,18 +2,18 @@ import { VersionInfo } from '@start9labs/start-sdk'
 import { rm } from 'fs/promises'
 
 export const current = VersionInfo.of({
-  version: '30.3:22',
+  version: '30.3:23',
   releaseNotes: {
     en_US:
-      'Blockchain Sync shows when the node has fallen behind the network, and by how many blocks.',
+      'Other Settings can set the block weight reserved for the coinbase transaction, and mining services can request it. Built with start-sdk 3.1.0.',
     es_ES:
-      'La comprobación de estado Progreso de sincronización de blockchain muestra cuándo el nodo se ha quedado por detrás de la red y por cuántos bloques.',
+      'Otras configuraciones permite fijar el peso de bloque reservado para la transacción coinbase, y los servicios de minería pueden solicitarlo. Compilado con start-sdk 3.1.0.',
     de_DE:
-      'Die Zustandsprüfung Blockchain-Synchronisationsfortschritt zeigt, wann der Knoten hinter das Netzwerk zurückgefallen ist und um wie viele Blöcke.',
+      'Unter Weitere Einstellungen lässt sich das für die Coinbase-Transaktion reservierte Blockgewicht festlegen, und Mining-Dienste können es anfordern. Erstellt mit start-sdk 3.1.0.',
     pl_PL:
-      'Kontrola stanu Postęp synchronizacji blockchain pokazuje, kiedy węzeł został w tyle za siecią i o ile bloków.',
+      'W akcji Inne ustawienia można ustawić wagę bloku zarezerwowaną dla transakcji coinbase, a usługi wydobywcze mogą o nią prosić. Zbudowano z start-sdk 3.1.0.',
     fr_FR:
-      "La vérification d'état Progression de la synchronisation blockchain indique quand le nœud a pris du retard sur le réseau, et de combien de blocs.",
+      'Les Autres paramètres permettent de définir le poids de bloc réservé à la transaction coinbase, et les services de minage peuvent le demander. Construit avec start-sdk 3.1.0.',
   },
   migrations: {
     up: async ({ effects }) => {},
