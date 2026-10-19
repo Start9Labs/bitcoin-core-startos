@@ -132,6 +132,7 @@ export const shape = z.looseObject({
 
   // Other
   blocknotify: iniString,
+  blockreservedweight: iniNumber,
   prune: z
     .union([
       z.array(z.string()).transform((a) => Number(a.at(-1))),
@@ -292,6 +293,19 @@ export const fullConfigSpec = sdk.InputSpec.of({
     description: i18n(
       'A shell command Bitcoin runs inside its container each time the best block changes. %s in the command is replaced by the block hash.',
     ),
+  }),
+  blockreservedweight: Value.number({
+    name: i18n('Block Reserved Weight'),
+    description: i18n(
+      'Block weight that block templates leave free for the coinbase transaction. Mining software that builds a large coinbase, such as a pool paying many outputs, needs more than the default.',
+    ),
+    required: false,
+    default: null,
+    min: 2_000,
+    max: 4_000_000,
+    integer: true,
+    units: 'WU',
+    footnote: `${i18n('Default')}: 8000 WU`,
   }),
   blockreconstructionextratxn: Value.number({
     name: i18n('Block Reconstruction Extra TXN'),
@@ -622,6 +636,7 @@ function fileToForm(
     avoidpartialspends,
     discardfee,
     blocknotify,
+    blockreservedweight,
     blockreconstructionextratxn,
     prune,
     dbcache,
@@ -668,6 +683,7 @@ function fileToForm(
       discardfee,
     },
     blocknotify,
+    blockreservedweight,
     blockreconstructionextratxn,
     prune,
     dbcache: dbcache ?? null,
@@ -729,6 +745,7 @@ function formToFile(
     peerbloomfilters,
     blockfilters,
     blocknotify,
+    blockreservedweight,
     blockreconstructionextratxn,
     dbcache,
     dbbatchsize,
@@ -808,6 +825,7 @@ function formToFile(
           ? 'basic'
           : false,
     blocknotify: blocknotify || undefined,
+    blockreservedweight: blockreservedweight ?? undefined,
     blockreconstructionextratxn: blockreconstructionextratxn ?? undefined,
     prune: prune ?? 0,
     dbcache: dbcache ?? undefined,
