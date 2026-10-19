@@ -1,18 +1,13 @@
 import { IMPOSSIBLE, VersionInfo } from '@start9labs/start-sdk'
 
 export const current = VersionInfo.of({
-  version: '28.4:35',
+  version: '28.4:36',
   releaseNotes: {
-    en_US:
-      'Blockchain Sync shows when the node has fallen behind the network, and by how many blocks.',
-    es_ES:
-      'La comprobación de estado Progreso de sincronización de blockchain muestra cuándo el nodo se ha quedado por detrás de la red y por cuántos bloques.',
-    de_DE:
-      'Die Zustandsprüfung Blockchain-Synchronisationsfortschritt zeigt, wann der Knoten hinter das Netzwerk zurückgefallen ist und um wie viele Blöcke.',
-    pl_PL:
-      'Kontrola stanu Postęp synchronizacji blockchain pokazuje, kiedy węzeł został w tyle za siecią i o ile bloków.',
-    fr_FR:
-      "La vérification d'état Progression de la synchronisation blockchain indique quand le nœud a pris du retard sur le réseau, et de combien de blocs.",
+    en_US: 'Built with start-sdk 3.1.0.',
+    es_ES: 'Compilado con start-sdk 3.1.0.',
+    de_DE: 'Erstellt mit start-sdk 3.1.0.',
+    pl_PL: 'Zbudowano z start-sdk 3.1.0.',
+    fr_FR: 'Construit avec start-sdk 3.1.0.',
   },
   migrations: {
     up: async ({ effects }) => {},
