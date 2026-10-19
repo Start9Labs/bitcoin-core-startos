@@ -8,6 +8,7 @@ import { sdk } from '../../sdk'
 const dependentConfigSpec = fullConfigSpec.filter({
   blockfilters: true,
   blocknotify: true,
+  blockreservedweight: true,
   coinstatsindex: true,
   peerbloomfilters: true,
   prune: true,
