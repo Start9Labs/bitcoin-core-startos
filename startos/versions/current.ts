@@ -1,36 +1,21 @@
-import { FileHelper, VersionInfo, z } from '@start9labs/start-sdk'
-import { bitcoinConfFile, toBitcoinConf } from '../fileModels/bitcoin.conf'
+import { VersionInfo } from '@start9labs/start-sdk'
 
 export const current = VersionInfo.of({
-  version: '29.4:25',
+  version: '29.5:0',
   releaseNotes: {
     en_US:
-      'Bitcoin now runs Block Notify commands that contain `=` or `;` or start with `[` as entered, and settings added to bitcoin.conf by hand keep their values as written. Block Notify can no longer contain `#`, and a command that did is removed.',
+      'Updated Bitcoin Core to 29.5. Fixes peer connection timeouts and socket error monitoring, updates DNS seed discovery to assume v2 transport, and uses 64-bit block-file positions. Full release notes: https://github.com/bitcoin/bitcoin/blob/v29.5/doc/release-notes.md',
     es_ES:
-      'Bitcoin ahora ejecuta tal como se introducen los comandos de Notificación de bloque que contienen `=` o `;` o empiezan por `[`, y los ajustes añadidos a mano a bitcoin.conf conservan sus valores tal como se escribieron. Notificación de bloque ya no puede contener `#`, y se elimina el comando que lo contuviera.',
+      'Bitcoin Core actualizado a 29.5. Corrige los tiempos de espera de las conexiones con pares y la detección de errores de sockets, actualiza el descubrimiento mediante semillas DNS para asumir el transporte v2 y usa posiciones de 64 bits en los archivos de bloques. Notas completas: https://github.com/bitcoin/bitcoin/blob/v29.5/doc/release-notes.md',
     de_DE:
-      'Bitcoin führt Blockbenachrichtigungs-Befehle, die `=` oder `;` enthalten oder mit `[` beginnen, jetzt genau wie eingegeben aus, und von Hand zu bitcoin.conf hinzugefügte Einstellungen behalten ihre Werte wie geschrieben. Die Blockbenachrichtigung darf kein `#` mehr enthalten; ein Befehl, der eines enthielt, wird entfernt.',
+      'Bitcoin Core auf 29.5 aktualisiert. Behebt Zeitüberschreitungen bei Peer-Verbindungen und die Überwachung von Socket-Fehlern, nimmt bei der Peer-Suche über DNS-Seeds v2-Transport an und verwendet 64-Bit-Positionen in Blockdateien. Vollständige Versionshinweise: https://github.com/bitcoin/bitcoin/blob/v29.5/doc/release-notes.md',
     pl_PL:
-      'Bitcoin uruchamia teraz polecenia Powiadomienia o bloku zawierające `=` lub `;` albo zaczynające się od `[` dokładnie tak, jak je wpisano, a ustawienia dodane ręcznie do bitcoin.conf zachowują wartości w zapisanej postaci. Powiadomienie o bloku nie może już zawierać `#`, a polecenie, które je zawierało, zostaje usunięte.',
+      'Zaktualizowano Bitcoin Core do 29.5. Poprawiono limity czasu połączeń z peerami i monitorowanie błędów gniazd, wyszukiwanie peerów przez serwery DNS zakłada teraz transport v2, a pozycje w plikach bloków używają 64 bitów. Pełne informacje o wydaniu: https://github.com/bitcoin/bitcoin/blob/v29.5/doc/release-notes.md',
     fr_FR:
-      "Bitcoin exécute désormais telles que saisies les commandes de Notification de bloc qui contiennent `=` ou `;` ou commencent par `[`, et les réglages ajoutés à la main dans bitcoin.conf conservent leurs valeurs telles qu'écrites. La Notification de bloc ne peut plus contenir `#`, et une commande qui en contenait est supprimée.",
+      'Bitcoin Core mis à jour vers 29.5. Corrige les délais des connexions aux pairs et la surveillance des erreurs de sockets, suppose le transport v2 lors de la découverte via les serveurs DNS et utilise des positions sur 64 bits dans les fichiers de blocs. Notes complètes : https://github.com/bitcoin/bitcoin/blob/v29.5/doc/release-notes.md',
   },
   migrations: {
-    up: async ({ effects }) => {
-      // Earlier releases wrote bitcoin.conf with FileHelper.ini's quoting and escapes.
-      const conf = await FileHelper.ini(
-        bitcoinConfFile.path,
-        z.looseObject({}),
-        { bracketedArray: false },
-      )
-        .read()
-        .once()
-      if (conf)
-        await FileHelper.string(bitcoinConfFile.path).write(
-          effects,
-          toBitcoinConf(conf),
-        )
-    },
+    up: async ({ effects }) => {},
     down: async ({ effects }) => {},
   },
 }).satisfies('28.4:29')
