@@ -190,6 +190,11 @@ export const defaultDbbatchsize = () =>
 export const defaultRpcthreads = 16
 export const defaultRpcworkqueue = 64
 
+const confValuePattern = {
+  regex: '^[^#\\r\\n]*$',
+  description: i18n('Must be a single line and cannot contain #'),
+}
+
 export const fullConfigSpec = sdk.InputSpec.of({
   raw: Value.hidden(shape),
   persistmempool: Value.triState({
@@ -295,6 +300,7 @@ export const fullConfigSpec = sdk.InputSpec.of({
     description: i18n(
       'A shell command Bitcoin runs inside its container each time the best block changes. %s in the command is replaced by the block hash.',
     ),
+    patterns: [confValuePattern],
   }),
   blockreconstructionextratxn: Value.number({
     name: i18n('Block Reconstruction Extra TXN'),
@@ -496,6 +502,7 @@ export const fullConfigSpec = sdk.InputSpec.of({
                       "Must be either a domain name, or an IPv4 or IPv6 address. Be sure to include the port number, but do not include protocol scheme (eg 'http://').",
                     ),
                   },
+                  confValuePattern,
                 ],
               },
             ),
@@ -523,6 +530,7 @@ export const fullConfigSpec = sdk.InputSpec.of({
                       "Must be either a domain name, or an IPv4 or IPv6 address. Be sure to include the port number, but do not include protocol scheme (eg 'http://').",
                     ),
                   },
+                  confValuePattern,
                 ],
               },
             ),
@@ -837,20 +845,58 @@ function formToFile(
   }
 }
 
-export const bitcoinConfFile = FileHelper.ini(
+// Mirrors bitcoind's parser, which keeps quotes and backslashes as written.
+function fromBitcoinConf(text: string) {
+  const conf: Record<string, unknown> = {}
+  const sections: Record<string, Record<string, unknown>> = {}
+  let entries = conf
+  for (const line of text.split('\n')) {
+    const entry = line.split('#')[0].trim()
+    if (entry.startsWith('[') && entry.endsWith(']')) {
+      entries = sections[entry.slice(1, -1)] ??= {}
+      continue
+    }
+    const eq = entry.indexOf('=')
+    if (eq === -1) continue
+    const key = entry.slice(0, eq).trim()
+    const value = entry.slice(eq + 1).trim()
+    entries[key] = Object.hasOwn(entries, key)
+      ? [entries[key], value].flat()
+      : value
+  }
+  for (const [name, section] of Object.entries(sections)) conf[name] ??= section
+  return conf
+}
+
+export function toBitcoinConf(
+  conf: Record<string, unknown>,
+  section?: string,
+): string {
+  const isSection = (v: unknown): v is Record<string, unknown> =>
+    !!v && typeof v === 'object' && !Array.isArray(v)
+  let text = ''
+  for (const [key, value] of Object.entries(conf))
+    if (value !== undefined && !isSection(value))
+      for (const v of [value].flat().map(String))
+        // bitcoind reads a value only to the end of its line or its first #, so one holding either cannot be written.
+        if (!/[#\r\n]/.test(v)) text += `${key}=${v}\n`
+  if (section && text) text = `[${section}]\n${text}`
+  for (const [key, value] of Object.entries(conf))
+    if (isSection(value)) {
+      const child = toBitcoinConf(value, section ? `${section}.${key}` : key)
+      text += text && child ? `\n${child}` : child
+    }
+  return text
+}
+
+export const bitcoinConfFile = FileHelper.string(
   {
     base: sdk.volumes.main,
     subpath: '/bitcoin.conf',
   },
   fullConfigSpec.partialValidator,
-  { bracketedArray: false },
   {
-    onRead: (a) => {
-      const base = shape.parse(a)
-      return fileToForm(base)
-    },
-    onWrite: (a) => {
-      return stringifyPrimitives(formToFile(a))
-    },
+    onRead: (text: string) => fileToForm(shape.parse(fromBitcoinConf(text))),
+    onWrite: (form) => toBitcoinConf(stringifyPrimitives(formToFile(form))),
   },
 )

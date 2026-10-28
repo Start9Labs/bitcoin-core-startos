@@ -71,11 +71,11 @@ Two volumes. Everything Bitcoin Core writes lives in one; the embedded I2P route
 
 Three models, and ownership is decided per key rather than per file: some keys are enforced on every write, some are seeded once and then yours, and one is derived from the addresses StartOS has published.
 
-| File                          | Format | Modelled                | Written by                                                                                                      |
-| ----------------------------- | ------ | ----------------------- | --------------------------------------------------------------------------------------------------------------- |
-| `/root/.bitcoin/bitcoin.conf` | INI    | Yes — `FileHelper.ini`  | Install, every init, the four config actions, the RPC-user actions, `watchHosts`, and the `synced-true` oneshot |
-| `/root/.bitcoin/store.json`   | JSON   | Yes — `FileHelper.json` | Install, every init, `main`, and several actions                                                                |
-| `/home/i2pd/data/i2pd.conf`   | INI    | Yes — `FileHelper.ini`  | Init, plus one version migration (the one-time bandwidth raise)                                                 |
+| File                          | Format | Modelled                  | Written by                                                                                                      |
+| ----------------------------- | ------ | ------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `/root/.bitcoin/bitcoin.conf` | INI    | Yes — `FileHelper.string` | Install, every init, the four config actions, the RPC-user actions, `watchHosts`, and the `synced-true` oneshot |
+| `/root/.bitcoin/store.json`   | JSON   | Yes — `FileHelper.json`   | Install, every init, `main`, and several actions                                                                |
+| `/home/i2pd/data/i2pd.conf`   | INI    | Yes — `FileHelper.ini`    | Init, plus one version migration (the one-time bandwidth raise)                                                 |
 
 **A key the package does not model is left alone.** Both INI models parse loosely, so a setting you add by hand that the schema does not declare rides through every rewrite untouched. Everything below concerns the keys the package _does_ declare.
 
@@ -106,6 +106,8 @@ These are starting points, not assertions: nothing re-imposes them, so changing 
 Two timing details decide when a hand edit is corrected. The enforced keys are repaired whenever the package writes the file **at all** — every init (install, update, restore) and every config action — but not on a plain restart, so an edit can survive until one of those happens. And because `main` watches the whole parsed file, any write that actually changes a value restarts the service; a form submitted unchanged is not written and does not restart.
 
 Three values are coerced rather than enforced: a `prune` target between 1 and the 550 MiB floor is raised to the floor, a `maxconnections` below 40 is raised to 40, and `i2p` is dropped from `onlynet` while `i2psam` is absent, because bitcoind refuses to start restricted to a network it has no proxy for. That drop never empties `onlynet`: an empty list is no restriction at all, so where `i2p` is the only entry the `i2psam` address is restored instead, and a node confined to I2P is never handed clearnet. For the same reason `onlynet` is the one field whose invalid values are not repaired — an entry the package does not offer, `cjdns` or a typo, is written back untouched, and bitcoind refusing to start on it beats the package quietly deleting the restriction.
+
+**Values are written verbatim.** bitcoind takes everything after the first `=` as the value, quotes and backslashes included, up to the end of the line or a `#`. The package quotes and escapes nothing, so a Block Notify command reaches the shell exactly as entered, and Block Notify and the peer lists refuse `#` and line breaks.
 
 ### i2pd.conf
 
