@@ -20,11 +20,10 @@ RUN apt-get update && \
 # how many of these fingerprints signed it); only rotate the set and refresh
 # assets/release-keys/ if it does not.
 #
-# Three of these are signing SUBKEYS, so a signature by them reports a different
+# Two of these are signing SUBKEYS, so a signature by them reports a different
 # (primary) fingerprint than the one pinned here:
 #   637DB1E2… → 9EDAFF80E080659604F4A76B2EBB056FD847F8A7
 #   CFB16E21… → E777299FC265DD04793070EB944D35F9AC3DB76A
-#   0CCBAAFD… → 982A193E3CE0EED535E09023188CBB2648416AD5
 # The verification step below therefore resolves every pin to its primary at
 # build time rather than comparing against this list verbatim.
 ENV PINNED_FINGERPRINTS="\
@@ -34,7 +33,7 @@ CFB16E21C950F67FA95E558F2EEB9F5CC09526C1 \
 D1DBF2C4B96F2DEBF4C16654410108112E7EA81F \
 E61773CD6E01040E2F1BD78CE7E2984B6289C93A \
 F4FC70F07310028424EFC20A8E4256593F177720 \
-0CCBAAFD76A2ECE2CCD3141DE2FFD5B1D88CA97D"
+ED9BDF7AD6A55E232E84524257FF9BDBCC301009"
 ENV REQUIRED_QUORUM=5
 
 RUN case "${TARGETPLATFORM}" in \
