@@ -28,6 +28,9 @@ export default {
     23: 'Ningún par saliente (entrantes: ${inbound})',
     24: 'Salientes: ${outbound}, entrantes: ${inbound}',
     25: 'Poniéndose al día: ${count} bloques de retraso',
+    26: 'Validación en segundo plano',
+    27: 'Todos los bloques están validados',
+    28: 'Validando bloques históricos: ${percentage}%',
 
     // interfaces.ts
     100: 'RPC',
@@ -347,6 +350,9 @@ export default {
     23: 'Keine ausgehenden Peers (eingehend: ${inbound})',
     24: 'Ausgehend: ${outbound}, eingehend: ${inbound}',
     25: 'Holt auf: ${count} Blöcke im Rückstand',
+    26: 'Hintergrundvalidierung',
+    27: 'Alle Blöcke sind validiert',
+    28: 'Historische Blöcke werden validiert: ${percentage}%',
 
     // interfaces.ts
     100: 'RPC',
@@ -666,6 +672,9 @@ export default {
     23: 'Brak węzłów wychodzących (przychodzące: ${inbound})',
     24: 'Wychodzące: ${outbound}, przychodzące: ${inbound}',
     25: 'Nadrabianie zaległości: brakuje ${count} bloków',
+    26: 'Walidacja w tle',
+    27: 'Wszystkie bloki są zweryfikowane',
+    28: 'Weryfikowanie historycznych bloków: ${percentage}%',
 
     // interfaces.ts
     100: 'RPC',
@@ -985,6 +994,9 @@ export default {
     23: 'Aucun pair sortant (entrants : ${inbound})',
     24: 'Sortants : ${outbound}, entrants : ${inbound}',
     25: 'Rattrapage en cours : ${count} blocs de retard',
+    26: 'Validation en arrière-plan',
+    27: 'Tous les blocs sont validés',
+    28: 'Validation des blocs historiques : ${percentage}%',
 
     // interfaces.ts
     100: 'RPC',

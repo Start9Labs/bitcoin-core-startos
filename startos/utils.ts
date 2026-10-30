@@ -155,6 +155,15 @@ export type ChainTip = {
     | 'unknown'
 }
 
+export type GetChainstates = {
+  headers: number
+  chainstates: {
+    blocks: number
+    snapshot_blockhash?: string
+    validated: boolean
+  }[]
+}
+
 export function rpcArgs(): string[] {
   return [
     `-conf=${rootDir}/bitcoin.conf`,

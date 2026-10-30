@@ -13,6 +13,7 @@ import {
   bitcoinMounts,
   ChainTip,
   GetBlockchainInfo,
+  GetChainstates,
   GetNetworkInfo,
   i2pControlPort,
   ipcSocketPath,
@@ -359,6 +360,49 @@ export const main = sdk.setupMain(async ({ effects }) => {
       },
       requires: ['bitcoind'],
     })
+    // A loaded UTXO snapshot clears initialblockdownload at the tip while the
+    // blocks beneath its base are still being downloaded and validated.
+    .addHealthCheck('background-validation', {
+      ready: {
+        display: i18n('Background Validation'),
+        trigger: sdk.trigger.statusTrigger(30_000, {
+          starting: 5_000,
+          failure: 5_000,
+        }),
+        fn: async () => {
+          const res = await probe<GetChainstates>('getchainstates')
+          if ('health' in res) return res.health
+
+          const { chainstates } = res.value
+          const snapshot = chainstates.find(
+            (c) => c.snapshot_blockhash && !c.validated,
+          )
+          if (!snapshot?.snapshot_blockhash)
+            return {
+              result: 'success' as const,
+              message: i18n('Every block is validated'),
+            }
+
+          const baseRes = await probe<{ height: number }>(
+            'getblockheader',
+            snapshot.snapshot_blockhash,
+          )
+          if ('health' in baseRes) return baseRes.health
+
+          const background = chainstates.find((c) => !c.snapshot_blockhash)
+          return {
+            result: 'loading' as const,
+            message: i18n('Validating historical blocks: ${percentage}%', {
+              percentage: (
+                ((background?.blocks ?? 0) / baseRes.value.height) *
+                100
+              ).toFixed(2),
+            }),
+          }
+        },
+      },
+      requires: ['bitcoind'],
+    })
     .addOneshot('synced-true', {
       subcontainer: null,
       exec: {
@@ -386,7 +430,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
           return null
         },
       },
-      requires: ['sync-progress'],
+      requires: ['sync-progress', 'background-validation'],
     })
     /**
      * Secondary indexes are built by a background thread that sync-progress
