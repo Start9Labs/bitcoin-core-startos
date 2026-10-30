@@ -27,6 +27,9 @@ const dict = {
   'No outbound peers (inbound: ${inbound})': 23,
   'Outbound: ${outbound}, inbound: ${inbound}': 24,
   'Catching up: ${count} blocks behind': 25,
+  'Background Validation': 26,
+  'Every block is validated': 27,
+  'Validating historical blocks: ${percentage}%': 28,
 
   // interfaces.ts
   RPC: 100,
