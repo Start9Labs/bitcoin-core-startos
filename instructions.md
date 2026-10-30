@@ -11,7 +11,7 @@ Bitcoin Core begins its Initial Block Download (IBD) — fetching and verifying 
 - **A full Bitcoin node** — downloads, verifies, and relays the entire blockchain, then stays in sync.
 - **A JSON-RPC interface on port 8332** that other StartOS services (Lightning nodes, Electrum servers, mempool explorers) and external apps connect to.
 - **ZeroMQ block and transaction notifications** for services that subscribe to them.
-- **Privacy networking out of the box** — outbound peer connections go over Tor, and a bundled I2P daemon accepts inbound I2P connections, with no setup required.
+- **Privacy networking out of the box** — connections to onion peers go over Tor, and a bundled I2P daemon accepts inbound I2P connections, with no setup required.
 - **Disk-aware sizing** — on disks under roughly 900 GB the node prunes automatically (and leaves `txindex` off) to fit; on larger disks it runs as a full archival node. Either way it still behaves like a full node to anything using its RPC — see **Pruned nodes** below. Initial sync also runs with a temporarily larger database cache that reverts to the upstream default once it completes.
 - **Configuration through StartOS actions** instead of hand-editing `bitcoin.conf`.
 - **Shared `bitcoind` package id with Bitcoin Knots** — you can switch flavors without re-syncing the chain.
@@ -50,6 +50,10 @@ Four actions write to `bitcoin.conf` for you. Only values that differ from upstr
 Turning on `txindex`, the coinstats index, or block filters after the chain is already synced starts a rebuild from the first block. The **Index Sync** health check on the Dashboard tracks it, and anything relying on that index — transaction lookups, filter-based wallet scans — stays incomplete until it finishes, even though the node itself reports fully synced.
 
 Some options are fixed by the package and not exposed: RPC cookie authentication, the peer listen ports, `assumevalid`, and the Tor proxy. Advanced i2pd-daemon tuning isn't in the UI either — edit `i2pd.conf` on the `i2pd` volume if you need it.
+
+### Outbound traffic
+
+If you publish the **Peer** interface through StartTunnel to keep your home IP private, send Bitcoin Core's outbound traffic through that tunnel too. Connections Bitcoin Core opens itself to clearnet peers otherwise leave through your home router, so those peers see your home IP. While Bitcoin Core is limited to Tor and I2P, this doesn't apply. If you use the tunnel for another reason, such as a port your router can't forward, there is nothing to change.
 
 ### Maintenance
 
