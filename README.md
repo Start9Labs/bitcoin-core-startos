@@ -99,7 +99,7 @@ These are starting points, not assertions: nothing re-imposes them, so changing 
 
 **Derived**: `externalip` is written by `watchHosts` from the addresses actually published on the peer interface — onion addresses contributed by the Tor plugin, plus public IPv4 — and re-asserted whenever that list changes. Editing it by hand does not stick.
 
-**Cleared automatically**: `dbcache` and `dbbatchsize` are an initial-sync boost. The `synced-true` oneshot deletes both keys from the file when sync completes, freeing the RAM. Set them again afterwards if you want the larger values permanently.
+**Cleared automatically**: `dbcache` and `dbbatchsize` are an initial-sync boost. The `synced-true` oneshot deletes both keys from the file when sync completes — after background validation, on a node bootstrapped from a snapshot — freeing the RAM. Set them again afterwards if you want the larger values permanently.
 
 Two timing details decide when a hand edit is corrected. The enforced keys are repaired whenever the package writes the file **at all** — every init (install, update, restore) and every config action — but not on a plain restart, so an edit can survive until one of those happens. And because `main` watches the whole parsed file, any write that actually changes a value restarts the service; a form submitted unchanged is not written and does not restart.
 
@@ -160,7 +160,7 @@ There is no setup wizard, no credential to enter, and no task raised at install 
 3. **Every init repairs all three models.** Install, update, and restore each merge `store.json`, `i2pd.conf`, and `bitcoin.conf`, which fills in missing keys and corrects invalid ones. An update is therefore how a new enforced value reaches an existing install.
 4. **`externalip` is derived, not asked for.** It follows whatever addresses are published on the peer interface, so adding a Tor address there is what makes the node advertise it and what turns Tor into a running dependency.
 5. **Every start** runs `nocow` and `clean-chainstate-old` before bitcoind.
-6. **When sync completes**, `synced-true` posts a Sync Complete notification and clears the two cache settings. It fires once per data directory; a reindex resets the flag, so it fires again when that finishes.
+6. **When sync completes**, and on a snapshot-bootstrapped node once background validation has too, `synced-true` posts a Sync Complete notification and clears the two cache settings. It fires once per data directory; a reindex resets the flag, so it fires again when that finishes.
 
 ## Actions
 
@@ -203,10 +203,10 @@ All four are idempotent: deleting a file that is already gone succeeds.
 
 ### Download UTXO Snapshot (assumeutxo)
 
-Bootstraps a new node from a UTXO snapshot instead of waiting out a full sync. Run it on a node that is still syncing; it is hidden once the node is fully synced, and disabled while a download is running or a snapshot is already loaded.
+Bootstraps a new node from a UTXO snapshot instead of waiting out a full sync. Run it on a node that is still syncing; it is hidden once the node is fully synced, and disabled while a download is running or a loaded snapshot is still being validated.
 
 - **What it changes:** downloads the snapshot into `tmp/` on the `main` volume, loads it with `loadtxoutset` as the active chainstate, and sets `snapshotInUse` in `store.json`.
-- **Cost:** hours. The download is bounded by a transfer-speed floor rather than a deadline, and it then waits — up to six hours — for the node's headers to reach the snapshot height before loading. Background sync from genesis continues underneath and eventually validates up to that height.
+- **Cost:** hours. The download is bounded by a transfer-speed floor rather than a deadline, and it then waits — up to six hours — for the node's headers to reach the snapshot height before loading. Background sync from genesis continues underneath and eventually validates up to that height; the `background-validation` health check tracks it.
 - **What happens next:** the action returns as soon as the download starts, so the work outlives the request. Success is visible as the chainstate jumping forward; failure arrives as a [task](#tasks).
 - **Repeat safety:** safe to re-run, but not resumable across attempts. The temporary file is deleted whether the attempt succeeded or failed — `loadtxoutset` consumes it — so a retry downloads from scratch.
 - **Trust:** the snapshot is checked against a hash compiled into bitcoind, but the URL is fetched before that check, so only use a source you trust. A file you serve yourself over the LAN is a good one.
@@ -231,23 +231,26 @@ One task, and it exists only to report a failure that happens after the action t
 
 ## Health Checks
 
-Eight checks at most, and three of them can never report a failure: they describe the node's reachability posture rather than its health.
+Nine checks at most, and three of them can never report a failure: they describe the node's reachability posture rather than its health.
 
-| Check           | Displayed       | Probes                                                                                       | Grace       | Present                                    |
-| --------------- | --------------- | -------------------------------------------------------------------------------------------- | ----------- | ------------------------------------------ |
-| `bitcoind`      | RPC             | Waits for `.cookie` to appear, then that the RPC port is listening                           | SDK default | always                                     |
-| `sync-progress` | Blockchain Sync | `getblockchaininfo` plus `getchaintips`, every 30 s (5 s while starting or failing)          | —           | always                                     |
-| `index-sync`    | Index Sync      | `getindexinfo`, plus `getblockchaininfo` only while an index is behind, on the same schedule | —           | always                                     |
-| `peers`         | Peers           | `getnetworkinfo`, on the same schedule                                                       | 5 minutes   | always                                     |
-| `i2pd`          | I2P             | i2pd's I2PControl `RouterInfo` on loopback                                                   | 5 minutes   | while I2P is enabled                       |
-| `i2p`           | I2P             | nothing — a `disabled` placeholder in place of the daemon check                              | —           | while I2P is off, or excluded by `onlynet` |
-| `tor`           | Tor             | Tor's installed and running state, and whether an onion address is published                 | —           | always                                     |
-| `clearnet`      | Clearnet        | Whether a non-onion address is published                                                     | —           | always                                     |
-| `proxy`         | RPC Proxy       | That the proxy's port is listening                                                           | —           | while the node is pruned                   |
+| Check                   | Displayed             | Probes                                                                                                         | Grace       | Present                                    |
+| ----------------------- | --------------------- | -------------------------------------------------------------------------------------------------------------- | ----------- | ------------------------------------------ |
+| `bitcoind`              | RPC                   | Waits for `.cookie` to appear, then that the RPC port is listening                                             | SDK default | always                                     |
+| `sync-progress`         | Blockchain Sync       | `getblockchaininfo` plus `getchaintips`, every 30 s (5 s while starting or failing)                            | —           | always                                     |
+| `background-validation` | Background Validation | `getchainstates`, plus `getblockheader` for the snapshot's base while one is unvalidated, on the same schedule | —           | always                                     |
+| `index-sync`            | Index Sync            | `getindexinfo`, plus `getblockchaininfo` only while an index is behind, on the same schedule                   | —           | always                                     |
+| `peers`                 | Peers                 | `getnetworkinfo`, on the same schedule                                                                         | 5 minutes   | always                                     |
+| `i2pd`                  | I2P                   | i2pd's I2PControl `RouterInfo` on loopback                                                                     | 5 minutes   | while I2P is enabled                       |
+| `i2p`                   | I2P                   | nothing — a `disabled` placeholder in place of the daemon check                                                | —           | while I2P is off, or excluded by `onlynet` |
+| `tor`                   | Tor                   | Tor's installed and running state, and whether an onion address is published                                   | —           | always                                     |
+| `clearnet`              | Clearnet              | Whether a non-onion address is published                                                                       | —           | always                                     |
+| `proxy`                 | RPC Proxy             | That the proxy's port is listening                                                                             | —           | while the node is pruned                   |
 
 **`bitcoind` failing** means the RPC port never opened. The cookie is deleted at the start of every run and recreated by bitcoind itself, so a check still waiting on it is one where bitcoind is not reaching the point of serving RPC — read the service logs for a startup or database error rather than looking for a networking fault.
 
 **`sync-progress` is a progress meter, not a fault indicator.** It reports a percentage for the whole of the Initial Block Download, which legitimately runs for hours to days. It succeeds once bitcoind clears `initialblockdownload` with its best header at most one block above its tip, and also while that flag is still set if `getchaintips` reports no non-invalid tip above the active one — the flag lags a node that has in fact caught up, and a node with nothing above its tip has nothing left to fetch. The flag stays cleared for as long as bitcoind runs, so a node that falls behind later, after an outage or a stalled download, reports `loading` with the number of blocks it has yet to connect. One header ahead is a new block between arriving and connecting, and still counts as synced. It reports `starting` whenever the RPC call fails, which is normal while the node is coming up; when the failure is RPC warmup (`-28`) the message carries bitcoind's own account of what it is doing, so a long `Verifying blocks…` or the `Replaying blocks…` that follows an unclean stop is visible rather than indistinguishable from a hang. Before the first block connects it reports the height of the header chain rather than a block percentage that would sit at 0.00% for the whole of that phase. The two chain checks share one probe for their RPC calls, so both separate a node that is not answering yet — `starting` — from a call that could not be run at all or a reply that could not be parsed, which is the only condition under which either reports `failure`.
+
+**`background-validation` covers what `sync-progress` cannot see after a UTXO snapshot.** A loaded snapshot becomes the active chainstate, so `initialblockdownload` clears once it reaches the tip and `sync-progress` succeeds, while a second chainstate is still downloading and validating every block from genesis up to the snapshot's base. Until it finishes those blocks are not on disk, so anything that reads history — REST, `getblock`, a rescan — fails for them. The check reports `loading` with the background chainstate's height as a percentage of the snapshot base while `getchainstates` lists an unvalidated snapshot chainstate, and success otherwise, which is every node that never loaded a snapshot. A dependent that reads the chain from genesis should require it alongside `sync-progress`; `synced-true` does.
 
 **`index-sync` is separate from `sync-progress` because the indexes are.** `getindexinfo` lists only the indexes actually enabled, so the check reports `disabled` when there are none and success when every one of them sits at the tip — the normal state throughout IBD, where an index follows block connection rather than trailing it. It goes to `loading` when one falls behind, naming the furthest behind and its height as a percentage of the chain tip. The case it exists for is enabling an index on a node that is already synced: that starts a backfill from the first block, during which `getrawtransaction`, `getblockfilter`, and `gettxoutsetinfo` answer for only the part of the chain the index has reached, while `sync-progress` reports the node fully synced. An index that is behind is working, not broken, so that reads as `loading`; the only thing that reddens this check is bitcoind failing to answer or answering with something unreadable.
 
@@ -339,6 +342,7 @@ tasks:
 health_checks:
   - bitcoind # the daemon's ready check, displayed "RPC"
   - sync-progress # displayed "Blockchain Sync"
+  - background-validation # displayed "Background Validation"
   - index-sync # displayed "Index Sync"
   - peers # displayed "Peers"
   - i2pd # displayed "I2P"; only while I2P is enabled
