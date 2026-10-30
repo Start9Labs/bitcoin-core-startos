@@ -1,18 +1,18 @@
 import { VersionInfo } from '@start9labs/start-sdk'
 
 export const current = VersionInfo.of({
-  version: '29.5:0',
+  version: '29.5:1',
   releaseNotes: {
     en_US:
-      'Updated Bitcoin Core to 29.5. Fixes peer connection timeouts and socket error monitoring, updates DNS seed discovery to assume v2 transport, and uses 64-bit block-file positions. Full release notes: https://github.com/bitcoin/bitcoin/blob/v29.5/doc/release-notes.md',
+      'A new Background Validation health check shows progress while Bitcoin validates the blocks beneath a UTXO snapshot. The Sync Complete notification arrives once that finishes.',
     es_ES:
-      'Bitcoin Core actualizado a 29.5. Corrige los tiempos de espera de las conexiones con pares y la detección de errores de sockets, actualiza el descubrimiento mediante semillas DNS para asumir el transporte v2 y usa posiciones de 64 bits en los archivos de bloques. Notas completas: https://github.com/bitcoin/bitcoin/blob/v29.5/doc/release-notes.md',
+      'Una nueva comprobación de salud, Validación en segundo plano, muestra el progreso mientras Bitcoin valida los bloques anteriores a una instantánea UTXO. La notificación Sincronización completa llega cuando termina.',
     de_DE:
-      'Bitcoin Core auf 29.5 aktualisiert. Behebt Zeitüberschreitungen bei Peer-Verbindungen und die Überwachung von Socket-Fehlern, nimmt bei der Peer-Suche über DNS-Seeds v2-Transport an und verwendet 64-Bit-Positionen in Blockdateien. Vollständige Versionshinweise: https://github.com/bitcoin/bitcoin/blob/v29.5/doc/release-notes.md',
+      'Eine neue Statusprüfung, Hintergrundvalidierung, zeigt den Fortschritt, während Bitcoin die Blöcke unterhalb eines UTXO-Snapshots validiert. Die Benachrichtigung „Synchronisierung abgeschlossen“ erscheint, sobald dies beendet ist.',
     pl_PL:
-      'Zaktualizowano Bitcoin Core do 29.5. Poprawiono limity czasu połączeń z peerami i monitorowanie błędów gniazd, wyszukiwanie peerów przez serwery DNS zakłada teraz transport v2, a pozycje w plikach bloków używają 64 bitów. Pełne informacje o wydaniu: https://github.com/bitcoin/bitcoin/blob/v29.5/doc/release-notes.md',
+      'Nowa kontrola stanu, Walidacja w tle, pokazuje postęp, gdy Bitcoin weryfikuje bloki poniżej migawki UTXO. Powiadomienie Synchronizacja zakończona pojawia się po jej ukończeniu.',
     fr_FR:
-      'Bitcoin Core mis à jour vers 29.5. Corrige les délais des connexions aux pairs et la surveillance des erreurs de sockets, suppose le transport v2 lors de la découverte via les serveurs DNS et utilise des positions sur 64 bits dans les fichiers de blocs. Notes complètes : https://github.com/bitcoin/bitcoin/blob/v29.5/doc/release-notes.md',
+      'Une nouvelle vérification de santé, Validation en arrière-plan, affiche la progression pendant que Bitcoin valide les blocs antérieurs à un instantané UTXO. La notification Synchronisation terminée arrive une fois celle-ci achevée.',
   },
   migrations: {
     up: async ({ effects }) => {},
