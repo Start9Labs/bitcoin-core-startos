@@ -59,7 +59,7 @@ Some options are fixed by the package and not exposed: RPC cookie authentication
 
 ### Other actions
 
-- **Download UTXO Snapshot (assumeutxo)** — fast-sync from a recent UTXO snapshot; available while running, hidden once fully synced. The URL must be a direct link to a `.dat` snapshot file, which can be one you serve from your own machine over the LAN.
+- **Download UTXO Snapshot (assumeutxo)** — fast-sync from a recent UTXO snapshot; available while running, hidden once fully synced. The URL must be a direct link to a `.dat` snapshot file, which can be one you serve from your own machine over the LAN. Bitcoin reaches the tip quickly, then downloads and validates the older blocks in the background; the **Background Validation** health check tracks that, and services that read the whole chain, such as Electrum servers, can't index until it finishes.
 - **Runtime Information** — connection count, block height, sync progress, soft-fork status, and (when enabled) the IPC socket path.
 - **Enable IPC** — toggle Bitcoin Core's experimental multiprocess IPC socket. Toggling switches the running binary and the action restarts Bitcoin Core to apply the change; leave it off unless an integration you're using calls for it.
 
