@@ -123,9 +123,9 @@ The store is shared across bitcoind flavors along with the rest of the volume, w
 
 One, optional and conditional on how the node is configured.
 
-| Dependency | Kind      | Health checks | Mounts | Why                                                                  |
-| ---------- | --------- | ------------- | ------ | -------------------------------------------------------------------- |
-| Tor        | `running` | none          | none   | Outbound peer connections over Tor, and advertising an onion address |
+| Dependency | Kind      | Health checks | Mounts | Why                                                                   |
+| ---------- | --------- | ------------- | ------ | --------------------------------------------------------------------- |
+| Tor        | `running` | none          | none   | Outbound connections to onion peers, and advertising an onion address |
 
 It becomes a running dependency only when the node is actually set up for onion connectivity — an `externalip` containing a `.onion`, or an `onlynet` that includes `onion`. The optional dependency is declared once in `startos/dependencies.ts`; its `enabled` watcher activates that running requirement only in those cases.
 
