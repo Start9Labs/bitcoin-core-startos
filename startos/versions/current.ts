@@ -1,18 +1,18 @@
 import { VersionInfo } from '@start9labs/start-sdk'
 
 export const current = VersionInfo.of({
-  version: '28.4:39',
+  version: '28.4:40',
   releaseNotes: {
     en_US:
-      'A new Background Validation health check shows progress while Bitcoin validates the blocks beneath a UTXO snapshot. The Sync Complete notification arrives once that finishes.',
+      'Requires StartOS 0.4.1 or later. Fixes memory use growing while the service runs.',
     es_ES:
-      'Una nueva comprobación de salud, Validación en segundo plano, muestra el progreso mientras Bitcoin valida los bloques anteriores a una instantánea UTXO. La notificación Sincronización completa llega cuando termina.',
+      'Requiere StartOS 0.4.1 o posterior. Corrige el aumento del uso de memoria mientras el servicio está en ejecución.',
     de_DE:
-      'Eine neue Statusprüfung, Hintergrundvalidierung, zeigt den Fortschritt, während Bitcoin die Blöcke unterhalb eines UTXO-Snapshots validiert. Die Benachrichtigung „Synchronisierung abgeschlossen“ erscheint, sobald dies beendet ist.',
+      'Erfordert StartOS 0.4.1 oder neuer. Behebt einen während der Laufzeit des Dienstes ansteigenden Speicherverbrauch.',
     pl_PL:
-      'Nowa kontrola stanu, Walidacja w tle, pokazuje postęp, gdy Bitcoin weryfikuje bloki poniżej migawki UTXO. Powiadomienie Synchronizacja zakończona pojawia się po jej ukończeniu.',
+      'Wymaga StartOS 0.4.1 lub nowszego. Naprawia wzrost zużycia pamięci podczas działania usługi.',
     fr_FR:
-      'Une nouvelle vérification de santé, Validation en arrière-plan, affiche la progression pendant que Bitcoin valide les blocs antérieurs à un instantané UTXO. La notification Synchronisation terminée arrive une fois celle-ci achevée.',
+      "Nécessite StartOS 0.4.1 ou une version ultérieure. Corrige l'augmentation de la consommation de mémoire pendant le fonctionnement du service.",
   },
   migrations: {
     up: async () => {},
