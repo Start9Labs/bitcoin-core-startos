@@ -165,9 +165,9 @@ export function bitcoinCliArgs(opts: { prune: boolean }): string[] {
 }
 
 export const zmqBundle = {
-  zmqpubrawblock: `tcp://0.0.0.0:${zmqPortBlock}`,
-  zmqpubhashblock: `tcp://0.0.0.0:${zmqPortBlock}`,
-  zmqpubrawtx: `tcp://0.0.0.0:${zmqPortTransaction}`,
-  zmqpubhashtx: `tcp://0.0.0.0:${zmqPortTransaction}`,
-  zmqpubsequence: `tcp://0.0.0.0:${zmqPortTransaction}`,
+  zmqpubrawblock: `tcp://[::]:${zmqPortBlock}`,
+  zmqpubhashblock: `tcp://[::]:${zmqPortBlock}`,
+  zmqpubrawtx: `tcp://[::]:${zmqPortTransaction}`,
+  zmqpubhashtx: `tcp://[::]:${zmqPortTransaction}`,
+  zmqpubsequence: `tcp://[::]:${zmqPortTransaction}`,
 }
