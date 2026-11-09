@@ -64,8 +64,11 @@ export const shape = z.looseObject({
   // Peers enforced
   listen: z.literal(true).catch(true),
   bind: z
-    .literal(`0.0.0.0:${peerPortInternal}`)
-    .catch(`0.0.0.0:${peerPortInternal}`),
+    .tuple([
+      z.literal(`0.0.0.0:${peerPortInternal}`),
+      z.literal(`[::]:${peerPortInternal}`),
+    ])
+    .catch([`0.0.0.0:${peerPortInternal}`, `[::]:${peerPortInternal}`]),
   whitebind: z
     .literal(`0.0.0.0:${peerPortLocal}`)
     .catch(`0.0.0.0:${peerPortLocal}`),
@@ -781,7 +784,7 @@ function formToFile(
 
     rpccookiefile: '.cookie',
     listen: true,
-    bind: `0.0.0.0:${peerPortInternal}`,
+    bind: [`0.0.0.0:${peerPortInternal}`, `[::]:${peerPortInternal}`],
     whitebind: `0.0.0.0:${peerPortLocal}`,
     rpcauth: raw?.rpcauth?.filter((a) => !!a) as string[] | undefined,
     whitelist: raw?.whitelist?.filter((a) => !!a) as string[] | undefined,
