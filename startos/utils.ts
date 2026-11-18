@@ -49,6 +49,12 @@ export const rpcallowipPruned = '127.0.0.1/32'
 export const rootDir = '/root/.bitcoin'
 export const rpccookiefile = '.cookie'
 
+/** The volume dependents mount read-only for RPC, holding copies bitcoind never touches — mount the volume, never a file in it, which each start replaces. */
+export const rpcVolumeId = 'public'
+export const rpcCookieName = '.cookie'
+/** bitcoind's `prune` setting, `0` when unpruned. */
+export const rpcPruneName = 'prune'
+
 export const i2pSamPort = 7656
 export const i2pUiPort = 7070
 export const i2pControlPort = 7650
@@ -154,7 +160,7 @@ export type GetChainstates = {
 export function rpcArgs(opts: { prune: boolean }): string[] {
   return [
     `-conf=${rootDir}/bitcoin.conf`,
-    `-rpccookiefile=${rootDir}/.cookie`,
+    `-rpccookiefile=${rootDir}/${rpccookiefile}`,
     `-rpcport=${opts.prune ? rpcPortPruned : rpcPort}`,
   ]
 }

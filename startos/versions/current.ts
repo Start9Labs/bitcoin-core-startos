@@ -1,21 +1,21 @@
 import { VersionInfo } from '@start9labs/start-sdk'
 
 export const current = VersionInfo.of({
-  version: '29.5:3',
+  version: '29.5:4',
   releaseNotes: {
     en_US:
-      "Requires StartOS 0.4.1 or later. Peers and ZMQ clients can now connect over the server's IPv6 addresses.",
+      'Requires StartOS 0.4.1 or later. Services that depend on Bitcoin can now connect to it without being able to read its data directory, including wallets.',
     es_ES:
-      'Requiere StartOS 0.4.1 o posterior. Los pares y los clientes ZMQ ahora pueden conectarse a través de las direcciones IPv6 del servidor.',
+      'Requiere StartOS 0.4.1 o posterior. Los servicios que dependen de Bitcoin ahora pueden conectarse a él sin poder leer su directorio de datos, incluidas las billeteras.',
     de_DE:
-      'Erfordert StartOS 0.4.1 oder neuer. Peers und ZMQ-Clients können sich jetzt über die IPv6-Adressen des Servers verbinden.',
+      'Erfordert StartOS 0.4.1 oder neuer. Dienste, die von Bitcoin abhängen, können sich jetzt damit verbinden, ohne sein Datenverzeichnis einschließlich der Wallets lesen zu können.',
     pl_PL:
-      'Wymaga StartOS 0.4.1 lub nowszego. Peery i klienci ZMQ mogą teraz łączyć się przez adresy IPv6 serwera.',
+      'Wymaga StartOS 0.4.1 lub nowszego. Usługi zależne od Bitcoin mogą teraz łączyć się z nim bez możliwości odczytu jego katalogu danych, w tym portfeli.',
     fr_FR:
-      'Nécessite StartOS 0.4.1 ou une version ultérieure. Les pairs et les clients ZMQ peuvent désormais se connecter via les adresses IPv6 du serveur.',
+      "Nécessite StartOS 0.4.1 ou une version ultérieure. Les services qui dépendent de Bitcoin peuvent désormais s'y connecter sans pouvoir lire son répertoire de données, portefeuilles compris.",
   },
   migrations: {
     up: async ({ effects }) => {},
     down: async ({ effects }) => {},
   },
-}).satisfies('28.4:29')
+}).satisfies('28.4:42')
