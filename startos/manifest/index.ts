@@ -10,7 +10,7 @@ export const manifest = setupManifest({
   upstreamRepo: 'https://github.com/bitcoin/bitcoin',
   marketingUrl: 'https://bitcoincore.org/',
   description: { short, long },
-  volumes: ['main', 'i2pd'],
+  volumes: ['main', 'i2pd', 'public'],
   images: {
     bitcoind: {
       source: {
