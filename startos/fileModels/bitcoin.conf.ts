@@ -782,7 +782,7 @@ function formToFile(
   return {
     ...raw,
 
-    rpccookiefile: '.cookie',
+    rpccookiefile,
     listen: true,
     bind: [`0.0.0.0:${peerPortInternal}`, `[::]:${peerPortInternal}`],
     whitebind: `0.0.0.0:${peerPortLocal}`,

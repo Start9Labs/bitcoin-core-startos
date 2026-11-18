@@ -1,5 +1,5 @@
 import { healthFns, TOML } from '@start9labs/start-sdk'
-import { access, rm, writeFile } from 'fs/promises'
+import { access, mkdir, rm, writeFile } from 'fs/promises'
 import { request } from 'node:https'
 import { socksHostId, socksPort } from 'tor-startos/startos/utils'
 import { bitcoinConfFile } from './fileModels/bitcoin.conf'
@@ -20,6 +20,8 @@ import {
   rpccookiefile,
   rpcPort,
   rpcPortPruned,
+  rpcPruneName,
+  rpcSubpath,
 } from './utils'
 
 // JSON-RPC helper for i2pd's I2PControl API (uses self-signed cert)
@@ -149,12 +151,14 @@ export const main = sdk.setupMain(async ({ effects }) => {
   )
 
   const rpcCookiePath = `${rootDir}/${rpccookiefile}`
+  const legacyCookiePath = `${rootDir}/.cookie`
+  const rpcDir = `${bitcoindSub.rootfs}${rootDir}/${rpcSubpath}`
 
-  // remove cookie file
-  await rm(`${bitcoindSub.rootfs}${rpcCookiePath}`, {
-    force: true,
-    recursive: true,
-  })
+  for (const path of [rpcCookiePath, legacyCookiePath]) {
+    await rm(`${bitcoindSub.rootfs}${path}`, { force: true, recursive: true })
+  }
+  await mkdir(rpcDir, { recursive: true })
+  await writeFile(`${rpcDir}/${rpcPruneName}`, String(bitcoinConf.prune ?? 0))
 
   /**
    * One read-only bitcoin-cli call for the health checks below, parsed. Every
@@ -282,6 +286,12 @@ export const main = sdk.setupMain(async ({ effects }) => {
         },
       },
       requires: ['nocow', 'clean-chainstate-old'],
+    })
+    // Once bitcoind is ready, so a watcher on the old path sees it appear with the new cookie behind it.
+    .addOneshot('legacy-cookie-link', {
+      subcontainer: bitcoindSub,
+      exec: { command: ['ln', '-sfn', rpccookiefile, legacyCookiePath] },
+      requires: ['bitcoind'],
     })
     .addHealthCheck('sync-progress', {
       ready: {
