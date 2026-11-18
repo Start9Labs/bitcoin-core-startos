@@ -1,5 +1,5 @@
 import { healthFns, TOML } from '@start9labs/start-sdk'
-import { access, mkdir, rm, writeFile } from 'fs/promises'
+import { access, readFile, rename, rm, writeFile } from 'fs/promises'
 import { request } from 'node:https'
 import { socksHostId, socksPort } from 'tor-startos/startos/utils'
 import { bitcoinConfFile } from './fileModels/bitcoin.conf'
@@ -20,8 +20,9 @@ import {
   rpccookiefile,
   rpcPort,
   rpcPortPruned,
+  rpcCookieName,
   rpcPruneName,
-  rpcSubpath,
+  rpcVolumeId,
 } from './utils'
 
 // JSON-RPC helper for i2pd's I2PControl API (uses self-signed cert)
@@ -151,14 +152,18 @@ export const main = sdk.setupMain(async ({ effects }) => {
   )
 
   const rpcCookiePath = `${rootDir}/${rpccookiefile}`
-  const legacyCookiePath = `${rootDir}/.cookie`
-  const rpcDir = `${bitcoindSub.rootfs}${rootDir}/${rpcSubpath}`
-
-  for (const path of [rpcCookiePath, legacyCookiePath]) {
-    await rm(`${bitcoindSub.rootfs}${path}`, { force: true, recursive: true })
+  const publish = async (name: string, data: string, mode?: number) => {
+    const path = sdk.volumes[rpcVolumeId].subpath(name)
+    await writeFile(`${path}.tmp`, data, { mode })
+    await rename(`${path}.tmp`, path)
   }
-  await mkdir(rpcDir, { recursive: true })
-  await writeFile(`${rpcDir}/${rpcPruneName}`, String(bitcoinConf.prune ?? 0))
+
+  for (const path of [
+    `${bitcoindSub.rootfs}${rpcCookiePath}`,
+    sdk.volumes[rpcVolumeId].subpath(rpcCookieName),
+  ]) {
+    await rm(path, { force: true, recursive: true })
+  }
 
   /**
    * One read-only bitcoin-cli call for the health checks below, parsed. Every
@@ -287,10 +292,19 @@ export const main = sdk.setupMain(async ({ effects }) => {
       },
       requires: ['nocow', 'clean-chainstate-old'],
     })
-    // Once bitcoind is ready, so a watcher on the old path sees it appear with the new cookie behind it.
-    .addOneshot('legacy-cookie-link', {
-      subcontainer: bitcoindSub,
-      exec: { command: ['ln', '-sfn', rpccookiefile, legacyCookiePath] },
+    .addOneshot('publish-rpc', {
+      subcontainer: null,
+      exec: {
+        fn: async () => {
+          await publish(
+            rpcCookieName,
+            await readFile(`${bitcoindSub.rootfs}${rpcCookiePath}`, 'utf8'),
+            0o600,
+          )
+          await publish(rpcPruneName, String(bitcoinConf.prune ?? 0))
+          return null
+        },
+      },
       requires: ['bitcoind'],
     })
     .addHealthCheck('sync-progress', {

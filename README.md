@@ -52,20 +52,21 @@ Verification is a signer quorum rather than a single trusted key: `SHA256SUMS.as
 | `proxy-sub`    | `btc-rpc-proxy`         | while the node is pruned | Serves RPC on 8332 and fetches pruned blocks over p2p                                                                                                                                                                                 |
 | _temporaries_  | built locally, `python` | seconds to hours         | One per action that shells out — `assumeutxo`, `delete-peers`, `delete-txindex`, `delete-coinstats`, `delete-blockfilter`, `getnetworkinfo`, `getblockchaininfo`, and `rpc-auth-generator` (the `python` image, running `rpcauth.py`) |
 
-Four oneshots bracket the daemons. `nocow` sets the btrfs no-COW attribute across the data directory, and `clean-chainstate-old` deletes leftover `chainstate.old` directories; both must finish before `bitcoind` starts. `synced-true` runs after it, and is described under [Installation and First-Run Flow](#installation-and-first-run-flow). `legacy-cookie-link` also runs once `bitcoind` is ready, linking `.cookie` at the root of `main` to `rpc/.cookie` for dependents that still mount the whole volume.
+Four oneshots bracket the daemons. `nocow` sets the btrfs no-COW attribute across the data directory, and `clean-chainstate-old` deletes leftover `chainstate.old` directories; both must finish before `bitcoind` starts. `synced-true` runs after it, and is described under [Installation and First-Run Flow](#installation-and-first-run-flow). `publish-rpc` also runs each time `bitcoind` becomes ready, copying the cookie and the `prune` setting to the `public` volume for dependents.
 
 The i2pd image has no riscv64 build and is declared `emulateMissing: true`, so on riscv64 hardware the I2P router runs emulated.
 
 ## Volume and Data Layout
 
-Two volumes. Everything Bitcoin Core writes lives in one; the embedded I2P router keeps its own.
+Three volumes. Everything Bitcoin Core writes lives in one; the embedded I2P router keeps its own; dependents read the third.
 
-| Volume | Mount Point      | Purpose                                                                                                                                           |
-| ------ | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `main` | `/root/.bitcoin` | The bitcoind data directory — `bitcoin.conf`, `blocks/`, `chainstate/`, `indexes/`, wallets, `peers.dat`, `store.json`, and `rpc/` for dependents |
-| `i2pd` | `/home/i2pd`     | i2pd's data directory — `data/i2pd.conf`, the router identity, and its netDb                                                                      |
+| Volume   | Mount Point      | Purpose                                                                                                                                       |
+| -------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `main`   | `/root/.bitcoin` | The bitcoind data directory — `bitcoin.conf`, `blocks/`, `chainstate/`, `indexes/`, wallets, `peers.dat`, the RPC `.cookie`, and `store.json` |
+| `i2pd`   | `/home/i2pd`     | i2pd's data directory — `data/i2pd.conf`, the router identity, and its netDb                                                                  |
+| `public` | —                | Copies of the RPC cookie (`.cookie`) and the `prune` setting for dependents. Not mounted by bitcoind; not backed up                           |
 
-**Dependents mount `rpc/`, never all of `main`**, which holds the wallets. It carries bitcoind's RPC cookie (`.cookie`), recreated by bitcoind on every start, and `prune`, bitcoind's `prune` setting (`0` when unpruned), rewritten on every start; `startos/utils.ts` exports `rpcSubpath`, `rpcCookieName`, and `rpcPruneName`. Mount the directory, never the cookie file: a file mount keeps the cookie of the start it was made on.
+**Dependents mount the `public` volume (`rpcVolumeId`), never `main`**, which holds the wallets. `publish-rpc` writes `.cookie` (`rpcCookieName`, mode 0600) and `prune` (`rpcPruneName`, bitcoind's `prune` setting, `0` when unpruned) each time `bitcoind` becomes ready, each through a temp file and a rename; the published cookie is removed at the start of every run, so its absence means Bitcoin is down. Mount the volume, never a file in it: a file mount keeps the copy of the start it was made on.
 
 `store.json` sits inside the bitcoind data directory rather than on a volume of its own; it holds StartOS-side state, not upstream configuration. The Download UTXO Snapshot action additionally mounts the `main` volume's `tmp` subdirectory at `/tmp` inside its own subcontainer, so a part-downloaded snapshot occupies the data volume rather than container storage.
 
@@ -239,7 +240,7 @@ Nine checks at most, and three of them can never report a failure: they describe
 
 | Check                   | Displayed             | Probes                                                                                                         | Grace       | Present                                    |
 | ----------------------- | --------------------- | -------------------------------------------------------------------------------------------------------------- | ----------- | ------------------------------------------ |
-| `bitcoind`              | RPC                   | Waits for `rpc/.cookie` to appear, then that the RPC port is listening                                         | SDK default | always                                     |
+| `bitcoind`              | RPC                   | Waits for `.cookie` to appear, then that the RPC port is listening                                             | SDK default | always                                     |
 | `sync-progress`         | Blockchain Sync       | `getblockchaininfo` plus `getchaintips`, every 30 s (5 s while starting or failing)                            | —           | always                                     |
 | `background-validation` | Background Validation | `getchainstates`, plus `getblockheader` for the snapshot's base while one is unvalidated, on the same schedule | —           | always                                     |
 | `index-sync`            | Index Sync            | `getindexinfo`, plus `getblockchaininfo` only while an index is behind, on the same schedule                   | —           | always                                     |
@@ -272,9 +273,9 @@ The empty-network-database case is usually not an I2P fault. Reseeding resolves 
 
 ## Backups and Restore
 
-Both volumes are copied wholesale — `sdk.Backups.ofVolumes('main', 'i2pd')`. There is no dump step and no database engine involved. What makes the backup small is the exclude list, and what it excludes is everything the node can rebuild for itself.
+`main` and `i2pd` are copied wholesale, each with its own exclude list rooted at the volume (a wallet may share a name with an excluded path, so no pattern may match below the root); `public` is not backed up. There is no dump step and no database engine involved. What makes the backup small is the exclude list, and what it excludes is everything the node can rebuild for itself.
 
-- **Excluded from `main`:** `blocks/`, `chainstate/`, `chainstate.old/`, `indexes/`, `rpc/` and the `.cookie` link (regenerated every start), and any `*-journal`. That is the entire chain, so a backup is megabytes rather than hundreds of gigabytes.
+- **Excluded from `main`:** `blocks/`, `chainstate/`, `chainstate.old/`, `indexes/`, and `.cookie` (regenerated every start). That is the entire chain, so a backup is megabytes rather than hundreds of gigabytes. Wallet journals are kept, so a wallet caught mid-write restores consistently.
 - **Excluded from `i2pd`:** the router's `netDb/`, `peerProfiles/`, `addressbook/`, `tags/`, `certificates/`, and pidfile — all re-derived by reseeding. `router.info` is derived too but is kept: restoring `router.keys` without it lands i2pd on a "malformed, creating new" path that emits one `Identity` parse error per netDb entry before it recovers.
 - **Included:** `bitcoin.conf`, `store.json`, wallet files, `peers.dat`, and i2pd's own `i2pd.conf` and router keys.
 
@@ -309,8 +310,9 @@ subcontainers:
   - i2pd-sub # purplei2p/i2pd; only while I2P is enabled
   - proxy-sub # btc-rpc-proxy; only while the node is pruned
 volumes:
-  main: /root/.bitcoin # dependents mount only its rpc/ subpath
+  main: /root/.bitcoin
   i2pd: /home/i2pd
+  public: null # not mounted by bitcoind; dependents mount it read-only (rpcVolumeId)
 file_models:
   - /root/.bitcoin/bitcoin.conf
   - /root/.bitcoin/store.json
