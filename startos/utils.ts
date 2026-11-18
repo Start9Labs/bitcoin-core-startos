@@ -58,13 +58,13 @@ export const rpcbind = `0.0.0.0:${rpcPortLocal}`
 export const rpcallowip = '0.0.0.0/0'
 
 export const rootDir = '/root/.bitcoin'
+export const rpccookiefile = '.cookie'
 
-/** `main` subpath dependents mount read-only for RPC — the directory, never the cookie, which bitcoind replaces on every start. */
-export const rpcSubpath = 'rpc'
+/** The volume dependents mount read-only for RPC, holding copies bitcoind never touches — mount the volume, never a file in it, which each start replaces. */
+export const rpcVolumeId = 'public'
 export const rpcCookieName = '.cookie'
 /** bitcoind's `prune` setting, `0` when unpruned. */
 export const rpcPruneName = 'prune'
-export const rpccookiefile = `${rpcSubpath}/${rpcCookieName}`
 
 export const i2pSamPort = 7656
 export const i2pUiPort = 7070
