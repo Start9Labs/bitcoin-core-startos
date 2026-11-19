@@ -1,13 +1,13 @@
 # Updating the upstream version
 
-The `bitcoind` image is built from `Dockerfile`, which downloads the upstream release tarball from `bitcoincore.org` and verifies `SHA256SUMS.asc` against the release signers pinned in `PINNED_FINGERPRINTS`. This branch tracks **Bitcoin Core 31.x** releases only.
+The `bitcoind` image is built from `Dockerfile`, which downloads the upstream release tarball from `bitcoincore.org` and verifies `SHA256SUMS.asc` against the release signers pinned in `PINNED_FINGERPRINTS`. This branch tracks **Bitcoin Core 32.x** releases only.
 
 ## Determining the upstream version
 
-- **Bitcoin Core 31.x** — [bitcoin/bitcoin](https://github.com/bitcoin/bitcoin)
-  - Latest 31.x release tag:
+- **Bitcoin Core 32.x** — [bitcoin/bitcoin](https://github.com/bitcoin/bitcoin)
+  - Latest 32.x release tag:
     ```sh
-    gh release list -R bitcoin/bitcoin --limit 50 --json tagName -q '.[].tagName' | grep -E '^v31\.' | head -1
+    gh release list -R bitcoin/bitcoin --limit 50 --json tagName -q '.[].tagName' | grep -E '^v32\.' | head -1
     ```
   - Current pin: `VERSION` build-arg under `images.bitcoind.source.dockerBuild.buildArgs` in `startos/manifest/index.ts`.
 

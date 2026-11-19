@@ -2,7 +2,7 @@ name: Tag and Release
 
 on:
   push:
-    branches: ['31.x']
+    branches: ['32.x']
     paths-ignore: ['*.md']
 
 concurrency:
