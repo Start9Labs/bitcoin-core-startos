@@ -1,6 +1,20 @@
-import { FileHelper, VersionInfo, z } from '@start9labs/start-sdk'
+import { FileHelper, T, VersionInfo, z } from '@start9labs/start-sdk'
 import { rm } from 'fs/promises'
 import { bitcoinConfFile, toBitcoinConf } from '../fileModels/bitcoin.conf'
+
+const rewriteConf = async ({ effects }: { effects: T.Effects }) => {
+  // Earlier releases wrote bitcoin.conf with FileHelper.ini's quoting and escapes.
+  const conf = await FileHelper.ini(bitcoinConfFile.path, z.looseObject({}), {
+    bracketedArray: false,
+  })
+    .read()
+    .once()
+  if (conf)
+    await FileHelper.string(bitcoinConfFile.path).write(
+      effects,
+      toBitcoinConf(conf),
+    )
+}
 
 export const v_30_3_25 = VersionInfo.of({
   version: '30.3:25',
@@ -17,21 +31,7 @@ export const v_30_3_25 = VersionInfo.of({
       "Bitcoin exécute désormais telles que saisies les commandes de Notification de bloc qui contiennent `=` ou `;` ou commencent par `[`, et les réglages ajoutés à la main dans bitcoin.conf conservent leurs valeurs telles qu'écrites. La Notification de bloc ne peut plus contenir `#`, et une commande qui en contenait est supprimée.",
   },
   migrations: {
-    up: async ({ effects }) => {
-      // Earlier releases wrote bitcoin.conf with FileHelper.ini's quoting and escapes.
-      const conf = await FileHelper.ini(
-        bitcoinConfFile.path,
-        z.looseObject({}),
-        { bracketedArray: false },
-      )
-        .read()
-        .once()
-      if (conf)
-        await FileHelper.string(bitcoinConfFile.path).write(
-          effects,
-          toBitcoinConf(conf),
-        )
-    },
+    up: rewriteConf,
     down: async ({ effects }) => {
       // v30 introduced indexes/coinstatsindex/ at a new path; ≤29 doesn't read it.
       // Core preserved indexes/coinstats/ on upgrade for exactly this rollback.
@@ -40,7 +40,14 @@ export const v_30_3_25 = VersionInfo.of({
         force: true,
       }).catch(console.error)
     },
+    // Each older line's own copies already ran up to its version; don't repeat them.
+    other: {
+      '^29.4:25': { up: async () => {} },
+      '>=29.4:12 && <29.4:25': { up: rewriteConf },
+      '^28.4:38': { up: async () => {} },
+      '>=28.4:25 && <28.4:38': { up: rewriteConf },
+    },
   },
 })
-  .satisfies('29.4:16')
-  .satisfies('28.4:29')
+  .satisfies('29.4:25')
+  .satisfies('28.4:38')
