@@ -46,7 +46,8 @@ const iniBoolean = z
   .catch(undefined)
 
 export const minPrune = 550
-export const minConnections = 40
+// Peer-local dependents must retain eviction capacity under Core's 50% relay quota.
+export const minConnections = 53
 
 const validNets = ['ipv4', 'ipv6', 'onion', 'i2p'] as const
 const onlyNetOption = z.enum(validNets)
