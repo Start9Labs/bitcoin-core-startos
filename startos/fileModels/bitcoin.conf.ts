@@ -573,7 +573,7 @@ export const fullConfigSpec = sdk.InputSpec.of({
     required: false,
     min: minConnections,
     integer: true,
-    footnote: `${i18n('Default')}: 125`,
+    footnote: `${i18n('Default')}: 200`,
   }),
   blocksonly: Value.triState({
     name: i18n('Blocks Only'),

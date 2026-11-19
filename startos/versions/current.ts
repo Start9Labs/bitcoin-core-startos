@@ -1,24 +1,25 @@
 import { VersionInfo } from '@start9labs/start-sdk'
 
 export const current = VersionInfo.of({
-  version: '31.2:5',
+  version: '32.1:0',
   releaseNotes: {
     en_US:
-      'Requires StartOS 0.4.2 or later. On a pruned node, a block fetched from a peer is now refused if any of its transactions repeats.',
+      'Updated Bitcoin to 32.1. Requires StartOS 0.4.2 or later. The default maximum number of connections rises from 125 to 200, and transaction-relaying peers may take at most half of the inbound slots. A rebuilt transaction index uses less than half the disk space; run Delete Transaction Index to rebuild it, which can take a few hours.',
     es_ES:
-      'Requiere StartOS 0.4.2 o posterior. En un nodo podado, un bloque obtenido de un par ahora se rechaza si alguna de sus transacciones se repite.',
+      'Bitcoin actualizado a 32.1. Requiere StartOS 0.4.2 o posterior. El número máximo de conexiones predeterminado sube de 125 a 200, y los pares que retransmiten transacciones pueden ocupar como máximo la mitad de las ranuras entrantes. Un índice de transacciones reconstruido ocupa menos de la mitad del espacio en disco; ejecute Eliminar índice de transacciones para reconstruirlo, lo que puede tardar unas horas.',
     de_DE:
-      'Erfordert StartOS 0.4.2 oder neuer. Auf einem gekürzten Knoten wird ein von einem Peer abgerufener Block jetzt abgelehnt, wenn sich eine seiner Transaktionen wiederholt.',
+      'Bitcoin auf 32.1 aktualisiert. Erfordert StartOS 0.4.2 oder neuer. Die Standardanzahl maximaler Verbindungen steigt von 125 auf 200, und Peers, die Transaktionen weiterleiten, dürfen höchstens die Hälfte der eingehenden Plätze belegen. Ein neu aufgebauter Transaktionsindex belegt weniger als die Hälfte des Speicherplatzes; führen Sie „Transaktionsindex löschen“ aus, um ihn neu aufzubauen, was einige Stunden dauern kann.',
     pl_PL:
-      'Wymaga StartOS 0.4.2 lub nowszego. Na przyciętym węźle blok pobrany od peera jest teraz odrzucany, jeśli którakolwiek z jego transakcji się powtarza.',
+      'Zaktualizowano Bitcoin do wersji 32.1. Wymaga StartOS 0.4.2 lub nowszego. Domyślna maksymalna liczba połączeń wzrasta ze 125 do 200, a peery przekazujące transakcje mogą zająć co najwyżej połowę slotów przychodzących. Odbudowany indeks transakcji zajmuje mniej niż połowę miejsca na dysku; uruchom Usuń indeks transakcji, aby go odbudować, co może potrwać kilka godzin.',
     fr_FR:
-      "Nécessite StartOS 0.4.2 ou une version ultérieure. Sur un nœud élagué, un bloc récupéré auprès d'un pair est désormais refusé si l'une de ses transactions se répète.",
+      "Bitcoin mis à jour vers 32.1. Nécessite StartOS 0.4.2 ou une version ultérieure. Le nombre maximal de connexions par défaut passe de 125 à 200, et les pairs qui relaient des transactions peuvent occuper au plus la moitié des emplacements entrants. Un index des transactions reconstruit occupe moins de la moitié de l'espace disque ; exécutez Supprimer l'index des transactions pour le reconstruire, ce qui peut prendre quelques heures.",
   },
   migrations: {
     up: async () => {},
     down: async () => {},
   },
 })
+  .satisfies('31.2:5')
   .satisfies('30.4:4')
   .satisfies('29.5:4')
   .satisfies('28.4:42')

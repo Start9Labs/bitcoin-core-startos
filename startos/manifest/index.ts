@@ -6,7 +6,7 @@ export const manifest = setupManifest({
   title: 'Bitcoin Core',
   license: 'MIT',
   donationUrl: null,
-  packageRepo: 'https://github.com/Start9Labs/bitcoin-core-startos/tree/31.x',
+  packageRepo: 'https://github.com/Start9Labs/bitcoin-core-startos/tree/32.x',
   upstreamRepo: 'https://github.com/bitcoin/bitcoin',
   marketingUrl: 'https://bitcoincore.org/',
   description: { short, long },
@@ -16,7 +16,7 @@ export const manifest = setupManifest({
       source: {
         dockerBuild: {
           buildArgs: {
-            VERSION: '31.2',
+            VERSION: '32.1',
           },
         },
       },
