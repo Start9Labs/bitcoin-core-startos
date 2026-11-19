@@ -1,18 +1,18 @@
 import { VersionInfo } from '@start9labs/start-sdk'
 
 export const current = VersionInfo.of({
-  version: '30.4:4',
+  version: '30.4:5',
   releaseNotes: {
     en_US:
-      'Requires StartOS 0.4.1 or later. Services that depend on Bitcoin can now connect to it without being able to read its data directory, including wallets.',
+      'On a pruned node, a block fetched from a peer is now refused if any of its transactions repeats.',
     es_ES:
-      'Requiere StartOS 0.4.1 o posterior. Los servicios que dependen de Bitcoin ahora pueden conectarse a él sin poder leer su directorio de datos, incluidas las billeteras.',
+      'En un nodo podado, un bloque obtenido de un par ahora se rechaza si alguna de sus transacciones se repite.',
     de_DE:
-      'Erfordert StartOS 0.4.1 oder neuer. Dienste, die von Bitcoin abhängen, können sich jetzt damit verbinden, ohne sein Datenverzeichnis einschließlich der Wallets lesen zu können.',
+      'Auf einem gekürzten Knoten wird ein von einem Peer abgerufener Block jetzt abgelehnt, wenn sich eine seiner Transaktionen wiederholt.',
     pl_PL:
-      'Wymaga StartOS 0.4.1 lub nowszego. Usługi zależne od Bitcoin mogą teraz łączyć się z nim bez możliwości odczytu jego katalogu danych, w tym portfeli.',
+      'Na przyciętym węźle blok pobrany od peera jest teraz odrzucany, jeśli którakolwiek z jego transakcji się powtarza.',
     fr_FR:
-      "Nécessite StartOS 0.4.1 ou une version ultérieure. Les services qui dépendent de Bitcoin peuvent désormais s'y connecter sans pouvoir lire son répertoire de données, portefeuilles compris.",
+      "Sur un nœud élagué, un bloc récupéré auprès d'un pair est désormais refusé si l'une de ses transactions se répète.",
   },
   migrations: {
     up: async () => {},
