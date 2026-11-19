@@ -13,7 +13,7 @@ name: Sync next
 # or the next merge back re-introduces the stale copy.
 on:
   push:
-    branches: ['28.x', '29.x', '30.x', '31.x']
+    branches: ['30.x']
   workflow_dispatch:
 
 jobs:
