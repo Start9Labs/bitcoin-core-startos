@@ -16,7 +16,7 @@ export const manifest = setupManifest({
       source: {
         dockerBuild: {
           buildArgs: {
-            VERSION: '30.4',
+            VERSION: '30.5',
           },
         },
       },
