@@ -1,18 +1,18 @@
 import { VersionInfo } from '@start9labs/start-sdk'
 
 export const current = VersionInfo.of({
-  version: '31.2:6',
+  version: '31.3:0',
   releaseNotes: {
     en_US:
-      'Download UTXO Snapshot now accepts only https URLs, stops a download that grows past the largest valid snapshot, and starts only when 11 GiB of disk space is free. The RPC proxy is updated to 0.8.4: it pauses briefly before refusing a wrong password, and no longer names itself to Bitcoin peers.',
+      'Updated Bitcoin Core to 31.3, a maintenance release that makes transaction relay more efficient by ignoring duplicate transaction announcements from peers. Full notes: https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-31.3.md',
     es_ES:
-      'Descargar instantánea UTXO ahora solo acepta URL https, detiene una descarga que supera el tamaño de la mayor instantánea válida y solo comienza cuando hay 11 GiB de espacio libre en disco. El proxy RPC se actualiza a 0.8.4: hace una breve pausa antes de rechazar una contraseña incorrecta y ya no se identifica por su nombre ante los pares de Bitcoin.',
+      'Bitcoin Core se actualiza a 31.3, una versión de mantenimiento que hace más eficiente la retransmisión de transacciones al ignorar los anuncios de transacciones duplicados de los pares. Notas completas: https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-31.3.md',
     de_DE:
-      'UTXO-Snapshot herunterladen akzeptiert jetzt nur noch https-URLs, bricht einen Download ab, der größer als der größte gültige Snapshot wird, und startet nur, wenn 11 GiB Speicherplatz frei sind. Der RPC-Proxy wird auf 0.8.4 aktualisiert: Er wartet kurz, bevor er ein falsches Passwort ablehnt, und nennt Bitcoin-Peers nicht mehr seinen Namen.',
+      'Bitcoin Core wurde auf 31.3 aktualisiert, ein Wartungsrelease, das die Weiterleitung von Transaktionen effizienter macht, indem doppelte Transaktionsankündigungen von Peers ignoriert werden. Vollständige Hinweise: https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-31.3.md',
     pl_PL:
-      'Pobierz migawkę UTXO akceptuje teraz tylko adresy URL https, przerywa pobieranie, które przekracza rozmiar największej prawidłowej migawki, i rozpoczyna się tylko wtedy, gdy na dysku jest 11 GiB wolnego miejsca. Proxy RPC zostaje zaktualizowane do wersji 0.8.4: przed odrzuceniem błędnego hasła robi krótką pauzę i nie przedstawia się już z nazwy peerom Bitcoina.',
+      'Zaktualizowano Bitcoin Core do wersji 31.3 – wydania serwisowego, które usprawnia przekazywanie transakcji dzięki ignorowaniu zduplikowanych ogłoszeń transakcji od peerów. Pełne informacje: https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-31.3.md',
     fr_FR:
-      "Télécharger l'instantané UTXO n'accepte désormais que les URL https, interrompt un téléchargement qui dépasse la taille du plus grand instantané valide et ne démarre que lorsque 11 Gio d'espace disque sont libres. Le proxy RPC passe à la version 0.8.4 : il marque une courte pause avant de refuser un mot de passe erroné et ne se nomme plus auprès des pairs Bitcoin.",
+      'Bitcoin Core passe à la version 31.3, une version de maintenance qui rend le relais des transactions plus efficace en ignorant les annonces de transactions en double provenant des pairs. Notes complètes : https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-31.3.md',
   },
   migrations: {
     up: async () => {},
