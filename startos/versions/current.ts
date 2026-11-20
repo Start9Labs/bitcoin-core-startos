@@ -1,18 +1,18 @@
 import { VersionInfo } from '@start9labs/start-sdk'
 
 export const current = VersionInfo.of({
-  version: '28.4:43',
+  version: '28.4:44',
   releaseNotes: {
     en_US:
-      'Requires StartOS 0.4.2 or later. On a pruned node, a block fetched from a peer is now refused if any of its transactions repeats.',
+      'Download UTXO Snapshot now accepts only https URLs, stops a download that grows past the largest valid snapshot, and starts only when 10 GiB of disk space is free. The RPC proxy is updated to 0.8.4: it pauses briefly before refusing a wrong password, and no longer names itself to Bitcoin peers.',
     es_ES:
-      'Requiere StartOS 0.4.2 o posterior. En un nodo podado, un bloque obtenido de un par ahora se rechaza si alguna de sus transacciones se repite.',
+      'Descargar instantánea UTXO ahora solo acepta URL https, detiene una descarga que supera el tamaño de la mayor instantánea válida y solo comienza cuando hay 10 GiB de espacio libre en disco. El proxy RPC se actualiza a 0.8.4: hace una breve pausa antes de rechazar una contraseña incorrecta y ya no se identifica por su nombre ante los pares de Bitcoin.',
     de_DE:
-      'Erfordert StartOS 0.4.2 oder neuer. Auf einem gekürzten Knoten wird ein von einem Peer abgerufener Block jetzt abgelehnt, wenn sich eine seiner Transaktionen wiederholt.',
+      'UTXO-Snapshot herunterladen akzeptiert jetzt nur noch https-URLs, bricht einen Download ab, der größer als der größte gültige Snapshot wird, und startet nur, wenn 10 GiB Speicherplatz frei sind. Der RPC-Proxy wird auf 0.8.4 aktualisiert: Er wartet kurz, bevor er ein falsches Passwort ablehnt, und nennt Bitcoin-Peers nicht mehr seinen Namen.',
     pl_PL:
-      'Wymaga StartOS 0.4.2 lub nowszego. Na przyciętym węźle blok pobrany od peera jest teraz odrzucany, jeśli którakolwiek z jego transakcji się powtarza.',
+      'Pobierz migawkę UTXO akceptuje teraz tylko adresy URL https, przerywa pobieranie, które przekracza rozmiar największej prawidłowej migawki, i rozpoczyna się tylko wtedy, gdy na dysku jest 10 GiB wolnego miejsca. Proxy RPC zostaje zaktualizowane do wersji 0.8.4: przed odrzuceniem błędnego hasła robi krótką pauzę i nie przedstawia się już z nazwy peerom Bitcoina.',
     fr_FR:
-      "Nécessite StartOS 0.4.2 ou une version ultérieure. Sur un nœud élagué, un bloc récupéré auprès d'un pair est désormais refusé si l'une de ses transactions se répète.",
+      "Télécharger l'instantané UTXO n'accepte désormais que les URL https, interrompt un téléchargement qui dépasse la taille du plus grand instantané valide et ne démarre que lorsque 10 Gio d'espace disque sont libres. Le proxy RPC passe à la version 0.8.4 : il marque une courte pause avant de refuser un mot de passe erroné et ne se nomme plus auprès des pairs Bitcoin.",
   },
   migrations: {
     up: async () => {},

@@ -210,11 +210,11 @@ All four are idempotent: deleting a file that is already gone succeeds.
 
 Bootstraps a new node from a UTXO snapshot instead of waiting out a full sync. Run it on a node that is still syncing; it is hidden once the node is fully synced, and disabled while a download is running or a loaded snapshot is still being validated.
 
-- **What it changes:** downloads the snapshot into `tmp/` on the `main` volume, loads it with `loadtxoutset` as the active chainstate, and sets `snapshotInUse` in `store.json`.
-- **Cost:** hours. The download is bounded by a transfer-speed floor rather than a deadline, and it then waits — up to six hours — for the node's headers to reach the snapshot height before loading. Background sync from genesis continues underneath and eventually validates up to that height; the `background-validation` health check tracks it.
+- **What it changes:** downloads the snapshot into `tmp/` on the `main` volume — over https only, redirects included, and only once 10 GiB is free there — loads it with `loadtxoutset` as the active chainstate, and sets `snapshotInUse` in `store.json`.
+- **Cost:** hours. The download is bounded by a transfer-speed floor rather than a deadline, and by size: it stops at 10 GiB, above the only snapshot this Core accepts (height 840,000's, 9.77 GB), counted across all six attempts a dropped transfer may resume in. It then waits — up to six hours — for the node's headers to reach the snapshot height before loading. Background sync from genesis continues underneath and eventually validates up to that height; the `background-validation` health check tracks it.
 - **What happens next:** the action returns as soon as the download starts, so the work outlives the request. Success is visible as the chainstate jumping forward; failure arrives as a [task](#tasks).
 - **Repeat safety:** safe to re-run, but not resumable across attempts. The temporary file is deleted whether the attempt succeeded or failed — `loadtxoutset` consumes it — so a retry downloads from scratch.
-- **Trust:** the snapshot is checked against a hash compiled into bitcoind, but the URL is fetched before that check, so only use a source you trust. A file you serve yourself over the LAN is a good one.
+- **Trust:** the snapshot is checked against a hash compiled into bitcoind, but the URL is fetched before that check, so only use a source you trust. Its certificate must chain to a public CA, so a server on the LAN with a self-signed certificate is refused.
 
 ### Runtime Information
 

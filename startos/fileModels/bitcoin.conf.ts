@@ -1,5 +1,5 @@
 import { FileHelper, T, utils, z } from '@start9labs/start-sdk'
-import * as diskusage from 'diskusage'
+import { statfs } from 'fs/promises'
 import { totalmem } from 'os'
 import { i18n } from '../i18n'
 import { sdk } from '../sdk'
@@ -181,7 +181,10 @@ function stringifyPrimitives(a: unknown): any {
 
 const { InputSpec, Value, Variants, List } = sdk
 
-export const diskUsage = utils.once(() => diskusage.check('/'))
+export const diskUsage = utils.once(async () => {
+  const { blocks, bsize } = await statfs('/')
+  return { total: blocks * bsize }
+})
 export const archivalMin = 900_000_000_000
 
 export const defaultDbcache = () =>
