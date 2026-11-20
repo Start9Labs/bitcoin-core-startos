@@ -63,7 +63,7 @@ If you publish the **Peer** interface through StartTunnel to keep your home IP p
 
 ### Other actions
 
-- **Download UTXO Snapshot (assumeutxo)** — fast-sync from a recent UTXO snapshot; available while running, hidden once fully synced. The URL must be a direct link to a `.dat` snapshot file, which can be one you serve from your own machine over the LAN. Bitcoin reaches the tip quickly, then downloads and validates the older blocks in the background; the **Background Validation** health check tracks that, and services that read the whole chain, such as Electrum servers, can't index until it finishes.
+- **Download UTXO Snapshot (assumeutxo)** — fast-sync from a recent UTXO snapshot; available while running, hidden once fully synced. The URL must be a direct `https://` link to a `.dat` snapshot file, and the download needs 10 GiB of free disk space. Bitcoin reaches the tip quickly, then downloads and validates the older blocks in the background; the **Background Validation** health check tracks that, and services that read the whole chain, such as Electrum servers, can't index until it finishes.
 - **Runtime Information** — connection count, block height, sync progress, and soft-fork status.
 
 ## Limitations
