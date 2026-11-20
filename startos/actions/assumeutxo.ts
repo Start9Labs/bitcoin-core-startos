@@ -12,6 +12,9 @@ const { Value } = sdk
 export const snapshotTempFile = `/tmp/snap/snapshot`
 const block_840_000 =
   '0000000000000000000320283a032748cef8227873ff4872689bf23f1cda83a5'
+// The largest snapshot this Core accepts is height 880,000's, at 10,449,923,529 bytes.
+const maxSnapshotBytes = 11 * 1024 ** 3
+const downloadAttempts = 6
 
 let assumeutxoSubc: SubContainer<typeof manifest> | null = null
 let assumeutxoPromise: Promise<void> | null = null
@@ -27,8 +30,8 @@ const assumeutxoInputSpec = sdk.InputSpec.of({
     inputmode: 'url',
     patterns: [
       {
-        regex: '^https?://\\S+\\.dat(\\?\\S*)?$',
-        description: i18n('Must be an http(s) URL ending in .dat'),
+        regex: '^https://\\S+\\.dat(\\?\\S*)?$',
+        description: i18n('Must be an https URL ending in .dat'),
       },
     ],
   }),
@@ -98,30 +101,58 @@ export const assumeutxo = sdk.Action.withInput(
           force: true,
         })
 
-        // No overall timeout — a full snapshot legitimately takes hours — so
-        // the speed floor is what bounds a wedged transfer.
-        await assumeutxoSubc.execFail(
-          [
-            'curl',
-            '-fsSL',
-            '--connect-timeout',
-            '30',
-            '--speed-limit',
-            '1024',
-            '--speed-time',
-            '120',
-            '--retry',
-            '5',
-            '--retry-delay',
-            '10',
-            '--continue-at',
-            '-',
-            '-o',
-            snapshotTempFile,
-            input.snapshotUrl.trim(),
-          ],
-          { timeout: null },
-        )
+        const { bavail, bsize } = await fs.statfs(`${rootfs}/tmp/snap`)
+        if (bavail * bsize < maxSnapshotBytes)
+          throw new Error(
+            `not enough free disk space: the download needs ${maxSnapshotBytes / 1024 ** 3} GiB free, and ${(
+              (bavail * bsize) /
+              1024 ** 3
+            ).toFixed(1)} GiB is`,
+          )
+
+        // All attempts share the file-size cap; curl retries and URL globs reset --max-filesize.
+        for (let attempt = 1; ; attempt++) {
+          const have = await fs
+            .stat(`${rootfs}${snapshotTempFile}`)
+            .then((s) => s.size)
+            .catch(() => 0)
+          if (have >= maxSnapshotBytes)
+            throw new Error('the download is larger than any valid snapshot')
+          // No overall timeout — a full snapshot legitimately takes hours — so
+          // the speed floor is what bounds a wedged transfer.
+          const res = await assumeutxoSubc.exec(
+            [
+              'curl',
+              '-fsSL',
+              '--globoff',
+              '--proto',
+              '=https',
+              '--proto-redir',
+              '=https',
+              '--max-filesize',
+              String(maxSnapshotBytes - have),
+              '--connect-timeout',
+              '30',
+              '--speed-limit',
+              '1024',
+              '--speed-time',
+              '120',
+              '--continue-at',
+              '-',
+              '-o',
+              snapshotTempFile,
+              input.snapshotUrl.trim(),
+            ],
+            { timeout: null },
+          )
+          if (res.exitCode === 0) break
+          // 63: the response would exceed --max-filesize.
+          if (res.exitCode === 63 || attempt === downloadAttempts)
+            throw new Error(
+              `curl exited ${res.exitCode}: ${String(res.stderr).trim()}`,
+            )
+          await new Promise((resolve) => setTimeout(resolve, 10_000))
+        }
 
         const headersDeadline = Date.now() + 6 * 60 * 60 * 1000
         do {
