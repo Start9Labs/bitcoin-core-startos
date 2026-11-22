@@ -51,6 +51,8 @@ Turning on `txindex`, the coinstats index, or block filters after the chain is a
 
 Some options are fixed by the package and not exposed: RPC cookie authentication, the peer listen ports, `assumevalid`, and the Tor proxy. Advanced i2pd-daemon tuning isn't in the UI either — edit `i2pd.conf` on the `i2pd` volume if you need it.
 
+To accept incoming Bitcoin connections over Tor, add a Tor address to the **Peer** interface. The StartOS Tor service manages that address.
+
 ### Outbound traffic
 
 If you publish the **Peer** interface through StartTunnel to keep your home IP private, send Bitcoin Core's outbound traffic through that tunnel too. Connections Bitcoin Core opens itself to clearnet peers otherwise leave through your home router, so those peers see your home IP. While Bitcoin Core is limited to Tor and I2P, this doesn't apply. If you use the tunnel for another reason, such as a port your router can't forward, there is nothing to change.
