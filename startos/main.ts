@@ -137,7 +137,8 @@ export const main = sdk.setupMain(async ({ effects }) => {
     return { cancel: false }
   })
 
-  const bitcoinArgs: string[] = [`-onion=${torSocks}`]
+  // The StartOS Tor service owns the onion address and forwards inbound peers.
+  const bitcoinArgs: string[] = [`-onion=${torSocks}`, '-listenonion=0']
 
   if (enableIpc) {
     bitcoinArgs.push(`-ipcbind=${ipcSocketPath}`)
