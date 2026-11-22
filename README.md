@@ -134,6 +134,8 @@ It becomes a running dependency only when the node is actually set up for onion 
 
 Tor's SOCKS address is resolved over the service bridge with a fallback port, so `-onion` is passed on **every** start whether or not Tor is installed. A missing Tor is a connection refused, not an error, and the fallback keeps the address stable across Tor being installed, updated, or removed, so those events do not restart Bitcoin.
 
+The StartOS Tor service manages inbound onion addresses for the **Peer** interface. The package passes `-listenonion=0` to turn off Bitcoin Core's automatic onion service creation. Core still advertises the StartOS onion address via `externalip` and uses the SOCKS proxy for outbound onion peers.
+
 ## Network Access and Interfaces
 
 Two interfaces always, two more when ZeroMQ is enabled, and one more when the I2P web console is. A sixth binding exists with no interface attached to it at all.

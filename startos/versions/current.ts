@@ -1,18 +1,18 @@
 import { VersionInfo } from '@start9labs/start-sdk'
 
 export const current = VersionInfo.of({
-  version: '31.3:0',
+  version: '31.3:1',
   releaseNotes: {
     en_US:
-      'Updated Bitcoin Core to 31.3, a maintenance release that makes transaction relay more efficient by ignoring duplicate transaction announcements from peers. Full notes: https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-31.3.md',
+      'Fixed recurring Tor control port warnings. The StartOS Tor service still handles incoming and outgoing onion connections.',
     es_ES:
-      'Bitcoin Core se actualiza a 31.3, una versión de mantenimiento que hace más eficiente la retransmisión de transacciones al ignorar los anuncios de transacciones duplicados de los pares. Notas completas: https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-31.3.md',
+      'Se corrigieron los avisos recurrentes del puerto de control de Tor. El servicio Tor de StartOS sigue gestionando las conexiones onion entrantes y salientes.',
     de_DE:
-      'Bitcoin Core wurde auf 31.3 aktualisiert, ein Wartungsrelease, das die Weiterleitung von Transaktionen effizienter macht, indem doppelte Transaktionsankündigungen von Peers ignoriert werden. Vollständige Hinweise: https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-31.3.md',
+      'Wiederkehrende Warnungen zum Tor-Kontrollport wurden behoben. Der Tor-Dienst von StartOS verwaltet weiterhin ein- und ausgehende Onion-Verbindungen.',
     pl_PL:
-      'Zaktualizowano Bitcoin Core do wersji 31.3 – wydania serwisowego, które usprawnia przekazywanie transakcji dzięki ignorowaniu zduplikowanych ogłoszeń transakcji od peerów. Pełne informacje: https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-31.3.md',
+      'Usunięto powtarzające się ostrzeżenia o porcie kontrolnym Tor. Usługa Tor w StartOS nadal obsługuje przychodzące i wychodzące połączenia onion.',
     fr_FR:
-      'Bitcoin Core passe à la version 31.3, une version de maintenance qui rend le relais des transactions plus efficace en ignorant les annonces de transactions en double provenant des pairs. Notes complètes : https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-31.3.md',
+      'Les avertissements répétés concernant le port de contrôle Tor ont été corrigés. Le service Tor de StartOS continue de gérer les connexions onion entrantes et sortantes.',
   },
   migrations: {
     up: async () => {},
