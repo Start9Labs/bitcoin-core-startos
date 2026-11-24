@@ -17,6 +17,8 @@ import {
   GetNetworkInfo,
   i2pControlPort,
   ipcSocketPath,
+  peerPortOnion,
+  peerPortOnionLoopback,
   rootDir,
   rpccookiefile,
   rpcPort,
@@ -302,6 +304,26 @@ export const main = sdk.setupMain(async ({ effects }) => {
         },
       },
       requires: ['nocow', 'clean-chainstate-old'],
+    })
+    // Onion peers reach bitcoind from 127.0.0.1, the one source Core never discourages as a whole.
+    .addDaemon('onion-relay', {
+      subcontainer: bitcoindSub,
+      exec: {
+        command: [
+          'socat',
+          `TCP-LISTEN:${peerPortOnion},fork,reuseaddr`,
+          `TCP:127.0.0.1:${peerPortOnionLoopback}`,
+        ],
+      },
+      ready: {
+        display: null,
+        fn: () =>
+          sdk.healthCheck.checkPortListening(effects, peerPortOnion, {
+            successMessage: 'Onion relay is listening',
+            errorMessage: 'Onion relay is not listening',
+          }),
+      },
+      requires: [],
     })
     .addOneshot('publish-rpc', {
       subcontainer: null,
