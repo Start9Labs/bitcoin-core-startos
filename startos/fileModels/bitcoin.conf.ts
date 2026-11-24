@@ -7,6 +7,7 @@ import {
   i2PSamAddress,
   peerPortInternal,
   peerPortLocal,
+  peerPortOnionLoopback,
   rpcallowip,
   rpcallowipPruned,
   rpcbind,
@@ -67,8 +68,13 @@ export const shape = z.looseObject({
     .tuple([
       z.literal(`0.0.0.0:${peerPortInternal}`),
       z.literal(`[::]:${peerPortInternal}`),
+      z.literal(`127.0.0.1:${peerPortOnionLoopback}=onion`),
     ])
-    .catch([`0.0.0.0:${peerPortInternal}`, `[::]:${peerPortInternal}`]),
+    .catch([
+      `0.0.0.0:${peerPortInternal}`,
+      `[::]:${peerPortInternal}`,
+      `127.0.0.1:${peerPortOnionLoopback}=onion`,
+    ]),
   whitebind: z
     .literal(`0.0.0.0:${peerPortLocal}`)
     .catch(`0.0.0.0:${peerPortLocal}`),
@@ -774,7 +780,11 @@ function formToFile(
 
     rpccookiefile,
     listen: true,
-    bind: [`0.0.0.0:${peerPortInternal}`, `[::]:${peerPortInternal}`],
+    bind: [
+      `0.0.0.0:${peerPortInternal}`,
+      `[::]:${peerPortInternal}`,
+      `127.0.0.1:${peerPortOnionLoopback}=onion`,
+    ],
     whitebind: `0.0.0.0:${peerPortLocal}`,
     rpcauth: raw?.rpcauth?.filter((a) => !!a) as string[] | undefined,
     whitelist: raw?.whitelist?.filter((a) => !!a) as string[] | undefined,
