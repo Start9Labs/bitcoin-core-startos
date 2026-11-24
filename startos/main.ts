@@ -245,7 +245,12 @@ export const main = sdk.setupMain(async ({ effects }) => {
     .addOneshot('nocow', {
       subcontainer: bitcoindSub,
       exec: {
-        command: ['chattr', '-R', '+C', rootDir],
+        // chattr fails on sockets, such as the IPC socket a Core 31+ node leaves.
+        command: [
+          'sh',
+          '-c',
+          `find ${rootDir} \\( -type d -o -type f \\) -exec chattr +C {} +`,
+        ],
       },
       requires: [],
     })

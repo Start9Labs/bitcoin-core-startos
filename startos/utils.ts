@@ -24,8 +24,6 @@ export const peerLocalHostId = 'peer-local'
 // Interface ids (the exported service interfaces on the hosts above).
 export const rpcInterfaceId = 'rpc'
 export const peerInterfaceId = 'peer'
-export const zmqBlockInterfaceId = 'zmq-block'
-export const zmqTxInterfaceId = 'zmq-tx'
 
 export const zmqPortBlock = 28332
 export const zmqPortTransaction = 28333
