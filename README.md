@@ -138,19 +138,17 @@ The StartOS Tor service manages inbound onion addresses for the **Peer** interfa
 
 ## Network Access and Interfaces
 
-Two interfaces always, two more when ZeroMQ is enabled, and one more when the I2P web console is. A sixth binding exists with no interface attached to it at all.
+Two interfaces always, and a third when the I2P web console is on. Three more hosts bind ports with no interface attached: `rpc-local`, `peer-local`, and, when ZeroMQ is enabled, `zmq`.
 
 | Interface          | Id            | Type | Port                   | Present                                         |
 | ------------------ | ------------- | ---- | ---------------------- | ----------------------------------------------- |
 | RPC                | `rpc`         | api  | 8332                   | always                                          |
 | Peer               | `peer`        | p2p  | 8333 (container 58333) | always                                          |
-| ZeroMQ Block       | `zmq-block`   | api  | 28332                  | when ZeroMQ is enabled                          |
-| ZeroMQ Transaction | `zmq-tx`      | api  | 28333                  | when ZeroMQ is enabled                          |
 | I2P Daemon Console | `i2p-console` | ui   | 7070                   | when `i2psam` is set and the i2pd console is on |
 
 **Legacy peer onions:** every init retires the old container-port 8333 binding on `peer` if it is still there, then asks Tor, through `tor-startos`'s `setupOnionReattachment`, to attach that host's retained addresses to container port 58333. It is an init step rather than a migration because an install whose data version is a range, which a Knots switch leaves behind, never runs a migration's `up()`. Their public onion port remains 8333. The request waits for Tor `0.4.9.13:1` or later and for the peer binding to be enabled. It never automatically moves an address from another host.
 
-Block and transaction notifications are two interfaces rather than one because bitcoind publishes them on separate ports, so a dependent that needs only one of them (LND, for instance) can resolve it independently.
+**`zmq` is bridge-only.** When ZeroMQ is enabled, bitcoind publishes `rawblock` and `hashblock` on container port 28332 and `rawtx`, `hashtx`, and `sequence` on 28333. ZeroMQ has no authentication, and those topics include the node's own transactions as it broadcasts them, so the `zmq` host binds both ports with no exported interface, which keeps them on loopback and the LXC bridge — never the LAN, never the internet. A dependent resolves each port on its own with `sdk.host.getBridgeAddress({ hostId: zmqHostId, internalPort: zmqPortBlock })` (or `zmqPortTransaction`); no `ssl` option, as for `peer-local`. An app running off the server cannot subscribe.
 
 **Port 8332 belongs to `btc-rpc-proxy`, not bitcoind.** bitcoind binds `0.0.0.0:58332` with REST enabled; the proxy takes 8332, forwards JSON-RPC to it, and answers everything else — REST included — 404. On a pruned node it additionally fetches blocks the node has pruned from the p2p network on demand and verifies them against their hash, merkle root, and witness commitment, and that no transaction repeats, before answering. The interface, port, and credentials are identical pruned or not.
 
@@ -331,8 +329,7 @@ dependencies:
 interfaces:
   rpc: { type: api, port: 8332 } # the proxy, JSON-RPC only; 58332 is bitcoind itself with REST, bridge-only, no interface
   peer: { type: p2p, port: 8333 } # container 58333; 58334 is bridge-only, no interface
-  zmq-block: { type: api, port: 28332 } # only when ZeroMQ is enabled
-  zmq-tx: { type: api, port: 28333 } # only when ZeroMQ is enabled
+  # zmq: no interface; 28332 and 28333 bridge-only, bound only when ZeroMQ is enabled
   i2p-console: { type: ui, port: 7070 } # only when the i2pd web console is enabled
 actions:
   - mempool-config
