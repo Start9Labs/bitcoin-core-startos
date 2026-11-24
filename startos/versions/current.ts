@@ -1,18 +1,18 @@
 import { VersionInfo } from '@start9labs/start-sdk'
 
 export const current = VersionInfo.of({
-  version: '30.5:1',
+  version: '30.5:2',
   releaseNotes: {
     en_US:
-      'Fixed recurring Tor control port warnings. The StartOS Tor service still handles incoming and outgoing onion connections.',
+      'ZeroMQ notifications are now reachable only by other services on this server, no longer from your local network. The ZeroMQ Block and ZeroMQ Transaction interfaces are removed. Services that use ZeroMQ, such as LND, are unaffected.',
     es_ES:
-      'Se corrigieron los avisos recurrentes del puerto de control de Tor. El servicio Tor de StartOS sigue gestionando las conexiones onion entrantes y salientes.',
+      'Las notificaciones ZeroMQ ahora solo son accesibles para otros servicios de este servidor, ya no desde su red local. Se eliminan las interfaces Bloque ZeroMQ y Transacción ZeroMQ. Los servicios que usan ZeroMQ, como LND, no se ven afectados.',
     de_DE:
-      'Wiederkehrende Warnungen zum Tor-Kontrollport wurden behoben. Der Tor-Dienst von StartOS verwaltet weiterhin ein- und ausgehende Onion-Verbindungen.',
+      'ZeroMQ-Benachrichtigungen sind jetzt nur noch für andere Dienste auf diesem Server erreichbar, nicht mehr aus Ihrem lokalen Netzwerk. Die Schnittstellen ZeroMQ-Block und ZeroMQ-Transaktion wurden entfernt. Dienste, die ZeroMQ nutzen, etwa LND, sind nicht betroffen.',
     pl_PL:
-      'Usunięto powtarzające się ostrzeżenia o porcie kontrolnym Tor. Usługa Tor w StartOS nadal obsługuje przychodzące i wychodzące połączenia onion.',
+      'Powiadomienia ZeroMQ są teraz dostępne tylko dla innych usług na tym serwerze, a nie z sieci lokalnej. Usunięto interfejsy Blok ZeroMQ i Transakcja ZeroMQ. Usługi korzystające z ZeroMQ, takie jak LND, działają bez zmian.',
     fr_FR:
-      'Les avertissements répétés concernant le port de contrôle Tor ont été corrigés. Le service Tor de StartOS continue de gérer les connexions onion entrantes et sortantes.',
+      "Les notifications ZeroMQ ne sont désormais accessibles qu'aux autres services de ce serveur, et non plus depuis votre réseau local. Les interfaces Bloc ZeroMQ et Transaction ZeroMQ sont supprimées. Les services qui utilisent ZeroMQ, comme LND, ne sont pas affectés.",
   },
   migrations: {
     up: async () => {},
