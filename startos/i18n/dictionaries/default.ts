@@ -36,12 +36,8 @@ const dict = {
   'Listens for JSON-RPC commands': 101,
   Peer: 102,
   'Listens for incoming connections from peers on the bitcoin network': 103,
-  'ZeroMQ Block': 104,
   'I2P Daemon Console': 105,
   'Interface to access the embedded I2P daemon console': 106,
-  'Streams real-time Bitcoin block notifications (hashes and raw data)': 107,
-  'ZeroMQ Transaction': 108,
-  'Streams real-time Bitcoin transaction notifications (hashes, raw data, and sequence)': 109,
 
   // actions/generateRpcUser.ts
   Username: 200,
