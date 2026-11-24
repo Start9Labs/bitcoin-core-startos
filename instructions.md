@@ -10,7 +10,7 @@ Bitcoin Core begins its Initial Block Download (IBD) — fetching and verifying 
 
 - **A full Bitcoin node** — downloads, verifies, and relays the entire blockchain, then stays in sync.
 - **A JSON-RPC interface on port 8332** that other StartOS services (Lightning nodes, Electrum servers, mempool explorers) and external apps connect to.
-- **ZeroMQ block and transaction notifications** for other services on your server that subscribe to them. ZeroMQ is not exposed to your local network. If Tor holds a ZeroMQ `.onion` address, update Tor to stop it from publishing notifications to other devices; an older Tor can keep that address reachable even though Bitcoin shows no ZeroMQ interface.
+- **ZeroMQ block and transaction notifications** for other services on your server that subscribe to them. ZeroMQ is not exposed to your local network.
 - **Privacy networking out of the box** — connections to onion peers go over Tor, and a bundled I2P daemon accepts inbound I2P connections, with no setup required.
 - **Disk-aware sizing** — on disks under roughly 900 GB the node prunes automatically (and leaves `txindex` off) to fit; on larger disks it runs as a full archival node. Either way it still behaves like a full node to anything using its RPC — see **Pruned nodes** below. Initial sync also runs with a temporarily larger database cache that reverts to the upstream default once it completes.
 - **Configuration through StartOS actions** instead of hand-editing `bitcoin.conf`.
