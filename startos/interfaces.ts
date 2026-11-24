@@ -13,17 +13,15 @@ import {
   rpcHostId,
   rpcInterfaceId,
   rpcPort,
-  zmqBlockInterfaceId,
   zmqHostId,
-  zmqTxInterfaceId,
   zmqPortBlock,
   zmqPortTransaction,
 } from './utils'
 import { i18n } from './i18n'
 
 export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
-  // Only the ZMQ and I2P exports read this file, so RPC and peer must not
-  // vanish with it, and an absent conf is a gap rather than a removal.
+  // Only the ZMQ binding and the I2P export read this file, so RPC and peer
+  // must not vanish with it, and an absent conf is a gap rather than a removal.
   const bitcoinConf = await bitcoinConfFile
     .read(
       (conf) => conf,
@@ -90,53 +88,20 @@ export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
     secure: { ssl: false },
   })
 
-  // ZMQ (conditional). Block (28332) and transaction (28333) are exposed as
-  // separate interfaces so a dependent (e.g. LND) can resolve each one's bridge
-  // address independently — bitcoind publishes the two on distinct ports.
+  // ZMQ (conditional). Bridge-only, like `peer-local`: the
+  // topics are unauthenticated and carry the node's own transactions, so no
+  // interface is exported and the ports never reach the LAN. Dependents
+  // resolve each port with getBridgeAddress by host id and internal port.
   if (bitcoinConf?.zmqEnabled) {
     const zmqMulti = sdk.MultiHost.of(effects, zmqHostId)
-
-    const zmqBlockOrigin = await zmqMulti.bindPort(zmqPortBlock, {
-      preferredExternalPort: zmqPortBlock,
-      addSsl: null,
-      secure: { ssl: false },
-      protocol: null,
-    })
-    const zmqBlock = sdk.createInterface(effects, {
-      name: i18n('ZeroMQ Block'),
-      id: zmqBlockInterfaceId,
-      description: i18n(
-        'Streams real-time Bitcoin block notifications (hashes and raw data)',
-      ),
-      type: 'api',
-      masked: false,
-      schemeOverride: null,
-      username: null,
-      path: '',
-      query: {},
-    })
-    receipts.push(await zmqBlockOrigin.export([zmqBlock]))
-
-    const zmqTxOrigin = await zmqMulti.bindPort(zmqPortTransaction, {
-      preferredExternalPort: zmqPortTransaction,
-      addSsl: null,
-      secure: { ssl: false },
-      protocol: null,
-    })
-    const zmqTx = sdk.createInterface(effects, {
-      name: i18n('ZeroMQ Transaction'),
-      id: zmqTxInterfaceId,
-      description: i18n(
-        'Streams real-time Bitcoin transaction notifications (hashes, raw data, and sequence)',
-      ),
-      type: 'api',
-      masked: false,
-      schemeOverride: null,
-      username: null,
-      path: '',
-      query: {},
-    })
-    receipts.push(await zmqTxOrigin.export([zmqTx]))
+    for (const port of [zmqPortBlock, zmqPortTransaction]) {
+      await zmqMulti.bindPort(port, {
+        preferredExternalPort: port,
+        addSsl: null,
+        secure: { ssl: false },
+        protocol: null,
+      })
+    }
   }
 
   // I2P (conditional)
