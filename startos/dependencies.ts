@@ -9,7 +9,7 @@ const tor = sdk.Dependency.optional('tor', {
     icon: 'https://raw.githubusercontent.com/Start9Labs/tor-startos/65faea17febc739d910e8c26ff4e61f6333487a8/icon.svg',
   },
   kind: 'running',
-  versionRange: '>=0.4.9.11:4',
+  versionRange: '>=0.4.9.17:3',
   healthChecks: [],
   enabled: async ({ effects }) => {
     const { externalip, onlynet } =
