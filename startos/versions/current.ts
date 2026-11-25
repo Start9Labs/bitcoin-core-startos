@@ -1,3 +1,6 @@
+import { clearOnionTarget } from 'tor-startos/startos/utils/target'
+import { onionBinding } from '../init/onionTarget'
+import { sdk } from '../sdk'
 import { IMPOSSIBLE, VersionInfo } from '@start9labs/start-sdk'
 
 export const current = VersionInfo.of({
@@ -16,7 +19,8 @@ export const current = VersionInfo.of({
   },
   migrations: {
     up: IMPOSSIBLE,
-    down: async () => {},
+    // The version rolled back to sets its own target if it has the relay.
+    down: async ({ effects }) => clearOnionTarget(sdk, effects, onionBinding),
     // Any line's install that has run its own copies of every migration updates here directly.
     other: {
       '=32.1:4': { up: async () => {} },

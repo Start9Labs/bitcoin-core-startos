@@ -22,4 +22,4 @@ export const init = sdk.setupInit(
   onionTarget,
 )
 
-export const uninit = sdk.setupUninit(versionGraph)
+export const uninit = sdk.setupUninit(versionGraph, onionTarget)
