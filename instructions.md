@@ -5,6 +5,13 @@ Bitcoin Core begins its Initial Block Download (IBD) — fetching and verifying 
 ## Documentation
 
 - [Start9 Bitcoin Guides](https://docs.start9.com/bitcoin-guides/) — running and syncing Bitcoin Core on StartOS, pruning, and connecting wallets and other services to it.
+- [Configuration file](https://github.com/bitcoin/bitcoin/blob/30.x/doc/bitcoin-conf.md) — how `bitcoin.conf` is read and what its options mean.
+- [Tor](https://github.com/bitcoin/bitcoin/blob/30.x/doc/tor.md) — how Bitcoin Core reaches and accepts peers over Tor.
+- [I2P](https://github.com/bitcoin/bitcoin/blob/30.x/doc/i2p.md) — how Bitcoin Core reaches and accepts peers over I2P.
+- [ZeroMQ](https://github.com/bitcoin/bitcoin/blob/30.x/doc/zmq.md) — the block and transaction notifications other services subscribe to.
+- [Reducing traffic](https://github.com/bitcoin/bitcoin/blob/30.x/doc/reduce-traffic.md) — the upload limit, blocks-only mode and other ways to cut bandwidth.
+- [Managing wallets](https://github.com/bitcoin/bitcoin/blob/30.x/doc/managing-wallets.md) — creating, backing up and restoring Bitcoin Core wallets.
+- [assumeutxo](https://github.com/bitcoin/bitcoin/blob/30.x/doc/assumeutxo.md) — how a node syncs from a UTXO snapshot and validates the older blocks in the background.
 
 ## What you get on StartOS
 
