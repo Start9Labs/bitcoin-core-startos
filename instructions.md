@@ -5,6 +5,13 @@ Bitcoin Core begins its Initial Block Download (IBD) — fetching and verifying 
 ## Documentation
 
 - [Start9 Bitcoin Guides](https://docs.start9.com/bitcoin-guides/) — running and syncing Bitcoin Core on StartOS, pruning, and connecting wallets and other services to it.
+- [Configuration file](https://github.com/bitcoin/bitcoin/blob/30.x/doc/bitcoin-conf.md) — how `bitcoin.conf` is read and what its options mean.
+- [Tor](https://github.com/bitcoin/bitcoin/blob/30.x/doc/tor.md) — how Bitcoin Core reaches and accepts peers over Tor.
+- [I2P](https://github.com/bitcoin/bitcoin/blob/30.x/doc/i2p.md) — how Bitcoin Core reaches and accepts peers over I2P.
+- [ZeroMQ](https://github.com/bitcoin/bitcoin/blob/30.x/doc/zmq.md) — the block and transaction notifications other services subscribe to.
+- [Reducing traffic](https://github.com/bitcoin/bitcoin/blob/30.x/doc/reduce-traffic.md) — the upload limit, blocks-only mode and other ways to cut bandwidth.
+- [Managing wallets](https://github.com/bitcoin/bitcoin/blob/30.x/doc/managing-wallets.md) — creating, backing up and restoring Bitcoin Core wallets.
+- [assumeutxo](https://github.com/bitcoin/bitcoin/blob/30.x/doc/assumeutxo.md) — how a node syncs from a UTXO snapshot and validates the older blocks in the background.
 
 ## What you get on StartOS
 
@@ -34,9 +41,9 @@ The JSON-RPC API listens on port 8332. Dependent StartOS services connect and co
 
 ### Pruned nodes
 
-On a small disk Bitcoin Core runs **pruned** — it keeps validating every block but discards old block files once they're checked, so on-disk usage stays around a few hundred MB of recent blocks instead of the full multi-hundred-GB chain. Pruning is on by default below roughly 900 GB of disk; you can also toggle it under **Other Settings**.
+On a small disk Bitcoin Core runs **pruned** — it keeps validating every block but discards old block files once they're checked, so on-disk usage stays around a few hundred MB of recent blocks instead of the full multi-hundred-GB chain. Below roughly 900 GB of disk pruning is on by default, and **Other Settings** requires a target of at least 550 MiB, so it can't be turned off there. On a larger disk it is off by default; set how much to keep under **Other Settings**, where 0 means a full archival node.
 
-So that a pruned node is still useful to wallets and services that occasionally need an old block, a bundled proxy — `btc-rpc-proxy` — runs in front of it on port 8332. When something requests a block the node has pruned, the proxy fetches that block from the peer-to-peer network on the spot and serves it back over the normal RPC. To anything using the RPC — a Lightning node rescanning, an Electrum server, a block explorer — the node looks like a full archival node and works with no special configuration. The only cost is a little latency whenever an old block is needed, since it comes over the network rather than off your disk.
+So that a pruned node is still useful to wallets and services that occasionally need an old block, a bundled proxy — `btc-rpc-proxy` — runs in front of it on port 8332. When something requests a block the node has pruned, the proxy fetches that block from the peer-to-peer network on the spot and serves it back over the normal RPC. To anything that reads blocks over the RPC — a Lightning node rescanning, a wallet, BTCPay Server — the node looks like a full archival node and works with no special configuration. Electrum servers and block explorers read the chain other ways and still need an archival node; each asks you to turn pruning off when you install it, which the settings won't allow on a disk under roughly 900 GB. [Archival vs Pruned Nodes](https://docs.start9.com/bitcoin-guides/archival-vs-pruned.html) explains why. The only cost is a little latency whenever an old block is needed, since it comes over the network rather than off your disk.
 
 ### Configuration
 
