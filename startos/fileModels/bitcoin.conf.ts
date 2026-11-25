@@ -372,7 +372,8 @@ export const fullConfigSpec = sdk.InputSpec.of({
         'If your node is already pruned increasing this value will require re-syncing your node. Switching from a full archival node to pruned will disable txindex (if enabled)',
       ),
       placeholder: null,
-      required: false,
+      // Configuration actions must not disable pruning on small disks.
+      required: smallDisk,
       default: smallDisk ? minPrune : 0,
       integer: true,
       units: 'MiB',

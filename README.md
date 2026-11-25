@@ -9,7 +9,7 @@
 > upstream documentation is accurate and fully applicable — see the
 > Documentation section of `instructions.md` for links.
 
-[Bitcoin Core](https://github.com/bitcoin/bitcoin) is the reference implementation of the Bitcoin protocol. This package runs it as a full node with an embedded I2P router beside it and — when the node is pruned — a block-fetching RPC proxy in front of it, so a dependent service sees an archival node either way.
+[Bitcoin Core](https://github.com/bitcoin/bitcoin) is the reference implementation of the Bitcoin protocol. This package runs it as a full node with an embedded I2P router beside it and — when the node is pruned — a block-fetching RPC proxy in front of it, so a dependent service that reads blocks over the RPC sees an archival node either way.
 
 - **Upstream repo:** <https://github.com/bitcoin/bitcoin>
 - **Wrapper repo:** <https://github.com/Start9Labs/bitcoin-core-startos>
@@ -160,7 +160,7 @@ Two interfaces always, and a third when the I2P web console is on. Two more host
 
 There is no setup wizard, no credential to enter, and no task raised at install — the node begins its Initial Block Download as soon as it is started. What install does do is size two settings to the hardware it landed on.
 
-1. **Disk-aware sizing.** On a disk below roughly 900 GB, `prune` is seeded to the 550 MiB floor and the Transaction Index field is disabled in the form; above it, the node is archival. Pruning also forces `txindex` off whenever it is on.
+1. **Disk-aware sizing.** On a disk below roughly 900 GB, `prune` is seeded to the 550 MiB floor, and the Pruning field is required there with that floor as its minimum, so neither Other Settings nor a dependent's Auto-Configure can make the node archival, and the Transaction Index field is disabled in the form; above it, the node starts archival. These are restrictions on the configuration forms, not on the file model: a hand-set `prune=0` survives init, and an existing archival configuration stays archival until it is saved through a form that includes Pruning. Pruning also forces `txindex` off whenever it is on.
 2. **Seeded divergences.** The ZeroMQ publishers and `blockfilterindex` are switched on because dependent services need them, `i2psam` points at the embedded router, `dbcache` and `dbbatchsize` are scaled to system RAM for the duration of the sync, the RPC thread count and work-queue depth are raised, and `assumevalid` is pinned.
 3. **Every init repairs all three models.** Install, update, and restore each merge `store.json`, `i2pd.conf`, and `bitcoin.conf`, which fills in missing keys and corrects invalid ones. An update is therefore how a new enforced value reaches an existing install.
 4. **`externalip` is derived, not asked for.** It follows whatever addresses are published on the peer interface, so adding a Tor address there is what makes the node advertise it and what turns Tor into a running dependency.
