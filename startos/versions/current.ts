@@ -1,24 +1,25 @@
 import { IMPOSSIBLE, VersionInfo } from '@start9labs/start-sdk'
 
 export const current = VersionInfo.of({
-  version: '32.1:3',
+  version: '32.1:4',
   releaseNotes: {
     en_US:
-      'ZeroMQ notifications are now reachable only by other services on this server, no longer from your local network. The ZeroMQ Block and ZeroMQ Transaction interfaces are removed. Services that use ZeroMQ, such as LND, are unaffected.',
+      "On disks under roughly 900 GB, the Pruning setting can't be left empty. An existing archival configuration is not changed.",
     es_ES:
-      'Las notificaciones ZeroMQ ahora solo son accesibles para otros servicios de este servidor, ya no desde su red local. Se eliminan las interfaces Bloque ZeroMQ y Transacción ZeroMQ. Los servicios que usan ZeroMQ, como LND, no se ven afectados.',
+      'En discos de menos de unos 900 GB, el ajuste Poda no puede quedar vacío. Una configuración de archivo existente no se modifica.',
     de_DE:
-      'ZeroMQ-Benachrichtigungen sind jetzt nur noch für andere Dienste auf diesem Server erreichbar, nicht mehr aus Ihrem lokalen Netzwerk. Die Schnittstellen ZeroMQ-Block und ZeroMQ-Transaktion wurden entfernt. Dienste, die ZeroMQ nutzen, etwa LND, sind nicht betroffen.',
+      'Auf Datenträgern unter etwa 900 GB darf die Einstellung Beschneidung nicht leer bleiben. Eine bestehende Archivkonfiguration wird nicht geändert.',
     pl_PL:
-      'Powiadomienia ZeroMQ są teraz dostępne tylko dla innych usług na tym serwerze, a nie z sieci lokalnej. Usunięto interfejsy Blok ZeroMQ i Transakcja ZeroMQ. Usługi korzystające z ZeroMQ, takie jak LND, działają bez zmian.',
+      'Na dyskach mniejszych niż około 900 GB ustawienie Przycinanie nie może pozostać puste. Istniejąca konfiguracja archiwalna nie jest zmieniana.',
     fr_FR:
-      "Les notifications ZeroMQ ne sont désormais accessibles qu'aux autres services de ce serveur, et non plus depuis votre réseau local. Les interfaces Bloc ZeroMQ et Transaction ZeroMQ sont supprimées. Les services qui utilisent ZeroMQ, comme LND, ne sont pas affectés.",
+      'Sur les disques de moins de 900 Go environ, le réglage Élagage ne peut pas rester vide. Une configuration archivale existante n’est pas modifiée.',
   },
   migrations: {
     up: IMPOSSIBLE,
     down: async () => {},
     // Any line's install that has run its own copies of every migration updates here directly.
     other: {
+      '=32.1:3': { up: async () => {} },
       '=32.1:2': { up: async () => {} },
       '=32.1:1': { up: async () => {} },
       '=32.1:0': { up: async () => {} },
