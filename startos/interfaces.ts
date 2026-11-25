@@ -53,7 +53,7 @@ export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
 
   // Peer
   const peerMulti = sdk.MultiHost.of(effects, peerHostId)
-  // Onion peers' port. No exported interface, so only Tor reaches it, over the bridge.
+  // Onion peers' port. No exported interface: off the LAN, though every service on the bridge reaches it.
   await peerMulti.bindPort(peerPortOnion, {
     protocol: null,
     preferredExternalPort: peerPortOnion,
