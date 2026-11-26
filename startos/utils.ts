@@ -46,6 +46,10 @@ export const peerPortExternal = 8333
 export const peerPortInternal = 58333
 /** Container port bitcoind whitelists (`whitebind`); the `peer-local` binding maps here. */
 export const peerPortLocal = 58334
+/** Container port Tor forwards onion peers to; relayed to `peerPortOnionLoopback`. */
+export const peerPortOnion = 58335
+/** Port bitcoind binds `=onion` on loopback, where Core expects its Tor peers to arrive from. */
+export const peerPortOnionLoopback = 58336
 
 /** Container port the proxy serves JSON-RPC on; the `rpc` binding maps here. */
 export const rpcPort = 8332
