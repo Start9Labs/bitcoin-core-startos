@@ -10,6 +10,7 @@ import {
   peerPortExternal,
   peerPortInternal,
   peerPortLocal,
+  peerPortOnion,
   rpcHostId,
   rpcInterfaceId,
   rpcPort,
@@ -52,6 +53,13 @@ export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
 
   // Peer
   const peerMulti = sdk.MultiHost.of(effects, peerHostId)
+  // Onion peers' port. No exported interface: off the LAN, though every service on the bridge reaches it.
+  await peerMulti.bindPort(peerPortOnion, {
+    protocol: null,
+    preferredExternalPort: peerPortOnion,
+    addSsl: null,
+    secure: { ssl: false },
+  })
   const peerMultiOrigin = await peerMulti.bindPort(peerPortInternal, {
     protocol: null,
     preferredExternalPort: peerPortExternal,
